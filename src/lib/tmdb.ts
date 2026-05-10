@@ -33,14 +33,14 @@ export interface MovieDetail extends Movie {
 const mockMovies: Movie[] = [
   { id: 550, title: "Fight Club", poster_path: "/jSziioSwPVrOy9Yow3XhWIBDjq1.jpg", backdrop_path: "/hZk9pYqZp7vMvM60S2uDkWAVqcy.jpg", overview: "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.", vote_average: 8.4, vote_count: 1000, release_date: "1999-10-15", genre_ids: [18] },
   { id: 157336, title: "Interstellar", poster_path: "/yQvGrMoipbRoddT0ZR8tPoR7NfX.jpg", backdrop_path: "/xJHbt7uY8vUvMvM60S2uDkWAVqcy.jpg", overview: "The adventures of a group of explorers who make use of a newly discovered wormhole.", vote_average: 8.4, vote_count: 1000, release_date: "2014-11-05", genre_ids: [12, 18, 878] },
-  { id: 27205, title: "Inception", poster_path: "/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "Cobb, a skilled thief who steals secrets from deep within the subconscious during the dream state.", vote_average: 8.3, release_date: "2010-07-15", genre_ids: [28, 878, 12] },
-  { id: 155, title: "The Dark Knight", poster_path: "/qJ2tW6WMUDux911r6m7haRef0WH.jpg", backdrop_path: "/nMK9po96P0tWuzSdh176OOBqLyL.jpg", overview: "Batman raises the stakes in his war on crime.", vote_average: 8.5, release_date: "2008-07-16", genre_ids: [18, 28, 80, 53] },
-  { id: 603, title: "The Matrix", poster_path: "/aOIuZAjPaRIE6CMzbazvcHuHXDc.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "Set in the 22nd century, The Matrix tells the story of a computer hacker.", vote_average: 8.2, release_date: "1999-03-30", genre_ids: [28, 878] },
-  { id: 118340, title: "Guardians of the Galaxy", poster_path: "/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "Light years from Earth, a group of intergalactic outlaws.", vote_average: 7.9, release_date: "2014-07-30", genre_ids: [28, 878, 12] },
-  { id: 372058, title: "Your Name.", poster_path: "/q719jXXEzOoYaps6babgKnONONX.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "High schoolers Mitsuha and Taki are complete strangers living separate lives.", vote_average: 8.5, release_date: "2016-08-26", genre_ids: [16, 18, 10749] },
-  { id: 129, title: "Spirited Away", poster_path: "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "A young girl, Chihiro, becomes trapped in a strange new world of spirits.", vote_average: 8.5, release_date: "2001-07-20", genre_ids: [16, 14, 12] },
-  { id: 19995, title: "Avatar", poster_path: "/kyeqWdyUXW6089Ym38h.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "In the 22nd century, a paraplegic Marine is dispatched to the moon Pandora.", vote_average: 7.5, release_date: "2009-12-10", genre_ids: [28, 12, 14, 878] } as any,
-  { id: 299536, title: "Avengers: Infinity War", poster_path: "/7WsyChvqcSzzP1tHX79GkU9HbsO.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "As the Avengers and their allies have continued to protect the world.", vote_average: 8.3, release_date: "2018-04-25", genre_ids: [12, 28, 878] },
+  { id: 27205, title: "Inception", poster_path: "/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "Cobb, a skilled thief who steals secrets from deep within the subconscious during the dream state.", vote_average: 8.3, vote_count: 1000, release_date: "2010-07-15", genre_ids: [28, 878, 12] },
+  { id: 155, title: "The Dark Knight", poster_path: "/qJ2tW6WMUDux911r6m7haRef0WH.jpg", backdrop_path: "/nMK9po96P0tWuzSdh176OOBqLyL.jpg", overview: "Batman raises the stakes in his war on crime.", vote_average: 8.5, vote_count: 1000, release_date: "2008-07-16", genre_ids: [18, 28, 80, 53] },
+  { id: 603, title: "The Matrix", poster_path: "/aOIuZAjPaRIE6CMzbazvcHuHXDc.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "Set in the 22nd century, The Matrix tells the story of a computer hacker.", vote_average: 8.2, vote_count: 1000, release_date: "1999-03-30", genre_ids: [28, 878] },
+  { id: 118340, title: "Guardians of the Galaxy", poster_path: "/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "Light years from Earth, a group of intergalactic outlaws.", vote_average: 7.9, vote_count: 1000, release_date: "2014-07-30", genre_ids: [28, 878, 12] },
+  { id: 372058, title: "Your Name.", poster_path: "/q719jXXEzOoYaps6babgKnONONX.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "High schoolers Mitsuha and Taki are complete strangers living separate lives.", vote_average: 8.5, vote_count: 1000, release_date: "2016-08-26", genre_ids: [16, 18, 10749] },
+  { id: 129, title: "Spirited Away", poster_path: "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "A young girl, Chihiro, becomes trapped in a strange new world of spirits.", vote_average: 8.5, vote_count: 1000, release_date: "2001-07-20", genre_ids: [16, 14, 12] },
+  { id: 19995, title: "Avatar", poster_path: "/kyeqWdyUXW6089Ym38h.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "In the 22nd century, a paraplegic Marine is dispatched to the moon Pandora.", vote_average: 7.5, vote_count: 1000, release_date: "2009-12-10", genre_ids: [28, 12, 14, 878] } as any,
+  { id: 299536, title: "Avengers: Infinity War", poster_path: "/7WsyChvqcSzzP1tHX79GkU9HbsO.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "As the Avengers and their allies have continued to protect the world.", vote_average: 8.3, vote_count: 1000, release_date: "2018-04-25", genre_ids: [12, 28, 878] },
   { 
     id: 1399, 
     name: "Game of Thrones", 
@@ -48,6 +48,7 @@ const mockMovies: Movie[] = [
     backdrop_path: "/7q3SgyS24v6T5phuC9ST3NZnnOx.jpg", 
     overview: "Seven noble families fight for control of the mythical land of Westeros.", 
     vote_average: 8.4, 
+    vote_count: 1000,
     release_date: "2011-04-17", 
     genre_ids: [18, 10765],
     number_of_seasons: 8,
@@ -55,12 +56,12 @@ const mockMovies: Movie[] = [
     seasons: [
       { id: 1, season_number: 1, episode_count: 10, name: "Season 1" },
       { id: 2, season_number: 2, episode_count: 10, name: "Season 2" },
-      { id: 3, season_number: 3, episode_count: 10, name: "Season 3" },
-      { id: 4, season_number: 4, episode_count: 10, name: "Season 4" },
-      { id: 5, season_number: 5, episode_count: 10, name: "Season 5" },
-      { id: 6, season_number: 6, episode_count: 10, name: "Season 6" },
-      { id: 7, season_number: 7, episode_count: 7, name: "Season 7" },
-      { id: 8, season_number: 8, episode_count: 6, name: "Season 8" }
+      { id: 3, season_number: 3, episode_count: 10, name: "Season 1" },
+      { id: 4, season_number: 4, episode_count: 10, name: "Season 2" },
+      { id: 5, season_number: 5, episode_count: 10, name: "Season 1" },
+      { id: 6, season_number: 6, episode_count: 10, name: "Season 2" },
+      { id: 7, season_number: 7, episode_count: 7, name: "Season 1" },
+      { id: 8, season_number: 8, episode_count: 6, name: "Season 2" }
     ]
   } as any,
   { 
@@ -70,6 +71,7 @@ const mockMovies: Movie[] = [
     backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", 
     overview: "Rick is a mentally-unbalanced but scientifically gifted old man.", 
     vote_average: 8.7, 
+    vote_count: 1000,
     release_date: "2013-12-02", 
     genre_ids: [16, 35, 10765],
     number_of_seasons: 7,
@@ -77,11 +79,11 @@ const mockMovies: Movie[] = [
     seasons: [
       { id: 1, season_number: 1, episode_count: 11, name: "Season 1" },
       { id: 2, season_number: 2, episode_count: 10, name: "Season 2" },
-      { id: 3, season_number: 3, episode_count: 10, name: "Season 3" },
-      { id: 4, season_number: 4, episode_count: 10, name: "Season 4" },
-      { id: 5, season_number: 5, episode_count: 10, name: "Season 5" },
-      { id: 6, season_number: 6, episode_count: 10, name: "Season 6" },
-      { id: 7, season_number: 7, episode_count: 10, name: "Season 7" }
+      { id: 3, season_number: 3, episode_count: 10, name: "Season 1" },
+      { id: 4, season_number: 4, episode_count: 10, name: "Season 2" },
+      { id: 5, season_number: 5, episode_count: 10, name: "Season 1" },
+      { id: 6, season_number: 6, episode_count: 10, name: "Season 2" },
+      { id: 7, season_number: 7, episode_count: 10, name: "Season 1" }
     ]
   } as any
 ];
