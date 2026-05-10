@@ -107,7 +107,8 @@ export default function Navbar() {
                   >
                     <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                       {browseItems.map((item) => {
-                        const Icon = { TrendingUp, Star, Globe, Calendar, Clock, Tag, Layers, Monitor, PlayCircle, Radio }[item.icon as any] as any;
+                        const icons: Record<string, any> = { TrendingUp, Star, Globe, Calendar, Clock, Tag, Layers, Monitor, PlayCircle, Radio };
+                        const Icon = icons[item.icon];
                         return (
                           <Link 
                             key={item.name} 
@@ -115,7 +116,7 @@ export default function Navbar() {
                             className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors group"
                           >
                             <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-[#e50914] group-hover:text-white transition-all">
-                              <Icon className="w-4 h-4" />
+                              {Icon && <Icon className="w-4 h-4" />}
                             </div>
                             <span className="text-xs font-bold uppercase tracking-widest">{item.name}</span>
                           </Link>
