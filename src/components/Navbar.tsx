@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Bell, User, Menu, X, AlertTriangle } from "lucide-react";
+import { Search, Bell, User, Menu, X, AlertTriangle, ChevronDown, TrendingUp, Star, Globe, Calendar, Clock, Tag, Layers, Monitor, PlayCircle, Radio } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -31,11 +31,25 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "AI Discover", href: "/ai-discover" },
     { name: "Movies", href: "/movies" },
-    { name: "Anime", href: "/anime" },
-    { name: "My List", href: "/my-list" },
+    { name: "TV Shows", href: "/movies?type=tv" },
+    { name: "New", href: "/movies?sort=new" },
   ];
+
+  const browseItems = [
+    { name: "Trending", href: "/movies?sort=trending", icon: "TrendingUp" },
+    { name: "Top Rated", href: "/movies?sort=top_rated", icon: "Star" },
+    { name: "Countries", href: "/movies?sort=popularity", icon: "Globe" },
+    { name: "2026 Movies", href: "/movies?year=2026", icon: "Calendar" },
+    { name: "Upcoming", href: "/movies?sort=upcoming", icon: "Clock" },
+    { name: "Genres", href: "/movies", icon: "Tag" },
+    { name: "Collections", href: "/movies", icon: "Layers" },
+    { name: "Networks", href: "/movies", icon: "Monitor" },
+    { name: "Now Playing", href: "/movies?sort=now_playing", icon: "PlayCircle" },
+    { name: "Airing Today", href: "/movies?type=tv&sort=airing_today", icon: "Radio" },
+  ];
+
+  const [isBrowseOpen, setIsBrowseOpen] = useState(false);
 
   return (
     <motion.nav
@@ -72,6 +86,46 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+            
+            {/* Browse Dropdown */}
+            <li 
+              className="relative"
+              onMouseEnter={() => setIsBrowseOpen(true)}
+              onMouseLeave={() => setIsBrowseOpen(false)}
+            >
+              <button className="flex items-center gap-1 hover:text-white transition-colors duration-300">
+                BROWSE <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isBrowseOpen ? 'rotate-180' : ''}`} />
+              </button>
+              
+              <AnimatePresence>
+                {isBrowseOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute top-full left-0 mt-2 w-[400px] bg-[#0a0a0a]/95 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[100]"
+                  >
+                    <div className="grid grid-cols-2 gap-x-8 gap-y-4">
+                      {browseItems.map((item) => {
+                        const Icon = { TrendingUp, Star, Globe, Calendar, Clock, Tag, Layers, Monitor, PlayCircle, Radio }[item.icon as any] as any;
+                        return (
+                          <Link 
+                            key={item.name} 
+                            href={item.href}
+                            className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors group"
+                          >
+                            <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-[#e50914] group-hover:text-white transition-all">
+                              <Icon className="w-4 h-4" />
+                            </div>
+                            <span className="text-xs font-bold uppercase tracking-widest">{item.name}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </li>
           </ul>
         </div>
         

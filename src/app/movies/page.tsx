@@ -5,12 +5,15 @@ import SafeImage from "@/components/SafeImage";
 import { AlertTriangle, Filter, ArrowRight, Compass } from "lucide-react";
 import Pagination from "@/components/Pagination";
 
-export default async function MoviesPage(props: { searchParams: Promise<{ genre?: string; lang?: string; page?: string; search?: string }> }) {
+export default async function MoviesPage(props: { searchParams: Promise<{ genre?: string; lang?: string; page?: string; search?: string; sort?: string; year?: string; type?: string }> }) {
   const searchParams = await props.searchParams;
   const genreId = searchParams.genre;
   const lang = searchParams.lang;
   const page = searchParams.page || "1";
   const search = searchParams.search;
+  const sort = searchParams.sort;
+  const year = searchParams.year;
+  const type = searchParams.type || "movie";
   
   const popular = await fetchMovies("/movie/popular");
   const action = await fetchMovies("/discover/movie", { with_genres: "28" });
@@ -32,17 +35,34 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
     { id: "53", name: "Thriller" },
   ];
 
-  // If we have a specific filter OR we are on a secondary page OR searching, show grid
-  const isBrowsing = genreId || lang || page !== "1" || search;
+  // Map sort to TMDB endpoint or discover params
+  let endpoint = search ? "/search/movie" : "/discover/movie";
+  const params: any = { 
+    page,
+    with_genres: genreId || "", 
+    with_original_language: lang || "",
+    sort_by: "popularity.desc" 
+  };
+
+  if (search) params.query = search;
+  if (year) params.primary_release_year = year;
+  if (type === "tv") endpoint = "/discover/tv";
+
+  if (sort === "trending") endpoint = `/trending/${type}/week`;
+  if (sort === "top_rated") endpoint = `/${type}/top_rated`;
+  if (sort === "upcoming") endpoint = "/movie/upcoming";
+  if (sort === "now_playing") endpoint = "/movie/now_playing";
+  if (sort === "airing_today") endpoint = "/tv/airing_today";
+  if (sort === "new") {
+    endpoint = `/${type}/now_playing`;
+    if (type === "tv") endpoint = "/tv/on_the_air";
+  }
+
+  // If we have any filter OR we are on a secondary page OR searching, show grid
+  const isBrowsing = genreId || lang || page !== "1" || search || sort || year || type !== "movie";
 
   const gridData = isBrowsing
-    ? await fetchTMDB(search ? "/search/movie" : "/discover/movie", { 
-        query: search || "",
-        with_genres: genreId || "", 
-        with_original_language: lang || "", 
-        page: page,
-        sort_by: "popularity.desc" 
-      })
+    ? await fetchTMDB(endpoint, params)
     : null;
 
   return (
@@ -55,10 +75,24 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
               <span className="text-xs font-black uppercase tracking-[0.3em]">Cinematic Exploration</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter" style={{ fontFamily: "var(--font-outfit)" }}>
-              {search ? `Search: ${search}` : lang === 'tl' ? "Pinoy Cinema" : genreId ? genres.find(g => g.id === genreId)?.name || "Category" : "All Movies"}
+              {search ? `Search: ${search}` : 
+               sort === "trending" ? "Trending Now" :
+               sort === "top_rated" ? "Top Rated" :
+               sort === "upcoming" ? "Upcoming Movies" :
+               sort === "new" ? "New Releases" :
+               year === "2026" ? "2026 Movies" :
+               type === "tv" ? "TV Shows" :
+               lang === 'tl' ? "Pinoy Cinema" : 
+               genreId ? genres.find(g => g.id === genreId)?.name || "Category" : 
+               "All Movies"}
             </h1>
             <p className="text-gray-500 mt-4 text-lg font-medium max-w-xl">
-              {search ? `Displaying cinematic results for "${search}" from our neural library.` : gridData ? `Exploring ${genres.find(g => g.id === genreId)?.name || "the best"} cinema from around the globe.` : "Deep dive into our massive library of blockbusters and hidden gems."}
+              {search ? `Displaying cinematic results for "${search}" from our neural library.` : 
+               sort ? `Discover the latest ${sort.replace('_', ' ')} content curated by our AI.` :
+               year ? `A glimpse into the future with ${year} cinema.` :
+               type === "tv" ? "The best television series from around the world." :
+               gridData ? `Exploring ${genres.find(g => g.id === genreId)?.name || "the best"} cinema from around the globe.` : 
+               "Deep dive into our massive library of blockbusters and hidden gems."}
             </p>
           </div>
           
