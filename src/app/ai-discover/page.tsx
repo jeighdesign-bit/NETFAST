@@ -2,6 +2,7 @@ import AISearch from "@/components/AISearch";
 import MovieRow from "@/components/MovieRow";
 import { fetchMovies } from "@/lib/tmdb";
 import { Sparkles } from "lucide-react";
+import { Suspense } from "react";
 
 export default async function AIDiscoverPage() {
   const recommendations = await fetchMovies("/discover/movie", { sort_by: "vote_average.desc", "vote_count.gte": "1000" });
@@ -20,7 +21,9 @@ export default async function AIDiscoverPage() {
           Describe exactly what you're looking for. Our advanced AI will analyze the cinematic universe to find the perfect match.
         </p>
         
-        <AISearch />
+        <Suspense fallback={<div className="h-20 flex items-center justify-center"><div className="w-8 h-8 border-4 border-[#e50914] border-t-transparent rounded-full animate-spin" /></div>}>
+          <AISearch />
+        </Suspense>
       </div>
 
       <div className="space-y-16">

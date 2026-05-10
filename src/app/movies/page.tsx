@@ -4,6 +4,7 @@ import Link from "next/link";
 import SafeImage from "@/components/SafeImage";
 import { AlertTriangle, Filter, ArrowRight, Compass } from "lucide-react";
 import Pagination from "@/components/Pagination";
+import { Suspense } from "react";
 
 export default async function MoviesPage(props: { searchParams: Promise<{ genre?: string; lang?: string; page?: string; search?: string; sort?: string; year?: string; type?: string }> }) {
   const searchParams = await props.searchParams;
@@ -15,12 +16,23 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
   const year = searchParams.year;
   const type = searchParams.type || "movie";
   
-  const popular = await fetchMovies("/movie/popular");
-  const action = await fetchMovies("/discover/movie", { with_genres: "28" });
-  const scifi = await fetchMovies("/discover/movie", { with_genres: "878" });
-  const thriller = await fetchMovies("/discover/movie", { with_genres: "53" });
-  const horror = await fetchMovies("/discover/movie", { with_genres: "27" });
-  const comedy = await fetchMovies("/discover/movie", { with_genres: "35" });
+  let popular: any[] = [];
+  let action: any[] = [];
+  let scifi: any[] = [];
+  let thriller: any[] = [];
+  let horror: any[] = [];
+  let comedy: any[] = [];
+
+  try {
+    popular = await fetchMovies("/movie/popular");
+    action = await fetchMovies("/discover/movie", { with_genres: "28" });
+    scifi = await fetchMovies("/discover/movie", { with_genres: "878" });
+    thriller = await fetchMovies("/discover/movie", { with_genres: "53" });
+    horror = await fetchMovies("/discover/movie", { with_genres: "27" });
+    comedy = await fetchMovies("/discover/movie", { with_genres: "35" });
+  } catch (e) {
+    console.error("Fetch error:", e);
+  }
 
   const genres = [
     { id: "28", name: "Action" },
@@ -61,12 +73,16 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
   // If we have any filter OR we are on a secondary page OR searching, show grid
   const isBrowsing = genreId || lang || page !== "1" || search || sort || year || type !== "movie";
 
-  const gridData = isBrowsing
-    ? await fetchTMDB(endpoint, params)
-    : null;
+  let gridData = null;
+  try {
+    gridData = isBrowsing ? await fetchTMDB(endpoint, params) : null;
+  } catch (e) {
+    console.error("Grid fetch error:", e);
+  }
 
   return (
-    <main className="min-h-screen pt-32 pb-20 bg-[#050505]">
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+      <main className="min-h-screen pt-32 pb-20 bg-[#050505]">
       <div className="container mx-auto px-6 mb-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
@@ -114,7 +130,7 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
       {gridData ? (
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
-            {gridData.results.map((movie) => {
+            {gridData.results.map((movie: any) => {
               const isTV = !movie.title && (movie as any).name;
               const href = isTV ? `/tv/${movie.id}` : `/movie/${movie.id}`;
               return (
@@ -140,7 +156,7 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
             })}
           </div>
 
-          <Pagination currentPage={gridData.page} totalPages={gridData.total_pages} />
+          <Pagination currentPage={gridData.page} totalPages={gridData.total_pages} searchParams={searchParams} />
         </div>
       ) : (
         <div className="space-y-24 mt-12">
@@ -153,5 +169,6 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
         </div>
       )}
     </main>
+    </Suspense>
   );
 }
