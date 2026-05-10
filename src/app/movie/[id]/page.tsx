@@ -45,7 +45,7 @@ export default async function MovieDetailPage(props: { params: Promise<{ id: str
       "@type": "AggregateRating",
       "ratingValue": movie.vote_average,
       "bestRating": "10",
-      "ratingCount": movie.vote_count
+      "ratingCount": movie.vote_count || 0
     }
   };
 

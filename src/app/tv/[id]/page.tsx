@@ -39,7 +39,7 @@ export default async function TVDetailPage(props: { params: Promise<{ id: string
       "@type": "AggregateRating",
       "ratingValue": tv.vote_average,
       "bestRating": "10",
-      "ratingCount": tv.vote_count
+      "ratingCount": tv.vote_count || 0
     }
   };
 

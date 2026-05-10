@@ -8,6 +8,7 @@ export interface Movie {
   backdrop_path: string | null;
   overview: string;
   vote_average: number;
+  vote_count: number;
   release_date: string;
   genre_ids: number[];
   name?: string; // For TV shows
@@ -30,8 +31,8 @@ export interface MovieDetail extends Movie {
 
 // Verified Mock Library with Real TMDB Paths
 const mockMovies: Movie[] = [
-  { id: 550, title: "Fight Club", poster_path: "/jSziioSwPVrOy9Yow3XhWIBDjq1.jpg", backdrop_path: "/hZk9pYqZp7vMvM60S2uDkWAVqcy.jpg", overview: "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.", vote_average: 8.4, release_date: "1999-10-15", genre_ids: [18] },
-  { id: 157336, title: "Interstellar", poster_path: "/yQvGrMoipbRoddT0ZR8tPoR7NfX.jpg", backdrop_path: "/xJHbt7uY8vUvMvM60S2uDkWAVqcy.jpg", overview: "The adventures of a group of explorers who make use of a newly discovered wormhole.", vote_average: 8.4, release_date: "2014-11-05", genre_ids: [12, 18, 878] },
+  { id: 550, title: "Fight Club", poster_path: "/jSziioSwPVrOy9Yow3XhWIBDjq1.jpg", backdrop_path: "/hZk9pYqZp7vMvM60S2uDkWAVqcy.jpg", overview: "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.", vote_average: 8.4, vote_count: 1000, release_date: "1999-10-15", genre_ids: [18] },
+  { id: 157336, title: "Interstellar", poster_path: "/yQvGrMoipbRoddT0ZR8tPoR7NfX.jpg", backdrop_path: "/xJHbt7uY8vUvMvM60S2uDkWAVqcy.jpg", overview: "The adventures of a group of explorers who make use of a newly discovered wormhole.", vote_average: 8.4, vote_count: 1000, release_date: "2014-11-05", genre_ids: [12, 18, 878] },
   { id: 27205, title: "Inception", poster_path: "/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "Cobb, a skilled thief who steals secrets from deep within the subconscious during the dream state.", vote_average: 8.3, release_date: "2010-07-15", genre_ids: [28, 878, 12] },
   { id: 155, title: "The Dark Knight", poster_path: "/qJ2tW6WMUDux911r6m7haRef0WH.jpg", backdrop_path: "/nMK9po96P0tWuzSdh176OOBqLyL.jpg", overview: "Batman raises the stakes in his war on crime.", vote_average: 8.5, release_date: "2008-07-16", genre_ids: [18, 28, 80, 53] },
   { id: 603, title: "The Matrix", poster_path: "/aOIuZAjPaRIE6CMzbazvcHuHXDc.jpg", backdrop_path: "/8ZTVqvKDQ8PznTrSccS0pJu1nTV.jpg", overview: "Set in the 22nd century, The Matrix tells the story of a computer hacker.", vote_average: 8.2, release_date: "1999-03-30", genre_ids: [28, 878] },
