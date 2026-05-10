@@ -5,11 +5,12 @@ import SafeImage from "@/components/SafeImage";
 import { AlertTriangle, Filter, ArrowRight, Compass } from "lucide-react";
 import Pagination from "@/components/Pagination";
 
-export default async function MoviesPage(props: { searchParams: Promise<{ genre?: string; lang?: string; page?: string }> }) {
+export default async function MoviesPage(props: { searchParams: Promise<{ genre?: string; lang?: string; page?: string; search?: string }> }) {
   const searchParams = await props.searchParams;
   const genreId = searchParams.genre;
   const lang = searchParams.lang;
   const page = searchParams.page || "1";
+  const search = searchParams.search;
   
   const popular = await fetchMovies("/movie/popular");
   const action = await fetchMovies("/discover/movie", { with_genres: "28" });
@@ -31,11 +32,12 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
     { id: "53", name: "Thriller" },
   ];
 
-  // If we have a specific filter OR we are on a secondary page, show grid
-  const isBrowsing = genreId || lang || page !== "1";
+  // If we have a specific filter OR we are on a secondary page OR searching, show grid
+  const isBrowsing = genreId || lang || page !== "1" || search;
 
   const gridData = isBrowsing
-    ? await fetchTMDB("/discover/movie", { 
+    ? await fetchTMDB(search ? "/search/movie" : "/discover/movie", { 
+        query: search || "",
         with_genres: genreId || "", 
         with_original_language: lang || "", 
         page: page,
@@ -53,10 +55,10 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
               <span className="text-xs font-black uppercase tracking-[0.3em]">Cinematic Exploration</span>
             </div>
             <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter" style={{ fontFamily: "var(--font-outfit)" }}>
-              {lang === 'tl' ? "Pinoy Cinema" : genreId ? genres.find(g => g.id === genreId)?.name || "Category" : "All Movies"}
+              {search ? `Search: ${search}` : lang === 'tl' ? "Pinoy Cinema" : genreId ? genres.find(g => g.id === genreId)?.name || "Category" : "All Movies"}
             </h1>
             <p className="text-gray-500 mt-4 text-lg font-medium max-w-xl">
-              {gridData ? `Exploring ${genres.find(g => g.id === genreId)?.name || "the best"} cinema from around the globe.` : "Deep dive into our massive library of blockbusters and hidden gems."}
+              {search ? `Displaying cinematic results for "${search}" from our neural library.` : gridData ? `Exploring ${genres.find(g => g.id === genreId)?.name || "the best"} cinema from around the globe.` : "Deep dive into our massive library of blockbusters and hidden gems."}
             </p>
           </div>
           

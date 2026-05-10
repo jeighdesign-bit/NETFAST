@@ -1,32 +1,54 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
 import { TVDetail, fetchTVDetails, getImageUrl } from "@/lib/tmdb";
 import MovieInteractiveArea from "@/components/MovieInteractiveArea";
 import MovieRow from "@/components/MovieRow";
+import { Metadata } from "next";
 
-export default function TVDetailPage() {
-  const params = useParams();
-  const id = params.id as string;
-  const [tv, setTv] = useState<TVDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const params = await props.params;
+  const tv = await fetchTVDetails(params.id);
+  
+  return {
+    title: tv.name,
+    description: tv.overview?.substring(0, 160),
+    openGraph: {
+      title: `${tv.name} | Watch on NETFAST`,
+      description: tv.overview,
+      images: [getImageUrl(tv.backdrop_path, "original")],
+      type: "video.tv_show",
+    },
+  };
+}
 
-  useEffect(() => {
-    async function loadData() {
-      setIsLoading(true);
-      const data = await fetchTVDetails(id);
-      setTv(data);
-      setIsLoading(false);
-    }
-    loadData();
-  }, [id]);
-
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-black"><div className="w-12 h-12 border-4 border-[#e50914] border-t-transparent rounded-full animate-spin" /></div>;
+export default async function TVDetailPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
+  const id = params.id;
+  const tv = await fetchTVDetails(id);
+  
   if (!tv) return <div className="min-h-screen flex items-center justify-center text-white">Show not found.</div>;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TVSeries",
+    "name": tv.name,
+    "description": tv.overview,
+    "image": getImageUrl(tv.poster_path, "original"),
+    "datePublished": tv.release_date,
+    "numberOfSeasons": tv.number_of_seasons,
+    "numberOfEpisodes": tv.number_of_episodes,
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": tv.vote_average,
+      "bestRating": "10",
+      "ratingCount": tv.vote_count
+    }
+  };
 
   return (
     <main className="min-h-screen pb-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <MovieInteractiveArea movie={tv} isTV={true} tvData={tv} />
       
       <div className="container mx-auto px-6 mt-12">

@@ -4,10 +4,22 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Bell, User, Menu, X, AlertTriangle } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/movies?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
+      setIsMobileMenuOpen(false);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +46,19 @@ export default function Navbar() {
         isScrolled || isMobileMenuOpen ? "bg-black/90 backdrop-blur-md shadow-[0_0_15px_rgba(229,9,20,0.2)]" : "bg-transparent"
       }`}
     >
+      {/* Global Experience Notice Bar */}
+      <div className="w-full bg-yellow-500 py-1.5 z-[100] relative">
+        <div className="container mx-auto px-6 flex items-center justify-center gap-3">
+          <AlertTriangle className="w-3.5 h-3.5 text-black animate-pulse" />
+          <p className="text-[10px] md:text-xs text-black font-black uppercase tracking-[0.15em]">
+            Best Experience: Use{" "}
+            <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer" className="underline decoration-black/30 hover:decoration-black transition-all">uBlock Origin</a>
+            {" "}or{" "}
+            <a href="https://brave.com/" target="_blank" rel="noopener noreferrer" className="underline decoration-black/30 hover:decoration-black transition-all">Brave Browser</a>
+          </p>
+        </div>
+      </div>
+
       <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-12">
           <Link href="/" className="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#ff4b4b] neon-text shrink-0" style={{ fontFamily: "var(--font-outfit)" }}>
@@ -50,7 +75,18 @@ export default function Navbar() {
           </ul>
         </div>
         
-        <div className="flex items-center gap-4 text-gray-300">
+        <div className="flex items-center gap-6 text-gray-300">
+          <form onSubmit={handleSearch} className="hidden md:flex items-center relative group">
+            <input 
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search..."
+              className="bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-xs font-bold text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#e50914]/50 focus:bg-white/10 transition-all w-40 focus:w-64"
+            />
+            <Search className="absolute left-3 w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+          </form>
+
           <button 
             className="md:hidden text-white p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -69,6 +105,16 @@ export default function Navbar() {
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden bg-black/95 border-t border-white/10 px-6 py-8"
           >
+            <form onSubmit={handleSearch} className="mb-8 relative">
+              <input 
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search movies..."
+                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-12 text-white font-bold focus:outline-none focus:border-[#e50914] transition-all"
+              />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+            </form>
             <ul className="flex flex-col space-y-6 text-xl font-bold">
               {navLinks.map((link) => (
                 <Link 

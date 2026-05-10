@@ -2,6 +2,29 @@ import { fetchMovieDetails, getImageUrl } from "@/lib/tmdb";
 import MovieRow from "@/components/MovieRow";
 import MovieInteractiveArea from "@/components/MovieInteractiveArea";
 import Image from "next/image";
+import { Metadata } from "next";
+
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const params = await props.params;
+  const movie = await fetchMovieDetails(params.id);
+  
+  return {
+    title: movie.title,
+    description: movie.overview?.substring(0, 160),
+    openGraph: {
+      title: `${movie.title} | Watch on NETFAST`,
+      description: movie.overview,
+      images: [getImageUrl(movie.backdrop_path, "original")],
+      type: "video.movie",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: movie.title,
+      description: movie.overview?.substring(0, 160),
+      images: [getImageUrl(movie.backdrop_path, "original")],
+    }
+  };
+}
 
 export default async function MovieDetailPage(props: { params: Promise<{ id: string }> }) {
   const params = await props.params;
@@ -10,8 +33,28 @@ export default async function MovieDetailPage(props: { params: Promise<{ id: str
   const trailer = movie.videos?.results?.find(v => v.type === "Trailer")?.key;
   const similarMovies = movie.similar?.results || [];
 
+  // Structured Data (JSON-LD)
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Movie",
+    "name": movie.title,
+    "description": movie.overview,
+    "image": getImageUrl(movie.poster_path, "original"),
+    "datePublished": movie.release_date,
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": movie.vote_average,
+      "bestRating": "10",
+      "ratingCount": movie.vote_count
+    }
+  };
+
   return (
     <div className="relative min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Cinematic Hero */}
       <MovieInteractiveArea movie={movie} />
 
