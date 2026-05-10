@@ -34,15 +34,6 @@ export default function Navbar() {
         isScrolled || isMobileMenuOpen ? "bg-black/90 backdrop-blur-md shadow-[0_0_15px_rgba(229,9,20,0.2)]" : "bg-transparent"
       }`}
     >
-      {/* Experience Notice Bar */}
-      <div className="w-full bg-yellow-500 py-1.5 z-[100] relative">
-        <div className="container mx-auto px-6 flex items-center justify-center gap-3">
-          <AlertTriangle className="w-4 h-4 text-black animate-bounce" />
-          <p className="text-[10px] md:text-xs text-black font-black uppercase tracking-widest">
-            For best experience, use <span className="underline">uBlock Origin</span> or <span className="underline">Brave Browser</span>
-          </p>
-        </div>
-      </div>
       <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-12">
           <Link href="/" className="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#ff4b4b] neon-text shrink-0" style={{ fontFamily: "var(--font-outfit)" }}>

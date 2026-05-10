@@ -6,6 +6,7 @@ import PersonalizedRow from "@/components/PersonalizedRow";
 import { fetchMovies } from "@/lib/tmdb";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import ExperienceNotice from "@/components/ExperienceNotice";
 
 export default async function Home() {
   const trending = await fetchMovies("/trending/movie/day");
@@ -48,6 +49,8 @@ export default async function Home() {
             ))}
           </div>
         </div>
+        
+        <ExperienceNotice />
         
         <ContinueWatching />
         

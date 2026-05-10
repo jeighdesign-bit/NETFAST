@@ -88,14 +88,6 @@ export default function AISearch() {
           ))}
         </div>
 
-        {/* Experience Notice */}
-        <div className="mt-8 flex items-center gap-3 p-4 rounded-xl bg-yellow-500 w-fit shadow-[0_10px_30px_rgba(234,179,8,0.2)]">
-          <AlertTriangle className="w-5 h-5 text-black" />
-          <p className="text-black text-xs md:text-sm font-black uppercase tracking-wider">
-            For best experience, use <span className="underline">uBlock Origin</span> or <span className="underline">Brave Browser</span>
-          </p>
-        </div>
-
         {/* Search Results Dropdown/Area */}
         <AnimatePresence mode="wait">
           {showResults && (

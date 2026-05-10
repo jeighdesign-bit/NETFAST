@@ -114,7 +114,10 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
         >
           <AlertTriangle className="w-4 h-4 text-yellow-500/80 shrink-0 group-hover:scale-110 transition-transform" />
           <p className="text-gray-400 text-[10px] md:text-xs font-medium tracking-wide">
-            For best experience, use <span className="font-black text-white/90">uBlock Origin</span> or <span className="font-black text-white/90">Brave Browser</span>
+            For best experience, use{" "}
+            <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer" className="font-black text-white/90 underline decoration-yellow-500/50 hover:decoration-yellow-500">uBlock Origin</a>
+            {" "}or{" "}
+            <a href="https://brave.com/" target="_blank" rel="noopener noreferrer" className="font-black text-white/90 underline decoration-yellow-500/50 hover:decoration-yellow-500">Brave Browser</a>
           </p>
         </motion.div>
 

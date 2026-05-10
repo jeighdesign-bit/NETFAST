@@ -21,14 +21,6 @@ export default async function AnimePage() {
         <p className="text-gray-500 text-lg max-w-2xl font-medium">
           Step into worlds of infinite imagination. From high-octane shonen to breathtaking fantasy adventures.
         </p>
-
-        {/* Experience Notice */}
-        <div className="mt-12 p-4 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-md flex items-center gap-4">
-          <AlertTriangle className="w-5 h-5 text-yellow-500 shrink-0" />
-          <p className="text-gray-300 text-xs md:text-sm font-bold tracking-wide uppercase">
-            Best View: Use <span className="text-white">uBlock Origin</span> or <span className="text-white">Brave Browser</span> for ad-free streaming.
-          </p>
-        </div>
       </div>
 
       <div className="space-y-24">

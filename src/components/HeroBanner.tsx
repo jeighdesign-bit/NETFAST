@@ -65,12 +65,6 @@ export default function HeroBanner({ movie }: { movie: Movie }) {
               </Link>
             </div>
 
-            <div className="mt-6 flex items-center gap-3 bg-yellow-500 rounded-xl px-4 py-3 w-fit shadow-[0_10px_30px_rgba(234,179,8,0.3)]">
-              <AlertTriangle className="w-5 h-5 text-black" />
-              <p className="text-xs md:text-sm text-black font-black uppercase tracking-wider">
-                For best experience, use <span className="underline">uBlock Origin</span> or <span className="underline">Brave Browser</span>
-              </p>
-            </div>
           </motion.div>
         </div>
       </div>

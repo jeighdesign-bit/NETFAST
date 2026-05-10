@@ -73,18 +73,6 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
           </div>
         </div>
 
-        {/* Experience Notice */}
-        <div className="mt-12 p-4 rounded-2xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-md flex flex-col md:flex-row items-center gap-4 group">
-          <div className="flex items-center gap-3">
-            <AlertTriangle className="w-5 h-5 text-yellow-500 shrink-0" />
-            <p className="text-gray-300 text-xs md:text-sm font-bold tracking-wide uppercase">
-              Pro Tip: For best experience, use <span className="text-white">uBlock Origin</span> or <span className="text-white">Brave Browser</span>
-            </p>
-          </div>
-          <div className="md:ml-auto flex items-center gap-2 text-[10px] font-black text-yellow-500/40 uppercase tracking-[0.2em]">
-            Optimized for Speed <ArrowRight className="w-3 h-3" />
-          </div>
-        </div>
       </div>
 
       {gridData ? (
