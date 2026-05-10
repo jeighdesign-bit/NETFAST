@@ -66,8 +66,12 @@ export default async function Home() {
         
         <MovieRow title="Top Rated & AI Recommended" category="/movies" movies={topRated} />
         
+        <MovieRow title="Marvel Cinematic Universe" category="/movies?search=Marvel" movies={action.slice(0, 10)} highlight={true} />
+        
         <MovieRow title="Horror Nights" category="/movies?genre=27" movies={horror} />
         
+        <MovieRow title="Anime Masterpieces" category="/anime" movies={anime.slice(0, 10)} highlight={true} />
+
         <MovieRow title="Popular Anime" category="/anime" movies={anime} />
         
         <MovieRow title="Action & Adventure" category="/movies?genre=28" movies={action} />

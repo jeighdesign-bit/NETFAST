@@ -8,6 +8,7 @@ import { Movie, getImageUrl } from "@/lib/tmdb";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import VideoPlayer from "./VideoPlayer";
+import { useBackground } from "@/context/BackgroundContext";
 
 interface MovieRowProps {
   title: string;
@@ -19,6 +20,7 @@ interface MovieRowProps {
 
 export default function MovieRow({ title, category, highlight, movies, variant = "standard" }: MovieRowProps) {
   const router = useRouter();
+  const { setBackdrop } = useBackground();
   const [activeMovie, setActiveMovie] = useState<Movie | null>(null);
   
   if (!movies || movies.length === 0) return null;
@@ -47,6 +49,8 @@ export default function MovieRow({ title, category, highlight, movies, variant =
             <motion.div
               key={movie.id}
               whileHover={{ scale: 1.05, zIndex: 10 }}
+              onMouseEnter={() => setBackdrop(getImageUrl(movie.backdrop_path, 'original'))}
+              onMouseLeave={() => setBackdrop(null)}
               className={`relative ${variant === 'ranked' ? 'min-w-[280px] ml-12' : 'min-w-[240px]'} h-[360px] rounded-xl overflow-hidden cursor-pointer group bg-[#111]`}
               onClick={() => router.push(href)}
             >

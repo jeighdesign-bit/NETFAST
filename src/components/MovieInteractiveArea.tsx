@@ -100,48 +100,56 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
 
             {/* TV Show Episode Selector */}
             {isTV && tvData && (
-              <div className="mt-8 p-4 glass rounded-xl border border-white/10 max-w-xl">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="relative">
-                    <button 
-                      onClick={() => setShowSeasonSelector(!showSeasonSelector)}
-                      className="flex items-center gap-2 text-white font-bold bg-white/10 px-4 py-2 rounded-lg hover:bg-white/20 transition-colors"
-                    >
-                      Season {selectedSeason} <ChevronDown className="w-4 h-4" />
-                    </button>
-                    
-                    <AnimatePresence>
-                      {showSeasonSelector && (
-                        <motion.div 
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 10 }}
-                          className="absolute bottom-full left-0 mb-2 bg-[#111] border border-white/10 rounded-lg overflow-hidden z-50 min-w-[120px]"
-                        >
-                          {tvData.seasons.map(s => (
-                            <button 
-                              key={s.id}
-                              onClick={() => { setSelectedSeason(s.season_number); setSelectedEpisode(1); setShowSeasonSelector(false); }}
-                              className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-[#e50914] hover:text-white transition-colors"
-                            >
-                              Season {s.season_number}
-                            </button>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+              <div className="mt-12 p-6 glass rounded-2xl border border-white/10 max-w-2xl bg-black/40 backdrop-blur-3xl shadow-2xl">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <button 
+                        onClick={() => setShowSeasonSelector(!showSeasonSelector)}
+                        className="flex items-center gap-3 text-white font-black bg-[#e50914] px-6 py-3 rounded-xl hover:bg-[#ff1e2a] transition-all shadow-[0_10px_20px_rgba(229,9,20,0.3)] text-sm uppercase tracking-widest"
+                      >
+                        Season {selectedSeason} <ChevronDown className="w-4 h-4" />
+                      </button>
+                      
+                      <AnimatePresence>
+                        {showSeasonSelector && (
+                          <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            className="absolute bottom-full left-0 mb-4 bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden z-[100] min-w-[160px] shadow-2xl backdrop-blur-2xl"
+                          >
+                            {tvData.seasons.map(s => (
+                              <button 
+                                key={s.id}
+                                onClick={() => { setSelectedSeason(s.season_number); setSelectedEpisode(1); setShowSeasonSelector(false); }}
+                                className={`w-full text-left px-6 py-4 text-xs font-bold uppercase tracking-widest transition-colors ${selectedSeason === s.season_number ? 'bg-white/10 text-white' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+                              >
+                                Season {s.season_number}
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </div>
-                  <span className="text-gray-500 text-xs uppercase tracking-widest">{currentSeason.episode_count} Episodes</span>
+                  <div className="flex flex-col items-end">
+                    <span className="text-white font-black text-xl tracking-tighter uppercase">{currentSeason.episode_count} Episodes</span>
+                    <span className="text-gray-500 text-[10px] uppercase font-bold tracking-[0.2em] mt-1">Available in Ultra HD</span>
+                  </div>
                 </div>
 
-                <div className="flex gap-2 overflow-x-auto pb-2 hide-scrollbar">
+                <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
                   {Array.from({ length: currentSeason.episode_count }).map((_, i) => (
                     <button 
                       key={i}
                       onClick={() => setSelectedEpisode(i + 1)}
-                      className={`flex-shrink-0 w-10 h-10 rounded-md border flex items-center justify-center font-bold transition-all ${selectedEpisode === i + 1 ? 'bg-[#e50914] border-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.4)]' : 'bg-white/5 border-white/10 text-gray-400 hover:border-white/40'}`}
+                      className={`relative aspect-square rounded-xl border flex flex-col items-center justify-center transition-all group ${selectedEpisode === i + 1 ? 'bg-[#e50914] border-[#e50914] text-white shadow-[0_15px_30px_rgba(229,9,20,0.4)]' : 'bg-white/5 border-white/10 text-gray-500 hover:border-white/40 hover:bg-white/10'}`}
                     >
-                      {i + 1}
+                      <span className="text-lg font-black">{i + 1}</span>
+                      {selectedEpisode === i + 1 && (
+                        <motion.div layoutId="activeEpisode" className="absolute -top-1 -right-1 w-3 h-3 bg-white rounded-full shadow-lg" />
+                      )}
                     </button>
                   ))}
                 </div>

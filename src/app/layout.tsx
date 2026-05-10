@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Chatbot from "@/components/Chatbot";
 import Link from "next/link";
+import { BackgroundProvider } from "@/context/BackgroundContext";
+import DynamicBackground from "@/components/DynamicBackground";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -66,11 +68,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable} dark antialiased`}>
       <body className="bg-black text-white overflow-x-hidden min-h-screen flex flex-col">
-        <Navbar />
-        <div className="flex-1">
-          {children}
-        </div>
-        <Chatbot />
+        <BackgroundProvider>
+          <DynamicBackground />
+          <Navbar />
+          <div className="flex-1">
+            {children}
+          </div>
+          <Chatbot />
+        </BackgroundProvider>
         <footer className="bg-[#0a0a0a] border-t border-white/5 pt-20 pb-10 relative z-10 mt-20">
           <div className="container mx-auto px-6">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
