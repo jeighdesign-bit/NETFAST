@@ -100,7 +100,7 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
                   : "text-gray-400 hover:text-white hover:bg-white/10"
               }`}
             >
-              {p.replace('_', ' ')}
+              {p === "codespecter" ? "Premium (No Ads)" : p.replace('_', ' ')}
             </button>
           ))}
         </motion.div>
@@ -134,7 +134,6 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
             </button>
           </div>
 
-          {/* Embed Player */}
           <div className="w-full h-full relative bg-black">
             <iframe
               key={key}
@@ -142,6 +141,7 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
               className="w-full h-full border-0"
               allowFullScreen
               allow="autoplay; encrypted-media; picture-in-picture"
+              sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
               onLoad={() => setIsLoading(false)}
               onError={() => setError(true)}
             />
