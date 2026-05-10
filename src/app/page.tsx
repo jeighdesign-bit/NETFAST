@@ -53,21 +53,21 @@ export default async function Home() {
         
         <PersonalizedRow />
         
-        <MovieRow title="Trending Now" category="trending" movies={trending} />
+        <MovieRow title="Trending Now" category="/movies" movies={trending} />
         
-        <MovieRow title="Pinoy Blockbusters" category="movies?lang=tl" highlight={true} movies={pinoy} />
+        <MovieRow title="Pinoy Blockbusters" category="/movies?lang=tl" highlight={true} movies={pinoy} />
         
-        <MovieRow title="Top Rated & AI Recommended" category="ai-discover" movies={topRated} />
+        <MovieRow title="Top Rated & AI Recommended" category="/movies" movies={topRated} />
         
-        <MovieRow title="Horror Nights" category="movies?genre=27" movies={horror} />
+        <MovieRow title="Horror Nights" category="/movies?genre=27" movies={horror} />
         
-        <MovieRow title="Popular Anime" category="anime" movies={anime} />
+        <MovieRow title="Popular Anime" category="/anime" movies={anime} />
         
-        <MovieRow title="Action & Adventure" category="movies?genre=28" movies={action} />
+        <MovieRow title="Action & Adventure" category="/movies?genre=28" movies={action} />
         
-        <MovieRow title="Romance & Drama" category="movies?genre=10749" movies={romance} />
+        <MovieRow title="Romance & Drama" category="/movies?genre=10749" movies={romance} />
         
-        <MovieRow title="Comedy Central" category="movies?genre=35" movies={comedy} />
+        <MovieRow title="Comedy Central" category="/movies?genre=35" movies={comedy} />
 
         {/* Final CTA */}
         <div className="container mx-auto px-6 py-10 flex justify-center">

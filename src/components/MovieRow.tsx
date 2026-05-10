@@ -29,7 +29,7 @@ export default function MovieRow({ title, category, highlight, movies }: MovieRo
           {title}
         </h2>
         <Link 
-          href={`/${category.startsWith('/') ? category.substring(1) : category}`} 
+          href={category} 
           className="group flex items-center gap-1 text-gray-400 hover:text-white transition-all text-sm font-medium py-1 px-2 rounded-md hover:bg-white/5"
         >
           <span>Explore All</span>
