@@ -93,14 +93,21 @@ const mockMovieDetail: MovieDetail = {
   similar: { results: mockMovies.slice(1) }
 };
 
+export interface TMDBResponse {
+  results: Movie[];
+  total_pages: number;
+  total_results: number;
+  page: number;
+}
+
 export async function fetchMovies(endpoint: string, params: Record<string, string> = {}): Promise<Movie[]> {
+  const data = await fetchTMDB(endpoint, params);
+  return data.results || mockMovies;
+}
+
+export async function fetchTMDB(endpoint: string, params: Record<string, string> = {}): Promise<TMDBResponse> {
   if (!TMDB_API_KEY) {
-    if (endpoint.includes("trending")) return mockMovies.slice(0, 8);
-    if (endpoint.includes("top_rated")) return mockMovies.slice(3, 10);
-    if (params.with_genres === "16") return mockMovies.filter(m => m.genre_ids.includes(16));
-    if (params.with_genres === "878") return mockMovies.filter(m => m.genre_ids.includes(878));
-    if (params.with_genres === "28") return mockMovies.filter(m => m.genre_ids.includes(28));
-    return mockMovies;
+    return { results: mockMovies, total_pages: 1, total_results: mockMovies.length, page: 1 };
   }
   try {
     const url = new URL(`${BASE_URL}${endpoint}`);
@@ -109,10 +116,10 @@ export async function fetchMovies(endpoint: string, params: Record<string, strin
 
     const response = await fetch(url.toString(), { next: { revalidate: 3600 } });
     const data = await response.json();
-    return (data.results && data.results.length > 0) ? data.results : mockMovies;
+    return data;
   } catch (error) {
-    console.error("Error fetching movies:", error);
-    return mockMovies;
+    console.error("Error fetching TMDB:", error);
+    return { results: mockMovies, total_pages: 1, total_results: mockMovies.length, page: 1 };
   }
 }
 
