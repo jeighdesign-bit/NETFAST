@@ -28,8 +28,12 @@ export default function MovieRow({ title, category, highlight, movies }: MovieRo
         <h2 className={`text-2xl font-bold ${highlight ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#8b5cf6]' : 'text-white'}`}>
           {title}
         </h2>
-        <Link href={`/${category}`} className="text-gray-400 hover:text-white flex items-center gap-1 cursor-pointer transition text-sm">
-          Explore All <ChevronRight className="w-4 h-4" />
+        <Link 
+          href={`/${category.startsWith('/') ? category.substring(1) : category}`} 
+          className="group flex items-center gap-1 text-gray-400 hover:text-white transition-all text-sm font-medium py-1 px-2 rounded-md hover:bg-white/5"
+        >
+          <span>Explore All</span>
+          <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
       

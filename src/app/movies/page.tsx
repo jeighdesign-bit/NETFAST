@@ -1,12 +1,14 @@
 import MovieRow from "@/components/MovieRow";
 import { fetchMovies } from "@/lib/tmdb";
 
-export default async function MoviesPage(props: { searchParams: Promise<{ genre?: string }> }) {
+export default async function MoviesPage(props: { searchParams: Promise<{ genre?: string; lang?: string }> }) {
   const searchParams = await props.searchParams;
   const genreId = searchParams.genre;
+  const lang = searchParams.lang;
   
   const popular = await fetchMovies("/movie/popular");
   const genreMovies = genreId ? await fetchMovies("/discover/movie", { with_genres: genreId }) : null;
+  const langMovies = lang ? await fetchMovies("/discover/movie", { with_original_language: lang, sort_by: "popularity.desc" }) : null;
   const action = await fetchMovies("/discover/movie", { with_genres: "28" });
   const scifi = await fetchMovies("/discover/movie", { with_genres: "878" });
   const thriller = await fetchMovies("/discover/movie", { with_genres: "53" });
@@ -22,6 +24,7 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
 
       <div className="space-y-16">
         {genreMovies && <MovieRow title="Category Results" category="movies" movies={genreMovies} highlight={true} />}
+        {langMovies && <MovieRow title="Regional Favorites" category="movies" movies={langMovies} highlight={true} />}
         <MovieRow title="Blockbusters" category="movies" movies={popular} />
         <MovieRow title="High-Octane Action" category="movies" movies={action} />
         <MovieRow title="Sci-Fi Thrills" category="movies" movies={scifi} />
