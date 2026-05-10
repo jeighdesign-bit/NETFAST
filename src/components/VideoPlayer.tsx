@@ -22,17 +22,13 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const [key, setKey] = useState(0);
-  const [provider, setProvider] = useState<Provider>("codespecter");
+  const [provider, setProvider] = useState<Provider>("vidsrc_xyz");
 
   const tmdbId = videoId.replace('tmdb-', '');
   
   const getEmbedUrl = (p: Provider) => {
     const isTV = type === "tv";
     switch(p) {
-      case "codespecter":
-        return isTV 
-          ? `https://api.codespecters.com/embed/tv/${tmdbId}/${season}/${episode}?apikey=${process.env.NEXT_PUBLIC_EMBED_API_KEY}`
-          : `https://api.codespecters.com/embed/movie/${tmdbId}?apikey=${process.env.NEXT_PUBLIC_EMBED_API_KEY}`;
       case "vidsrc_xyz":
         return isTV
           ? `https://vidsrc.xyz/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`
@@ -90,7 +86,7 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
           className="flex flex-wrap items-center justify-center gap-2 mb-4 p-1 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm"
         >
           <span className="text-[10px] uppercase tracking-widest text-gray-500 px-3 font-bold">Servers:</span>
-          {(["codespecter", "vidsrc_xyz", "vidsrc_to", "embed_su"] as Provider[]).map((p) => (
+          {(["vidsrc_xyz", "vidsrc_to", "embed_su"] as Provider[]).map((p) => (
             <button
               key={p}
               onClick={() => handleProviderChange(p)}
@@ -100,7 +96,7 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
                   : "text-gray-400 hover:text-white hover:bg-white/10"
               }`}
             >
-              {p === "codespecter" ? "Premium (No Ads)" : p.replace('_', ' ')}
+              {p.replace('_', ' ')}
             </button>
           ))}
         </motion.div>
@@ -141,7 +137,6 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
               className="w-full h-full border-0"
               allowFullScreen
               allow="autoplay; encrypted-media; picture-in-picture"
-              sandbox="allow-forms allow-pointer-lock allow-same-origin allow-scripts allow-top-navigation"
               onLoad={() => setIsLoading(false)}
               onError={() => setError(true)}
             />
