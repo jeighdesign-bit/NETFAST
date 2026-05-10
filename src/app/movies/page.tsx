@@ -6,7 +6,7 @@ import { AlertTriangle, Filter, ArrowRight, Compass } from "lucide-react";
 import Pagination from "@/components/Pagination";
 import { Suspense } from "react";
 
-export default async function MoviesPage(props: { searchParams: Promise<{ genre?: string; lang?: string; page?: string; search?: string; sort?: string; year?: string; type?: string }> }) {
+export default async function MoviesPage(props: { searchParams: Promise<{ genre?: string; lang?: string; page?: string; search?: string; sort?: string; year?: string; type?: string; network?: string }> }) {
   const searchParams = await props.searchParams;
   const genreId = searchParams.genre;
   const lang = searchParams.lang;
@@ -15,6 +15,7 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
   const sort = searchParams.sort;
   const year = searchParams.year;
   const type = searchParams.type || "movie";
+  const network = searchParams.network;
   
   let popular: any[] = [];
   let action: any[] = [];
@@ -47,6 +48,15 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
     { id: "53", name: "Thriller" },
   ];
 
+  const networksList: Record<string, string> = {
+    "213": "Netflix",
+    "49": "HBO",
+    "2739": "Disney+",
+    "2552": "Apple TV+",
+    "1024": "Amazon Prime",
+    "453": "Hulu"
+  };
+
   // Map sort to TMDB endpoint or discover params
   let endpoint = search ? "/search/movie" : "/discover/movie";
   const params: any = { 
@@ -58,7 +68,8 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
 
   if (search) params.query = search;
   if (year) params.primary_release_year = year;
-  if (type === "tv") endpoint = "/discover/tv";
+  if (network) params.with_networks = network;
+  if (type === "tv" || network) endpoint = "/discover/tv";
 
   if (sort === "trending") endpoint = `/trending/${type}/week`;
   if (sort === "top_rated") endpoint = `/${type}/top_rated`;
@@ -71,7 +82,7 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
   }
 
   // If we have any filter OR we are on a secondary page OR searching, show grid
-  const isBrowsing = genreId || lang || page !== "1" || search || sort || year || type !== "movie";
+  const isBrowsing = genreId || lang || page !== "1" || search || sort || year || type !== "movie" || network;
 
   let gridData = null;
   try {
@@ -92,6 +103,7 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
             </div>
             <h1 className="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter" style={{ fontFamily: "var(--font-outfit)" }}>
               {search ? `Search: ${search}` : 
+               network ? `${networksList[network] || 'Network'} Originals` :
                sort === "trending" ? "Trending Now" :
                sort === "top_rated" ? "Top Rated" :
                sort === "upcoming" ? "Upcoming Movies" :
@@ -104,6 +116,7 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
             </h1>
             <p className="text-gray-500 mt-4 text-lg font-medium max-w-xl">
               {search ? `Displaying cinematic results for "${search}" from our neural library.` : 
+               network ? `Exclusive content produced by ${networksList[network] || 'the network'}.` :
                sort ? `Discover the latest ${sort.replace('_', ' ')} content curated by our AI.` :
                year ? `A glimpse into the future with ${year} cinema.` :
                type === "tv" ? "The best television series from around the world." :

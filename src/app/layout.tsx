@@ -70,9 +70,73 @@ export default function RootLayout({
           {children}
         </div>
         <Chatbot />
-        <footer className="py-10 border-t border-white/10 mt-20 relative z-10 bg-black/60 backdrop-blur-md">
-          <div className="container mx-auto px-6 text-center text-gray-500 text-sm">
-            <p>&copy; {new Date().getFullYear()} NETFAST. Futuristic Entertainment. All rights reserved.</p>
+        <footer className="bg-[#0a0a0a] border-t border-white/5 pt-20 pb-10 relative z-10 mt-20">
+          <div className="container mx-auto px-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
+              <div className="col-span-2">
+                <Link href="/" className="text-3xl font-black text-white tracking-tighter mb-6 block">
+                  NET<span className="text-[#e50914]">FAST</span>
+                </Link>
+                <p className="text-gray-500 text-sm max-w-xs leading-relaxed">
+                  The world's most advanced AI-powered streaming platform. Experience the future of cinema with neural discovery and 4K ultra-speed delivery.
+                </p>
+                <div className="flex gap-4 mt-8">
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#e50914] transition-colors cursor-pointer">
+                    <span className="text-white text-[10px] font-bold">FB</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#e50914] transition-colors cursor-pointer">
+                    <span className="text-white text-[10px] font-bold">TW</span>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-[#e50914] transition-colors cursor-pointer">
+                    <span className="text-white text-[10px] font-bold">IG</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="text-white font-bold mb-6 uppercase text-xs tracking-widest">Browse</h4>
+                <ul className="space-y-4 text-gray-500 text-sm">
+                  <li><Link href="/movies" className="hover:text-white transition-colors">All Movies</Link></li>
+                  <li><Link href="/movies?type=tv" className="hover:text-white transition-colors">TV Series</Link></li>
+                  <li><Link href="/movies?sort=trending" className="hover:text-white transition-colors">Trending</Link></li>
+                  <li><Link href="/movies?sort=top_rated" className="hover:text-white transition-colors">Top Rated</Link></li>
+                  <li><Link href="/movies?year=2026" className="hover:text-white transition-colors">2026 Releases</Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="text-white font-bold mb-6 uppercase text-xs tracking-widest">Genres</h4>
+                <ul className="space-y-4 text-gray-500 text-sm">
+                  <li><Link href="/movies?genre=28" className="hover:text-white transition-colors">Action</Link></li>
+                  <li><Link href="/movies?genre=16" className="hover:text-white transition-colors">Anime</Link></li>
+                  <li><Link href="/movies?genre=27" className="hover:text-white transition-colors">Horror</Link></li>
+                  <li><Link href="/movies?genre=878" className="hover:text-white transition-colors">Sci-Fi</Link></li>
+                  <li><Link href="/movies?genre=10749" className="hover:text-white transition-colors">Romance</Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="text-white font-bold mb-6 uppercase text-xs tracking-widest">Support</h4>
+                <ul className="space-y-4 text-gray-500 text-sm">
+                  <li><Link href="#" className="hover:text-white transition-colors">FAQ</Link></li>
+                  <li><Link href="#" className="hover:text-white transition-colors">DMCA</Link></li>
+                  <li><Link href="#" className="hover:text-white transition-colors">Contact Us</Link></li>
+                  <li><Link href="#" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                  <li><Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+              <p className="text-gray-600 text-[10px] font-medium">
+                © {new Date().getFullYear()} NETFAST Neural Cinema. All rights reserved. Built with Next.js 16.
+              </p>
+              <div className="flex gap-8 text-gray-600 text-[10px] uppercase font-bold tracking-widest">
+                <span>128-bit Encryption</span>
+                <span>4K Optimized</span>
+                <span>AI Discovery</span>
+              </div>
+            </div>
           </div>
         </footer>
       </body>

@@ -14,9 +14,10 @@ interface MovieRowProps {
   category: string;
   highlight?: boolean;
   movies: Movie[];
+  variant?: "standard" | "ranked";
 }
 
-export default function MovieRow({ title, category, highlight, movies }: MovieRowProps) {
+export default function MovieRow({ title, category, highlight, movies, variant = "standard" }: MovieRowProps) {
   const router = useRouter();
   const [activeMovie, setActiveMovie] = useState<Movie | null>(null);
   
@@ -38,7 +39,7 @@ export default function MovieRow({ title, category, highlight, movies }: MovieRo
       </div>
       
       <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-6 pt-2">
-        {movies.map((movie) => {
+        {movies.map((movie, index) => {
           const isTV = !movie.title && (movie as any).name;
           const href = isTV ? `/tv/${movie.id}` : `/movie/${movie.id}`;
           
@@ -46,10 +47,17 @@ export default function MovieRow({ title, category, highlight, movies }: MovieRo
             <motion.div
               key={movie.id}
               whileHover={{ scale: 1.05, zIndex: 10 }}
-              className="relative min-w-[240px] h-[360px] rounded-xl overflow-hidden cursor-pointer group bg-[#111]"
+              className={`relative ${variant === 'ranked' ? 'min-w-[280px] ml-12' : 'min-w-[240px]'} h-[360px] rounded-xl overflow-hidden cursor-pointer group bg-[#111]`}
               onClick={() => router.push(href)}
             >
-              <div className="relative w-full h-full">
+              {variant === 'ranked' && (
+                <div className="absolute -left-12 bottom-0 z-0 select-none pointer-events-none">
+                  <span className="text-[180px] font-black leading-none tracking-tighter text-transparent stroke-white/20" style={{ WebkitTextStroke: "4px rgba(255,255,255,0.2)", fontFamily: "var(--font-outfit)" }}>
+                    {index + 1}
+                  </span>
+                </div>
+              )}
+              <div className="relative w-full h-full z-10">
                 <SafeImage 
                   src={getImageUrl(movie.poster_path)} 
                   alt={movie.title || (movie as any).name} 

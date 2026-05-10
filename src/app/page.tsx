@@ -8,6 +8,8 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import ExperienceNotice from "@/components/ExperienceNotice";
 
+import NetworkRow from "@/components/NetworkRow";
+
 export default async function Home() {
   const trending = await fetchMovies("/trending/movie/day");
   const topRated = await fetchMovies("/movie/top_rated");
@@ -55,8 +57,10 @@ export default async function Home() {
         <ContinueWatching />
         
         <PersonalizedRow />
+
+        <NetworkRow />
         
-        <MovieRow title="Trending Now" category="/movies" movies={trending} />
+        <MovieRow title="Trending This Week" category="/movies?sort=trending" movies={trending.slice(0, 10)} variant="ranked" />
         
         <MovieRow title="Pinoy Blockbusters" category="/movies?lang=tl" highlight={true} movies={pinoy} />
         

@@ -39,14 +39,14 @@ export default function Navbar() {
   const browseItems = [
     { name: "Trending", href: "/movies?sort=trending", icon: "TrendingUp" },
     { name: "Top Rated", href: "/movies?sort=top_rated", icon: "Star" },
-    { name: "Countries", href: "/movies?sort=popularity", icon: "Globe" },
-    { name: "2026 Movies", href: "/movies?year=2026", icon: "Calendar" },
     { name: "Upcoming", href: "/movies?sort=upcoming", icon: "Clock" },
-    { name: "Genres", href: "/movies", icon: "Tag" },
-    { name: "Collections", href: "/movies", icon: "Layers" },
-    { name: "Networks", href: "/movies", icon: "Monitor" },
     { name: "Now Playing", href: "/movies?sort=now_playing", icon: "PlayCircle" },
-    { name: "Airing Today", href: "/movies?type=tv&sort=airing_today", icon: "Radio" },
+    { name: "Airing Today", href: "/movies?sort=airing_today", icon: "Radio" },
+    { name: "2026 Movies", href: "/movies?year=2026", icon: "Calendar" },
+    { name: "Networks", href: "/movies?network=213", icon: "Monitor" },
+    { name: "Collections", href: "/movies?genre=28", icon: "Layers" },
+    { name: "New Releases", href: "/movies?sort=new", icon: "Tag" },
+    { name: "All Genres", href: "/movies", icon: "Globe" },
   ];
 
   const [isBrowseOpen, setIsBrowseOpen] = useState(false);
