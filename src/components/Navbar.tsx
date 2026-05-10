@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Bell, User, Menu, X } from "lucide-react";
+import { Search, Bell, User, Menu, X, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 
 export default function Navbar() {
@@ -34,6 +34,15 @@ export default function Navbar() {
         isScrolled || isMobileMenuOpen ? "bg-black/90 backdrop-blur-md shadow-[0_0_15px_rgba(229,9,20,0.2)]" : "bg-transparent"
       }`}
     >
+      {/* Experience Notice Bar */}
+      <div className="w-full bg-yellow-500 py-1.5 z-[100] relative">
+        <div className="container mx-auto px-6 flex items-center justify-center gap-3">
+          <AlertTriangle className="w-4 h-4 text-black animate-bounce" />
+          <p className="text-[10px] md:text-xs text-black font-black uppercase tracking-widest">
+            For best experience, use <span className="underline">uBlock Origin</span> or <span className="underline">Brave Browser</span>
+          </p>
+        </div>
+      </div>
       <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-12">
           <Link href="/" className="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#ff4b4b] neon-text shrink-0" style={{ fontFamily: "var(--font-outfit)" }}>
@@ -50,17 +59,12 @@ export default function Navbar() {
           </ul>
         </div>
         
-        <div className="flex items-center gap-4 md:gap-6 text-gray-300">
-          <Search className="w-5 h-5 hover:text-[#e50914] transition cursor-pointer hidden sm:block" />
-          <Bell className="w-5 h-5 hover:text-[#e50914] transition cursor-pointer hidden sm:block" />
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#e50914] to-[#8b5cf6] flex items-center justify-center cursor-pointer hover:shadow-[0_0_10px_rgba(229,9,20,0.8)] transition">
-            <User className="w-4 h-4 text-white" />
-          </div>
+        <div className="flex items-center gap-4 text-gray-300">
           <button 
-            className="md:hidden text-white"
+            className="md:hidden text-white p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X /> : <Menu />}
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
@@ -86,9 +90,12 @@ export default function Navbar() {
                 </Link>
               ))}
             </ul>
-            <div className="mt-10 flex gap-6 text-gray-400">
-              <Search className="w-6 h-6" />
-              <Bell className="w-6 h-6" />
+            {/* Experience Instruction */}
+            <div className="mt-12 p-4 rounded-xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-md flex items-center gap-3">
+              <AlertTriangle className="w-4 h-4 text-yellow-500/80 shrink-0" />
+              <p className="text-gray-400 text-xs font-medium">
+                For best experience, use <span className="font-bold text-white">uBlock Origin</span> or <span className="font-bold text-white">Brave Browser</span>
+              </p>
             </div>
           </motion.div>
         )}

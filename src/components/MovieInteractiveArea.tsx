@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Plus, Info, Volume2, VolumeX, X, ChevronDown } from "lucide-react";
+import { Play, Plus, Info, Volume2, VolumeX, X, ChevronDown, AlertTriangle } from "lucide-react";
 import SafeImage from "./SafeImage";
 import { Movie, TVDetail, getImageUrl } from "@/lib/tmdb";
 import VideoPlayer from "./VideoPlayer";
@@ -84,6 +84,19 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
                 {isMuted ? <VolumeX className="text-white w-5 h-5" /> : <Volume2 className="text-white w-5 h-5" />}
               </button>
             </div>
+
+            {/* Browser Recommendation Alert */}
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="mt-8 flex items-center gap-3 p-3 px-4 rounded-xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-md max-w-xl group hover:border-yellow-500/40 transition-all duration-300"
+            >
+              <AlertTriangle className="w-4 h-4 text-yellow-500/80 shrink-0 group-hover:scale-110 transition-transform" />
+              <p className="text-gray-400 text-[11px] md:text-xs font-medium tracking-wide">
+                For best experience, use <span className="font-bold text-white/90">uBlock Origin</span> or <span className="font-bold text-white/90">Brave Browser</span>
+              </p>
+            </motion.div>
 
             {/* TV Show Episode Selector */}
             {isTV && tvData && (

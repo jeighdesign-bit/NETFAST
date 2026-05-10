@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  ArrowLeft, RefreshCw, AlertCircle
+  ArrowLeft, RefreshCw, AlertCircle, AlertTriangle
 } from "lucide-react";
 
 interface VideoPlayerProps {
@@ -103,6 +103,19 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
               {p === "codespecter" ? "Premium (No Ads)" : p.replace('_', ' ')}
             </button>
           ))}
+        </motion.div>
+        
+        {/* Browser Recommendation Alert - Below Server Menu */}
+        <motion.div 
+          initial={{ y: -10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mb-4 w-full max-w-6xl p-2.5 rounded-xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-md flex items-center justify-center gap-3 group hover:border-yellow-500/40 transition-all duration-300"
+        >
+          <AlertTriangle className="w-4 h-4 text-yellow-500/80 shrink-0 group-hover:scale-110 transition-transform" />
+          <p className="text-gray-400 text-[10px] md:text-xs font-medium tracking-wide">
+            For best experience, use <span className="font-black text-white/90">uBlock Origin</span> or <span className="font-black text-white/90">Brave Browser</span>
+          </p>
         </motion.div>
 
         <div className="relative w-full max-w-6xl aspect-video bg-black rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,1)] border border-white/10 group">

@@ -4,6 +4,8 @@ import MovieRow from "@/components/MovieRow";
 import ContinueWatching from "@/components/ContinueWatching";
 import PersonalizedRow from "@/components/PersonalizedRow";
 import { fetchMovies } from "@/lib/tmdb";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default async function Home() {
   const trending = await fetchMovies("/trending/movie/day");
@@ -24,6 +26,29 @@ export default async function Home() {
       <div className="relative z-10 pb-20 -mt-32 space-y-16">
         <AISearch />
         
+        {/* Quick Category Bar */}
+        <div className="container mx-auto px-6">
+          <div className="flex flex-wrap items-center gap-3">
+            {[
+              { name: "Action", id: "28" },
+              { name: "Sci-Fi", id: "878" },
+              { name: "Horror", id: "27" },
+              { name: "Romance", id: "10749" },
+              { name: "Comedy", id: "35" },
+              { name: "Anime", id: "16" },
+              { name: "Pinoy", lang: "tl" }
+            ].map((cat) => (
+              <Link 
+                key={cat.name} 
+                href={cat.lang ? `/movies?lang=${cat.lang}` : `/movies?genre=${cat.id}`}
+                className="px-6 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-400 font-bold text-xs uppercase tracking-widest hover:bg-[#e50914] hover:text-white hover:border-[#e50914] transition-all duration-300"
+              >
+                {cat.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+        
         <ContinueWatching />
         
         <PersonalizedRow />
@@ -43,6 +68,17 @@ export default async function Home() {
         <MovieRow title="Romance & Drama" category="movies?genre=10749" movies={romance} />
         
         <MovieRow title="Comedy Central" category="movies?genre=35" movies={comedy} />
+
+        {/* Final CTA */}
+        <div className="container mx-auto px-6 py-10 flex justify-center">
+          <Link 
+            href="/movies"
+            className="group flex items-center gap-4 bg-white text-black px-12 py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-sm hover:bg-[#e50914] hover:text-white transition-all shadow-2xl"
+          >
+            Explore More Blockbusters
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+          </Link>
+        </div>
       </div>
     </main>
   );

@@ -113,6 +113,7 @@ export default function MovieRow({ title, category, highlight, movies }: MovieRo
         <VideoPlayer 
           movieTitle={activeMovie.title || (activeMovie as any).name} 
           videoId={`tmdb-${activeMovie.id}`} 
+          type={(!activeMovie.title && (activeMovie as any).name) ? "tv" : "movie"}
           onClose={() => setActiveMovie(null)} 
         />
       )}
