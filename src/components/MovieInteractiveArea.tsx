@@ -28,7 +28,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
   const currentSeason = tvData?.seasons?.find(s => s.season_number === selectedSeason) || { episode_count: 12 };
 
   return (
-    <div className="relative h-[70vh] md:h-[85vh] w-full overflow-hidden">
+    <div className="relative min-h-[100vh] md:min-h-[85vh] md:h-[85vh] w-full overflow-hidden flex items-center justify-center">
       {/* Background Cinematic */}
       <div className="absolute inset-0 z-0">
         <SafeImage 
@@ -43,7 +43,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
       </div>
 
       {/* Content */}
-      <div className="absolute inset-0 z-20 flex items-center">
+      <div className="absolute inset-0 z-20 flex items-start md:items-center pt-32 md:pt-0">
         <div className="container mx-auto px-6">
           <motion.div 
             initial={{ opacity: 0, x: -50 }}

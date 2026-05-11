@@ -33,7 +33,7 @@ export default function HeroBanner({ movie }: { movie: Movie }) {
           />
         </div>
 
-        <div className="container mx-auto px-6 relative z-20">
+        <div className="container mx-auto px-6 relative z-20 flex items-start md:items-center h-full pt-32 md:pt-0">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}

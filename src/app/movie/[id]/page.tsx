@@ -58,7 +58,7 @@ export default async function MovieDetailPage(props: { params: Promise<{ id: str
       {/* Cinematic Hero */}
       <MovieInteractiveArea movie={movie} />
 
-      <div className="container mx-auto px-6 py-12">
+      <div className="container mx-auto px-6 py-12 mt-20 md:mt-0">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-20">
           <div className="md:col-span-2">
             <h2 className="text-3xl font-bold text-white mb-6 uppercase tracking-tight" style={{ fontFamily: "var(--font-outfit)" }}>Storyline</h2>
