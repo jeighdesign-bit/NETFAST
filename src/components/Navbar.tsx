@@ -57,7 +57,9 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      className={`fixed top-0 w-full transition-all duration-300 ${
+        isMobileMenuOpen ? "z-[9999]" : "z-[50]"
+      } ${
         isScrolled || isMobileMenuOpen ? "bg-black/90 backdrop-blur-md shadow-[0_0_15px_rgba(229,9,20,0.2)]" : "bg-transparent"
       }`}
     >
@@ -168,7 +170,7 @@ export default function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-[#050505]/95 backdrop-blur-3xl md:hidden overflow-y-auto"
+            className="fixed inset-0 z-[100] bg-black md:hidden overflow-y-auto"
           >
             <div className="flex flex-col min-h-screen p-6 pt-24 pb-12">
               <button 
