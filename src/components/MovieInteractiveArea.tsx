@@ -28,9 +28,9 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
   const currentSeason = tvData?.seasons?.find(s => s.season_number === selectedSeason) || { episode_count: 12 };
 
   return (
-    <div className="relative min-h-[100vh] md:min-h-[85vh] md:h-[85vh] w-full overflow-hidden flex items-center justify-center">
+    <div className="relative w-full overflow-hidden">
       {/* Background Cinematic */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 h-full">
         <SafeImage 
           src={getImageUrl(movie.backdrop_path, "original")} 
           alt={movie.title || (movie as any).name} 
@@ -41,14 +41,14 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10" />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent z-10" />
       </div>
-
+ 
       {/* Content */}
-      <div className="absolute inset-0 z-20 flex items-start md:items-center pt-32 md:pt-0">
+      <div className="relative z-20 pt-32 pb-12 md:pt-0 md:h-[85vh] md:flex md:items-center">
         <div className="container mx-auto px-6">
           <motion.div 
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
-            className="max-w-2xl pt-20 md:pt-0"
+            className="max-w-2xl"
           >
             <h1 className="text-4xl md:text-7xl font-black text-white mb-4 uppercase tracking-tighter leading-[1.1]" style={{ fontFamily: "var(--font-outfit)" }}>
               {movie.title || (movie as any).name}
