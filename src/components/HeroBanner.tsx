@@ -38,28 +38,28 @@ export default function HeroBanner({ movie }: { movie: Movie }) {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-2xl"
+            className="max-w-2xl pt-20 md:pt-0"
           >
-            <div className="inline-block px-3 py-1 mb-4 rounded-full glass border border-[#e50914]/50 text-[#ff4b4b] text-xs font-bold tracking-widest uppercase">
+            <div className="inline-block px-3 py-1 mb-4 rounded-full glass border border-[#e50914]/50 text-[#ff4b4b] text-[10px] md:text-xs font-bold tracking-widest uppercase">
               #1 Trending Worldwide
             </div>
-            <h1 className="text-5xl md:text-7xl font-black mb-4 text-white drop-shadow-2xl leading-tight uppercase tracking-tighter" style={{ fontFamily: "var(--font-outfit)" }}>
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 text-white drop-shadow-2xl leading-[1.1] uppercase tracking-tighter" style={{ fontFamily: "var(--font-outfit)" }}>
               {movie.title || (movie as any).name}
             </h1>
-            <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-lg leading-relaxed line-clamp-3">
+            <p className="text-sm md:text-xl text-gray-300 mb-8 max-w-lg leading-relaxed line-clamp-3 md:line-clamp-none">
               {movie.overview}
             </p>
 
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
               <button 
                 onClick={() => setIsPlaying(true)}
-                className="flex items-center gap-2 bg-[#e50914] hover:bg-[#ff4b4b] text-white px-8 py-3 rounded-md font-bold text-lg transition-all duration-300 shadow-[0_0_20px_rgba(229,9,20,0.5)] hover:shadow-[0_0_30px_rgba(229,9,20,0.8)]"
+                className="flex items-center justify-center gap-2 bg-[#e50914] hover:bg-[#ff4b4b] text-white px-8 py-4 md:py-3 rounded-xl md:rounded-md font-bold text-base md:text-lg transition-all duration-300 shadow-[0_10px_20px_rgba(229,9,20,0.3)] hover:shadow-[0_15px_30px_rgba(229,9,20,0.5)]"
               >
                 <Play className="fill-current w-5 h-5" /> Watch Now
               </button>
               <Link 
                 href={href}
-                className="flex items-center gap-2 glass hover:bg-white/20 text-white px-8 py-3 rounded-md font-bold text-lg transition-all duration-300"
+                className="flex items-center justify-center gap-2 glass border border-white/10 hover:bg-white/20 text-white px-8 py-4 md:py-3 rounded-xl md:rounded-md font-bold text-base md:text-lg transition-all duration-300"
               >
                 <Info className="w-5 h-5" /> More Info
               </Link>

@@ -87,20 +87,20 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
         <motion.div 
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="flex flex-wrap items-center justify-center gap-2 mb-4 p-1 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm"
+          className="flex flex-wrap items-center justify-center gap-1.5 md:gap-2 mb-4 p-1.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md max-w-full overflow-x-auto hide-scrollbar"
         >
-          <span className="text-[10px] uppercase tracking-widest text-gray-500 px-3 font-bold">Servers:</span>
+          <span className="hidden sm:inline text-[9px] md:text-[10px] uppercase tracking-widest text-gray-500 px-3 font-bold">Servers:</span>
           {(["codespecter", "vidsrc_xyz", "vidsrc_to", "embed_su"] as Provider[]).map((p) => (
             <button
               key={p}
               onClick={() => handleProviderChange(p)}
-              className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all ${
+              className={`px-3 md:px-4 py-2 md:py-1.5 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-tighter transition-all whitespace-nowrap ${
                 provider === p 
                   ? "bg-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.5)]" 
                   : "text-gray-400 hover:text-white hover:bg-white/10"
               }`}
             >
-              {p === "codespecter" ? "Premium (No Ads)" : p.replace('_', ' ')}
+              {p === "codespecter" ? "Premium" : p.replace('_', ' ')}
             </button>
           ))}
         </motion.div>
@@ -110,43 +110,40 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
           initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="mb-4 w-full max-w-6xl p-2.5 rounded-xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-md flex items-center justify-center gap-3 group hover:border-yellow-500/40 transition-all duration-300"
+          className="mb-4 w-full max-w-6xl p-2.5 rounded-xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-md flex items-center justify-center gap-2 md:gap-3 group hover:border-yellow-500/40 transition-all duration-300"
         >
-          <AlertTriangle className="w-4 h-4 text-yellow-500/80 shrink-0 group-hover:scale-110 transition-transform" />
-          <p className="text-gray-400 text-[10px] md:text-xs font-medium tracking-wide">
-            For best experience, use{" "}
-            <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer" className="font-black text-white/90 underline decoration-yellow-500/50 hover:decoration-yellow-500">uBlock Origin</a>
-            {" "}or{" "}
-            <a href="https://brave.com/" target="_blank" rel="noopener noreferrer" className="font-black text-white/90 underline decoration-yellow-500/50 hover:decoration-yellow-500">Brave Browser</a>
+          <AlertTriangle className="w-3.5 h-3.5 md:w-4 md:h-4 text-yellow-500/80 shrink-0 group-hover:scale-110 transition-transform" />
+          <p className="text-gray-400 text-[9px] md:text-xs font-medium tracking-wide">
+            For zero ads, use <span className="font-bold text-white">uBlock Origin</span> or <span className="font-bold text-white">Brave</span>
           </p>
         </motion.div>
 
-        <div className="relative w-full max-w-6xl aspect-video bg-black rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,1)] border border-white/10 group">
+        <div className="relative w-full max-w-6xl aspect-video bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,1)] border border-white/10 group">
           
           {/* Internal Top Bar - Hidden on idle, shows on hover */}
           <div className="absolute top-0 left-0 right-0 z-50 p-4 md:p-8 flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-            <div className="flex items-center gap-6 pointer-events-auto">
+            <div className="flex items-center gap-3 md:gap-6 pointer-events-auto">
               <button 
                 onClick={onClose} 
-                className="text-white hover:bg-[#e50914] p-3 rounded-2xl transition-all bg-black/60 border border-white/10 backdrop-blur-md"
+                className="text-white hover:bg-[#e50914] p-2.5 md:p-3 rounded-xl md:rounded-2xl transition-all bg-black/60 border border-white/10 backdrop-blur-md"
               >
-                <ArrowLeft className="w-6 h-6 md:w-8 md:h-8" />
+                <ArrowLeft className="w-5 h-5 md:w-8 md:h-8" />
               </button>
               <div>
-                <h2 className="text-xl md:text-3xl font-black text-white tracking-tight leading-none" style={{ fontFamily: 'var(--font-outfit)' }}>
+                <h2 className="text-base md:text-3xl font-black text-white tracking-tight leading-none line-clamp-1" style={{ fontFamily: 'var(--font-outfit)' }}>
                   {movieTitle}
                 </h2>
                 {type === "tv" && (
-                  <p className="text-[#e50914] font-bold text-xs md:text-sm mt-2 uppercase tracking-widest">Season {season} • Episode {episode}</p>
+                  <p className="text-[#e50914] font-bold text-[9px] md:text-sm mt-1 md:mt-2 uppercase tracking-widest">S{season} • E{episode}</p>
                 )}
               </div>
             </div>
             
             <button 
               onClick={handleRefresh} 
-              className="pointer-events-auto text-white/40 hover:text-white p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5"
+              className="pointer-events-auto text-white/40 hover:text-white p-2.5 md:p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5"
             >
-              <RefreshCw className="w-5 h-5" />
+              <RefreshCw className="w-4 h-4 md:w-5 md:h-5" />
             </button>
           </div>
 

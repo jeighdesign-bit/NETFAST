@@ -155,43 +155,80 @@ export default function Navbar() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-black/95 border-t border-white/10 px-6 py-8"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 top-0 left-0 w-full h-screen bg-[#050505] z-[200] overflow-y-auto pt-24 px-6 pb-12"
           >
-            <form onSubmit={handleSearch} className="mb-8 relative">
-              <input 
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search movies..."
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-12 text-white font-bold focus:outline-none focus:border-[#e50914] transition-all"
-              />
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-            </form>
-            <ul className="flex flex-col space-y-6 text-xl font-bold">
-              {navLinks.map((link) => (
-                <Link 
-                  key={link.name} 
-                  href={link.href} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-gray-300 hover:text-[#e50914] transition"
-                >
-                  {link.name}
-                </Link>
-              ))}
-            </ul>
-            {/* Experience Instruction */}
-            <div className="mt-12 p-4 rounded-xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-md flex items-center gap-3">
-              <AlertTriangle className="w-4 h-4 text-yellow-500/80 shrink-0" />
-              <p className="text-gray-400 text-xs font-medium">
-                For best experience, use <span className="font-bold text-white">uBlock Origin</span> or <span className="font-bold text-white">Brave Browser</span>
-              </p>
+            <div className="flex flex-col gap-8">
+              {/* Mobile Search */}
+              <form onSubmit={handleSearch} className="relative">
+                <input 
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search movies, tv shows..."
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-12 text-white font-bold focus:outline-none focus:border-[#e50914] transition-all"
+                />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+              </form>
+
+              {/* Primary Links */}
+              <div className="grid grid-cols-2 gap-4">
+                {navLinks.map((link) => (
+                  <Link 
+                    key={link.name} 
+                    href={link.href} 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex flex-col items-center justify-center p-6 bg-white/5 rounded-3xl border border-white/5 hover:bg-white/10 hover:border-[#e50914]/30 transition-all group"
+                  >
+                    <span className="text-lg font-black text-white group-hover:text-[#e50914] transition-colors">{link.name}</span>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Browse Categories Grid */}
+              <div>
+                <h3 className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] mb-6 px-2">Discover Content</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {browseItems.map((item) => {
+                    const icons: Record<string, any> = { TrendingUp, Star, Globe, Calendar, Clock, Tag, Layers, Monitor, PlayCircle, Radio };
+                    const Icon = icons[item.icon];
+                    return (
+                      <Link 
+                        key={item.name} 
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex flex-col gap-3 p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all"
+                      >
+                        <div className="w-10 h-10 rounded-xl bg-[#e50914]/10 text-[#e50914] flex items-center justify-center">
+                          {Icon && <Icon className="w-5 h-5" />}
+                        </div>
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">{item.name}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Experience Instruction */}
+              <div className="p-5 rounded-3xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-md flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                </div>
+                <div>
+                  <p className="text-white text-xs font-bold mb-1">Stream Optimally</p>
+                  <p className="text-gray-400 text-[10px] leading-tight">
+                    For zero ads, use <span className="text-yellow-500 font-bold">uBlock Origin</span> or the <span className="text-yellow-500 font-bold">Brave Browser</span>.
+                  </p>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
     </motion.nav>
   );
 }
