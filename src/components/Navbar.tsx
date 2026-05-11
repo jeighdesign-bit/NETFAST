@@ -140,7 +140,7 @@ export default function Navbar() {
           </ul>
         </div>
         
-        <div className="flex items-center gap-6 text-gray-300">
+        <div className="flex items-center gap-6">
           <form onSubmit={handleSearch} className="hidden md:flex items-center relative group">
             <input 
               type="text"
@@ -153,92 +153,128 @@ export default function Navbar() {
           </form>
 
           <button 
-            className="md:hidden text-white p-2"
+            className="md:hidden text-white p-2 hover:bg-white/10 rounded-full transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 top-0 left-0 w-full h-screen bg-[#050505] z-[200] overflow-y-auto pt-24 px-6 pb-12"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-[#050505]/95 backdrop-blur-3xl md:hidden overflow-y-auto"
           >
-            <div className="flex flex-col gap-8">
-              {/* Mobile Search */}
-              <form onSubmit={handleSearch} className="relative">
-                <input 
+            <div className="flex flex-col min-h-screen p-6 pt-24 pb-12">
+              <button 
+                className="fixed top-8 right-8 p-3 text-white bg-white/5 rounded-full border border-white/10 active:scale-90 transition-all" 
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <X className="w-8 h-8" />
+              </button>
+
+              {/* Search Bar */}
+              <motion.form 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                onSubmit={handleSearch} 
+                className="relative mb-10"
+              >
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-500" />
+                <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search movies, tv shows..."
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-12 text-white font-bold focus:outline-none focus:border-[#e50914] transition-all"
+                  className="w-full bg-white/5 border border-white/10 rounded-3xl py-5 pl-14 pr-6 text-white text-lg font-medium placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#e50914]/50 focus:border-[#e50914] transition-all"
                 />
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
-              </form>
+              </motion.form>
 
-              {/* Primary Links */}
-              <div className="grid grid-cols-2 gap-4">
-                {navLinks.map((link) => (
-                  <Link 
-                    key={link.name} 
-                    href={link.href} 
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex flex-col items-center justify-center p-6 bg-white/5 rounded-3xl border border-white/5 hover:bg-white/10 hover:border-[#e50914]/30 transition-all group"
+              {/* Primary Nav Cards */}
+              <div className="grid grid-cols-2 gap-4 mb-10">
+                {navLinks.map((link, i) => (
+                  <motion.div
+                    key={link.name}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.05 }}
                   >
-                    <span className="text-lg font-black text-white group-hover:text-[#e50914] transition-colors">{link.name}</span>
-                  </Link>
+                    <Link
+                      href={link.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex flex-col items-center justify-center p-8 rounded-[2.5rem] border transition-all active:scale-95 shadow-2xl ${
+                        pathname === link.href 
+                          ? "bg-gradient-to-br from-[#e50914] to-[#8b5cf6] border-none" 
+                          : "bg-white/5 border-white/10 hover:bg-white/10"
+                      }`}
+                    >
+                      <span className="text-xl font-black tracking-tight uppercase text-white">{link.name}</span>
+                    </Link>
+                  </motion.div>
                 ))}
               </div>
 
-              {/* Browse Categories Grid */}
-              <div>
-                <h3 className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] mb-6 px-2">Discover Content</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {browseItems.map((item) => {
+              {/* Discover Content Section */}
+              <div className="mb-10">
+                <motion.h3 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-[11px] font-black uppercase tracking-[0.4em] text-gray-500 mb-8 px-2"
+                >
+                  Discover Content
+                </motion.h3>
+                <div className="grid grid-cols-2 gap-3">
+                  {browseItems.map((item, i) => {
                     const icons: Record<string, any> = { TrendingUp, Star, Globe, Calendar, Clock, Tag, Layers, Monitor, PlayCircle, Radio };
                     const Icon = icons[item.icon];
                     return (
-                      <Link 
-                        key={item.name} 
-                        href={item.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="flex flex-col gap-3 p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 transition-all"
+                      <motion.div
+                        key={item.name}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 + (i * 0.05) }}
                       >
-                        <div className="w-10 h-10 rounded-xl bg-[#e50914]/10 text-[#e50914] flex items-center justify-center">
-                          {Icon && <Icon className="w-5 h-5" />}
-                        </div>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-gray-300">{item.name}</span>
-                      </Link>
+                        <Link
+                          href={item.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className="flex items-center gap-4 p-4 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all active:scale-95 group"
+                        >
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#e50914]/20 to-[#8b5cf6]/20 flex items-center justify-center border border-white/10 group-hover:from-[#e50914]/40 group-hover:to-[#8b5cf6]/40 transition-all shadow-lg">
+                            {Icon && <Icon className="w-6 h-6 text-white" />}
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-gray-300 group-hover:text-white transition-colors">{item.name}</span>
+                        </Link>
+                      </motion.div>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Experience Instruction */}
-              <div className="p-5 rounded-3xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-md flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center shrink-0">
-                  <AlertTriangle className="w-5 h-5 text-yellow-500" />
+              {/* Quick Profile/Notice */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-auto p-6 rounded-[2.5rem] bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 backdrop-blur-md flex items-center gap-5"
+              >
+                <div className="w-14 h-14 rounded-full bg-yellow-500/20 flex items-center justify-center shrink-0 border border-yellow-500/30">
+                  <AlertTriangle className="w-7 h-7 text-yellow-500" />
                 </div>
                 <div>
-                  <p className="text-white text-xs font-bold mb-1">Stream Optimally</p>
-                  <p className="text-gray-400 text-[10px] leading-tight">
-                    For zero ads, use <span className="text-yellow-500 font-bold">uBlock Origin</span> or the <span className="text-yellow-500 font-bold">Brave Browser</span>.
+                  <p className="text-white text-sm font-black uppercase tracking-widest mb-1">Premium Tip</p>
+                  <p className="text-gray-400 text-[10px] leading-relaxed">
+                    Use <span className="text-yellow-500 font-bold">uBlock Origin</span> or <span className="text-yellow-500 font-bold">Brave Browser</span> for a zero-ad cinematic experience.
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
     </motion.nav>
   );
 }
