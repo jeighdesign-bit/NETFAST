@@ -62,7 +62,7 @@ export default function Navbar() {
       }`}
     >
       {/* Global Experience Notice Bar */}
-      <div className="w-full bg-yellow-500 py-1.5 z-[100] relative">
+      <div className="w-full bg-yellow-500 py-1 md:py-1.5 z-[100] relative">
         <div className="container mx-auto px-6 flex items-center justify-center gap-3">
           <AlertTriangle className="w-3.5 h-3.5 text-black animate-pulse" />
           <p className="text-[10px] md:text-xs text-black font-black uppercase tracking-[0.15em]">

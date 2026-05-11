@@ -18,7 +18,7 @@ export default function HeroBanner({ movie }: { movie: Movie }) {
 
   return (
     <>
-      <div className="relative w-full min-h-[90vh] md:h-[85vh] flex items-center">
+      <div className="relative w-full min-h-screen md:h-[85vh] flex items-center">
         {/* Background with overlay */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent z-10" />
