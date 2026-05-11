@@ -26,21 +26,21 @@ export default function MovieRow({ title, category, highlight, movies, variant =
   if (!movies || movies.length === 0) return null;
 
   return (
-    <div className="w-full relative py-4">
-      <div className="container mx-auto px-6 flex items-center justify-between mb-4">
-        <h2 className={`text-xl md:text-2xl font-bold ${highlight ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#8b5cf6]' : 'text-white'}`}>
+    <div className="w-full relative py-8 md:py-12">
+      <div className="container mx-auto px-6 flex items-center justify-between mb-6 md:mb-8">
+        <h2 className={`text-2xl md:text-3xl font-black uppercase tracking-tighter ${highlight ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#8b5cf6]' : 'text-white'}`} style={{ fontFamily: "var(--font-outfit)" }}>
           {title}
         </h2>
         <Link 
           href={category} 
-          className="group flex items-center gap-1 text-gray-400 hover:text-white transition-all text-xs md:text-sm font-medium py-1 px-2 rounded-md hover:bg-white/5"
+          className="group flex items-center gap-1 text-gray-500 hover:text-white transition-all text-[10px] md:text-sm font-bold uppercase tracking-widest py-1 px-3 rounded-full bg-white/5 border border-white/5"
         >
-          <span>Explore All</span>
+          <span>See All</span>
           <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
       
-      <div className="flex gap-3 md:gap-4 overflow-x-auto hide-scrollbar pb-6 pt-2 px-6">
+      <div className="flex gap-4 md:gap-6 overflow-x-auto hide-scrollbar pb-10 pt-2 px-6">
         {movies.map((movie, index) => {
           const isTV = !movie.title && (movie as any).name;
           const href = isTV ? `/tv/${movie.id}` : `/movie/${movie.id}`;
@@ -51,12 +51,12 @@ export default function MovieRow({ title, category, highlight, movies, variant =
               whileHover={{ scale: 1.05, zIndex: 10 }}
               onMouseEnter={() => setBackdrop(getImageUrl(movie.backdrop_path, 'original'))}
               onMouseLeave={() => setBackdrop(null)}
-              className={`relative ${variant === 'ranked' ? 'min-w-[220px] md:min-w-[280px] ml-10 md:ml-12' : 'min-w-[150px] md:min-w-[240px]'} h-[225px] md:h-[360px] rounded-xl overflow-hidden cursor-pointer group bg-[#111] shrink-0`}
+              className={`relative ${variant === 'ranked' ? 'min-w-[240px] md:min-w-[320px] ml-12 md:ml-16' : 'min-w-[160px] md:min-w-[260px]'} h-[240px] md:h-[390px] rounded-2xl overflow-hidden cursor-pointer group bg-[#111] shrink-0 shadow-2xl border border-white/5`}
               onClick={() => router.push(href)}
             >
               {variant === 'ranked' && (
-                <div className="absolute -left-10 md:-left-12 bottom-0 z-0 select-none pointer-events-none">
-                  <span className="text-[120px] md:text-[180px] font-black leading-none tracking-tighter text-transparent stroke-white/20" style={{ WebkitTextStroke: "2px rgba(255,255,255,0.2)", fontFamily: "var(--font-outfit)" }}>
+                <div className="absolute -left-12 md:-left-16 bottom-0 z-0 select-none pointer-events-none">
+                  <span className="text-[140px] md:text-[220px] font-black leading-none tracking-tighter text-transparent" style={{ WebkitTextStroke: "2px rgba(255,255,255,0.3)", fontFamily: "var(--font-outfit)" }}>
                     {index + 1}
                   </span>
                 </div>

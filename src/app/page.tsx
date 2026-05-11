@@ -26,7 +26,7 @@ export default async function Home() {
     <main className="relative min-h-screen">
       <HeroBanner movie={heroMovie} />
       
-      <div className="relative z-10 pb-20 -mt-32 space-y-16">
+      <div className="relative z-10 pb-20 -mt-20 md:-mt-32 space-y-24 md:space-y-40">
         <AISearch />
         
         {/* Quick Category Bar */}
