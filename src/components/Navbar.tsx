@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Bell, User, Menu, X, AlertTriangle, ChevronDown, TrendingUp, Star, Globe, Calendar, Clock, Tag, Layers, Monitor, PlayCircle, Radio } from "lucide-react";
+import { Search, Bell, User, Menu, X, AlertTriangle, ChevronDown, TrendingUp, Star, Globe, Calendar, Clock, Tag, Layers, Monitor, PlayCircle, Radio, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -73,10 +74,20 @@ export default function Navbar() {
       </div>
 
       <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-12">
-          <Link href="/" className="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#ff4b4b] neon-text shrink-0" style={{ fontFamily: "var(--font-outfit)" }}>
-            NETFAST
-          </Link>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3">
+            {pathname !== "/" && (
+              <button 
+                onClick={() => router.back()}
+                className="text-white hover:text-[#e50914] transition-colors"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </button>
+            )}
+            <Link href="/" className="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#ff4b4b] neon-text shrink-0" style={{ fontFamily: "var(--font-outfit)" }}>
+              NETFAST
+            </Link>
+          </div>
           <ul className="hidden lg:flex items-center gap-8 text-sm font-bold text-gray-400 tracking-wide uppercase">
             {navLinks.map((link) => (
               <li key={link.name}>
