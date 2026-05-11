@@ -114,7 +114,7 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
         >
           <AlertTriangle className="w-3.5 h-3.5 md:w-4 md:h-4 text-yellow-500/80 shrink-0 group-hover:scale-110 transition-transform" />
           <p className="text-gray-400 text-[9px] md:text-xs font-medium tracking-wide">
-            For zero ads, use <span className="font-bold text-white">uBlock Origin</span> or <span className="font-bold text-white">Brave</span>
+            Zero Ads: Use <span className="font-bold text-white">uBlock Origin</span> (PC) or <span className="font-bold text-white">Brave Browser</span> (Mobile)
           </p>
         </motion.div>
 

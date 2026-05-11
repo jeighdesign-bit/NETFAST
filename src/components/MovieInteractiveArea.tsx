@@ -96,7 +96,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
             >
               <AlertTriangle className="w-4 h-4 text-yellow-500/80 shrink-0" />
               <p className="text-gray-400 text-[10px] md:text-xs font-medium tracking-wide leading-tight">
-                For best experience, use <span className="font-bold text-white/90">uBlock Origin</span> or <span className="font-bold text-white/90">Brave Browser</span>
+                Ad-Free: Use <span className="font-bold text-white/90">uBlock Origin</span> (PC) or <span className="font-bold text-white/90">Brave Browser</span> (Mobile)
               </p>
             </motion.div>
 

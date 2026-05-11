@@ -16,24 +16,7 @@ export default function ExperienceNotice() {
             <AlertTriangle className="w-5 h-5 text-yellow-500" />
           </div>
           <p className="text-gray-300 text-xs md:text-sm font-black uppercase tracking-[0.15em] leading-relaxed">
-            For best experience, use{" "}
-            <a 
-              href="https://ublockorigin.com/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-white underline decoration-yellow-500/50 hover:decoration-yellow-500 transition-all underline-offset-4 decoration-2"
-            >
-              uBlock Origin
-            </a>
-            {" "}or{" "}
-            <a 
-              href="https://brave.com/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-white underline decoration-yellow-500/50 hover:decoration-yellow-500 transition-all underline-offset-4 decoration-2"
-            >
-              Brave Browser
-            </a>
+            No Ads: Use <span className="text-white">uBlock Origin</span> (PC) or <span className="text-white">Brave Browser</span> (Mobile)
           </p>
         </div>
         <div className="hidden md:block w-px h-6 bg-yellow-500/20 mx-2" />

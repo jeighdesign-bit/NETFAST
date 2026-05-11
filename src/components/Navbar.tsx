@@ -65,10 +65,9 @@ export default function Navbar() {
         <div className="container mx-auto px-6 flex items-center justify-center gap-3">
           <AlertTriangle className="w-3.5 h-3.5 text-black animate-pulse" />
           <p className="text-[10px] md:text-xs text-black font-black uppercase tracking-[0.15em]">
-            Best Experience: Use{" "}
-            <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer" className="underline decoration-black/30 hover:decoration-black transition-all">uBlock Origin</a>
-            {" "}or{" "}
-            <a href="https://brave.com/" target="_blank" rel="noopener noreferrer" className="underline decoration-black/30 hover:decoration-black transition-all">Brave Browser</a>
+            No Ads: Use{" "}
+            <span className="underline decoration-black/30">uBlock Origin</span> (PC) or{" "}
+            <span className="underline decoration-black/30">Brave Browser</span> (Mobile)
           </p>
         </div>
       </div>
