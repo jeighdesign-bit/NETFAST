@@ -76,7 +76,7 @@ export default function Navbar() {
             <div className="container mx-auto px-6 flex items-center justify-center gap-3">
               <AlertTriangle className="w-3 h-3 text-white animate-pulse" />
               <p className="text-[9px] md:text-xs text-white font-black uppercase tracking-[0.1em]">
-                Optimal Experience: Use <span className="font-bold border-b border-white/50">uBlock Origin</span> (PC) or <span className="font-bold border-b border-white/50">Brave</span> (Mobile)
+                Optimal Experience: Use <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer" className="font-bold border-b border-white/50 hover:text-black hover:bg-white transition-all px-1">uBlock Origin</a> (PC) or <a href="https://brave.com/download/" target="_blank" rel="noopener noreferrer" className="font-bold border-b border-white/50 hover:text-black hover:bg-white transition-all px-1">Brave</a> (Mobile)
               </p>
             </div>
           </motion.div>
