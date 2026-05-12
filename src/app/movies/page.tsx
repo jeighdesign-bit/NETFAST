@@ -164,7 +164,7 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
                     <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
                       <p className="text-white font-black text-lg tracking-tight line-clamp-1 leading-tight">{movie.title || (movie as any).name}</p>
                       <div className="flex items-center gap-2 mt-2">
-                        <span className="text-green-400 text-xs font-bold">{Math.round(movie.vote_average * 10)}% Match</span>
+                        <span className="text-green-400 text-xs font-bold">{movie.vote_average ? `${Math.round(movie.vote_average * 10)}% Match` : 'Highly Rated'}</span>
                         <span className="text-gray-400 text-xs">{movie.release_date?.substring(0,4)}</span>
                       </div>
                     </div>

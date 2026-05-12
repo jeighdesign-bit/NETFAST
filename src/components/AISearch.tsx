@@ -141,7 +141,7 @@ export default function AISearch() {
                         <Link href={href} className="block group">
                           <h4 className="text-[11px] md:text-sm font-bold text-gray-200 line-clamp-1 group-hover:text-[#e50914] transition-colors">{movie.title || (movie as any).name}</h4>
                           <p className="text-[9px] text-gray-500 mt-0.5 uppercase font-bold tracking-widest">
-                            {movie.release_date?.substring(0,4)} • {Math.round(movie.vote_average * 10)}% Match
+                            {movie.release_date?.substring(0,4)} • {movie.vote_average ? `${Math.round(movie.vote_average * 10)}% Match` : 'Neural Pick'}
                           </p>
                         </Link>
                       </motion.div>
