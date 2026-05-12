@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Plus, Info, Volume2, VolumeX, X, ChevronDown, AlertTriangle, RotateCcw } from "lucide-react";
 import SafeImage from "./SafeImage";
-import { Movie, TVDetail, getImageUrl } from "@/lib/tmdb";
+import { Movie, TVDetail, TVSeasonDetail, getImageUrl, fetchTVSeason } from "@/lib/tmdb";
 import VideoPlayer from "./VideoPlayer";
 
 interface MovieInteractiveAreaProps {
@@ -26,6 +26,8 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
   const [selectedEpisode, setSelectedEpisode] = useState(1);
   const [showSeasonSelector, setShowSeasonSelector] = useState(false);
   const [savedProgress, setSavedProgress] = useState<number | null>(null);
+  const [seasonDetail, setSeasonDetail] = useState<TVSeasonDetail | null>(null);
+  const [isLoadingSeason, setIsLoadingSeason] = useState(false);
 
   // Initialize selected season to the first available season
   useEffect(() => {
@@ -33,6 +35,17 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
       setSelectedSeason(filteredSeasons[0].season_number);
     }
   }, [isTV, filteredSeasons]);
+
+  // Fetch season details when season changes
+  useEffect(() => {
+    if (isTV && movie.id) {
+      setIsLoadingSeason(true);
+      fetchTVSeason(movie.id.toString(), selectedSeason).then(data => {
+        setSeasonDetail(data);
+        setIsLoadingSeason(false);
+      });
+    }
+  }, [isTV, movie.id, selectedSeason]);
 
   const videoId = isTV ? `tmdb-${movie.id}-s${selectedSeason}-e${selectedEpisode}` : `tmdb-${movie.id}`;
 
@@ -47,7 +60,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
     }
   }, [movie.id, videoId]);
 
-  const currentSeason = filteredSeasons.find(s => s.season_number === selectedSeason) || filteredSeasons[0] || { episode_count: 0 };
+  const episodeCount = seasonDetail?.episodes?.length || 0;
 
   const handleResetProgress = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -146,7 +159,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
 
             {/* TV Show Episode Selector */}
             {isTV && filteredSeasons.length > 0 && (
-              <div className="mt-8 md:mt-12 p-5 md:p-6 glass rounded-[2rem] border border-white/10 max-w-2xl bg-black/40 backdrop-blur-3xl shadow-2xl">
+              <div className="mt-8 md:mt-12 p-5 md:p-6 glass rounded-[2rem] border border-white/10 max-w-2xl bg-black/40 backdrop-blur-3xl shadow-2xl min-h-[250px]">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8">
                   <div className="flex items-center gap-4">
                     <div className="relative">
@@ -180,25 +193,33 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
                     </div>
                   </div>
                   <div className="flex flex-col items-start md:items-end">
-                    <span className="text-white font-black text-lg md:text-xl tracking-tighter uppercase">{currentSeason.episode_count} Episodes</span>
+                    <span className="text-white font-black text-lg md:text-xl tracking-tighter uppercase">
+                      {isLoadingSeason ? 'Loading...' : `${episodeCount} Episodes`}
+                    </span>
                     <span className="text-gray-500 text-[9px] uppercase font-bold tracking-[0.2em] mt-0.5">Ultra HD Streaming</span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-2 md:gap-3 max-h-[180px] md:max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
-                  {Array.from({ length: currentSeason.episode_count }).map((_, i) => (
-                    <button 
-                      key={i}
-                      onClick={() => setSelectedEpisode(i + 1)}
-                      className={`relative aspect-square rounded-xl border flex flex-col items-center justify-center transition-all group ${selectedEpisode === i + 1 ? 'bg-[#e50914] border-[#e50914] text-white shadow-[0_10px_20px_rgba(229,9,20,0.3)]' : 'bg-white/5 border-white/10 text-gray-500 hover:border-white/40 hover:bg-white/10'}`}
-                    >
-                      <span className="text-base md:text-lg font-black">{i + 1}</span>
-                      {selectedEpisode === i + 1 && (
-                        <motion.div layoutId="activeEpisode" className="absolute -top-1 -right-1 w-2 h-2 md:w-3 md:h-3 bg-white rounded-full shadow-lg" />
-                      )}
-                    </button>
-                  ))}
-                </div>
+                {isLoadingSeason ? (
+                  <div className="h-32 flex items-center justify-center">
+                    <div className="w-8 h-8 border-4 border-t-[#e50914] border-white/10 rounded-full animate-spin" />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-2 md:gap-3 max-h-[180px] md:max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                    {seasonDetail?.episodes?.map((ep) => (
+                      <button 
+                        key={ep.id}
+                        onClick={() => setSelectedEpisode(ep.episode_number)}
+                        className={`relative aspect-square rounded-xl border flex flex-col items-center justify-center transition-all group ${selectedEpisode === ep.episode_number ? 'bg-[#e50914] border-[#e50914] text-white shadow-[0_10px_20px_rgba(229,9,20,0.3)]' : 'bg-white/5 border-white/10 text-gray-500 hover:border-white/40 hover:bg-white/10'}`}
+                      >
+                        <span className="text-base md:text-lg font-black">{ep.episode_number}</span>
+                        {selectedEpisode === ep.episode_number && (
+                          <motion.div layoutId="activeEpisode" className="absolute -top-1 -right-1 w-2 h-2 md:w-3 md:h-3 bg-white rounded-full shadow-lg" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </motion.div>
@@ -219,5 +240,6 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
     </div>
   );
 }
+
 
 

@@ -184,6 +184,30 @@ export interface TVDetail extends Movie {
   seasons: { id: number; season_number: number; episode_count: number; name: string }[];
 }
 
+export interface TVSeasonDetail {
+  _id: string;
+  air_date: string;
+  episodes: {
+    air_date: string;
+    episode_number: number;
+    id: number;
+    name: string;
+    overview: string;
+    production_code: string;
+    runtime: number;
+    season_number: number;
+    show_id: number;
+    still_path: string;
+    vote_average: number;
+    vote_count: number;
+  }[];
+  name: string;
+  overview: string;
+  id: number;
+  poster_path: string;
+  season_number: number;
+}
+
 export async function fetchTVDetails(id: string): Promise<TVDetail> {
   if (!TMDB_API_KEY || isNaN(Number(id))) {
     const found = mockMovies.find(m => m.id === Number(id));
@@ -196,5 +220,19 @@ export async function fetchTVDetails(id: string): Promise<TVDetail> {
     return data;
   } catch (error) {
     return { ...mockMovieDetail, id: Number(id), name: "Error TV", number_of_seasons: 0, number_of_episodes: 0, seasons: [] } as any;
+  }
+}
+
+export async function fetchTVSeason(id: string, seasonNumber: number): Promise<TVSeasonDetail> {
+
+  if (!TMDB_API_KEY || isNaN(Number(id))) {
+    return { episodes: [] } as any;
+  }
+  try {
+    const url = `${BASE_URL}/tv/${id}/season/${seasonNumber}?api_key=${TMDB_API_KEY}`;
+    const response = await fetch(url, { next: { revalidate: 3600 } });
+    return await response.json();
+  } catch (error) {
+    return { episodes: [] } as any;
   }
 }
