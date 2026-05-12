@@ -26,6 +26,9 @@ export default async function TVDetailPage(props: { params: Promise<{ id: string
   
   if (!tv) return <div className="min-h-screen flex items-center justify-center text-white">Show not found.</div>;
 
+  const filteredSeasonsCount = tv.seasons?.filter(s => s.season_number > 0).length || tv.number_of_seasons;
+  const totalEpisodesCount = tv.seasons?.filter(s => s.season_number > 0).reduce((acc, s) => acc + s.episode_count, 0) || tv.number_of_episodes;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TVSeries",
@@ -66,11 +69,11 @@ export default async function TVDetailPage(props: { params: Promise<{ id: string
               </div>
               <div>
                 <span className="text-gray-500 block text-sm uppercase tracking-widest mb-1">Seasons</span>
-                <span className="text-white font-medium">{tv.number_of_seasons}</span>
+                <span className="text-white font-medium">{filteredSeasonsCount}</span>
               </div>
               <div>
                 <span className="text-gray-500 block text-sm uppercase tracking-widest mb-1">Total Episodes</span>
-                <span className="text-white font-medium">{tv.number_of_episodes}</span>
+                <span className="text-white font-medium">{totalEpisodesCount}</span>
               </div>
             </div>
           </div>

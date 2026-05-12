@@ -17,10 +17,37 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   
-  // Filter out Season 0 (Specials)
+  // Filter out Season 0 (Specials) and duplicates
   const filteredSeasons = useMemo(() => {
-    return tvData?.seasons?.filter(s => s.season_number > 0) || [];
+    if (!tvData?.seasons) return [];
+    const seen = new Set();
+    return tvData.seasons.filter(s => {
+      if (s.season_number <= 0) return false;
+      if (seen.has(s.season_number)) return false;
+      seen.add(s.season_number);
+      return true;
+    });
   }, [tvData]);
+
+  // Filter out duplicate or invalid episodes, and future episodes
+  const filteredEpisodes = useMemo(() => {
+    if (!seasonDetail?.episodes) return [];
+    const now = new Date();
+    const seen = new Set();
+    return seasonDetail.episodes.filter(ep => {
+      if (ep.episode_number <= 0) return false;
+      if (seen.has(ep.episode_number)) return false;
+      
+      // Filter out future episodes
+      if (ep.air_date) {
+        const airDate = new Date(ep.air_date);
+        if (airDate > now) return false;
+      }
+      
+      seen.add(ep.episode_number);
+      return true;
+    });
+  }, [seasonDetail]);
 
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedEpisode, setSelectedEpisode] = useState(1);
@@ -60,7 +87,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
     }
   }, [movie.id, videoId]);
 
-  const episodeCount = seasonDetail?.episodes?.length || 0;
+  const episodeCount = filteredEpisodes.length;
 
   const handleResetProgress = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -206,7 +233,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
                   </div>
                 ) : (
                   <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-2 md:gap-3 max-h-[180px] md:max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
-                    {seasonDetail?.episodes?.map((ep) => (
+                    {filteredEpisodes.map((ep) => (
                       <button 
                         key={ep.id}
                         onClick={() => setSelectedEpisode(ep.episode_number)}
