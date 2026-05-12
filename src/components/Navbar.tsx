@@ -270,7 +270,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-      </AnimatePresence>
     </motion.nav>
   );
 }
