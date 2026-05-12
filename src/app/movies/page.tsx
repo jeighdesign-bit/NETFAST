@@ -58,27 +58,32 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
   };
 
   // Map sort to TMDB endpoint or discover params
-  let endpoint = search ? "/search/movie" : "/discover/movie";
+  let endpoint = search ? "/search/multi" : (type === "tv" || network ? "/discover/tv" : "/discover/movie");
+  
   const params: any = { 
     page,
     with_genres: genreId || "", 
     with_original_language: lang || "",
+    include_adult: "true",
     sort_by: "popularity.desc" 
   };
 
-  if (search) params.query = search;
-  if (year) params.primary_release_year = year;
-  if (network) params.with_networks = network;
-  if (type === "tv" || network) endpoint = "/discover/tv";
-
-  if (sort === "trending") endpoint = `/trending/${type}/week`;
-  if (sort === "top_rated") endpoint = `/${type}/top_rated`;
-  if (sort === "upcoming") endpoint = "/movie/upcoming";
-  if (sort === "now_playing") endpoint = "/movie/now_playing";
-  if (sort === "airing_today") endpoint = "/tv/airing_today";
-  if (sort === "new") {
-    endpoint = `/${type}/now_playing`;
-    if (type === "tv") endpoint = "/tv/on_the_air";
+  if (search) {
+    params.query = search;
+    // For search, we don't use discovery filters that break the endpoint
+  } else {
+    if (year) params.primary_release_year = year;
+    if (network) params.with_networks = network;
+    
+    if (sort === "trending") endpoint = `/trending/${type}/week`;
+    if (sort === "top_rated") endpoint = `/${type}/top_rated`;
+    if (sort === "upcoming") endpoint = "/movie/upcoming";
+    if (sort === "now_playing") endpoint = "/movie/now_playing";
+    if (sort === "airing_today") endpoint = "/tv/airing_today";
+    if (sort === "new") {
+      endpoint = `/${type}/now_playing`;
+      if (type === "tv") endpoint = "/tv/on_the_air";
+    }
   }
 
   // If we have any filter OR we are on a secondary page OR searching, show grid

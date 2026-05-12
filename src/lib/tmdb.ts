@@ -150,7 +150,7 @@ export async function searchMovies(query: string): Promise<Movie[]> {
       ((m as any).name && (m as any).name.toLowerCase().includes(term))
     );
   }
-  return fetchMovies("/search/movie", { query });
+  return fetchMovies("/search/multi", { query, include_adult: "true" });
 }
 
 export async function getMoviesByGenre(genreId: string): Promise<Movie[]> {
