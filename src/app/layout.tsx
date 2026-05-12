@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Chatbot from "@/components/Chatbot";
+import FAQSection from "@/components/FAQSection";
 import Link from "next/link";
 import { BackgroundProvider } from "@/context/BackgroundContext";
 import DynamicBackground from "@/components/DynamicBackground";
@@ -74,6 +75,7 @@ export default function RootLayout({
           <div className="flex-1">
             {children}
           </div>
+          <FAQSection />
           <Chatbot />
         </BackgroundProvider>
         <footer className="bg-[#0a0a0a] border-t border-white/5 pt-20 pb-10 relative z-10 mt-20">
