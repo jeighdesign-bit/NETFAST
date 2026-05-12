@@ -58,9 +58,9 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
       className={`fixed top-0 w-full transition-all duration-300 ${
-        isMobileMenuOpen ? "z-[9999]" : "z-[50]"
+        isMobileMenuOpen ? "z-[9999]" : "z-[100]"
       } ${
-        isScrolled || isMobileMenuOpen ? "bg-black/90 backdrop-blur-md shadow-[0_0_15px_rgba(229,9,20,0.2)]" : "bg-transparent"
+        isScrolled || isMobileMenuOpen ? "bg-black/90 backdrop-blur-md shadow-[0_0_15px_rgba(229,9,20,0.2)]" : "bg-gradient-to-b from-black/80 via-black/40 to-transparent"
       }`}
     >
       {/* Global Experience Notice Bar */}

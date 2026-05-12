@@ -33,12 +33,12 @@ export default function HeroBanner({ movie }: { movie: Movie }) {
           />
         </div>
 
-        <div className="container mx-auto px-6 relative z-20 flex items-start md:items-center h-full pt-32 md:pt-0">
+        <div className="container mx-auto px-6 relative z-20 flex items-start h-full pt-48 md:pt-40">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-2xl pt-20 md:pt-0"
+            className="max-w-2xl"
           >
             <div className="inline-block px-3 py-1 mb-4 rounded-full glass border border-[#e50914]/50 text-[#ff4b4b] text-[10px] md:text-xs font-bold tracking-widest uppercase">
               #1 Trending Worldwide

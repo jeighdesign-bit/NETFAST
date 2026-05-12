@@ -43,7 +43,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
       </div>
  
       {/* Content */}
-      <div className="relative z-20 pt-32 pb-12 md:pt-0 md:h-[85vh] md:flex md:items-center">
+      <div className="relative z-20 pt-48 pb-12 md:pt-40 md:min-h-[90vh] md:flex md:items-start">
         <div className="container mx-auto px-6">
           <motion.div 
             initial={{ opacity: 0, x: -50 }}

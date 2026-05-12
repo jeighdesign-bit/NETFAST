@@ -93,7 +93,7 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
 
   return (
     <Suspense fallback={<div className="min-h-screen bg-black" />}>
-      <main className="min-h-screen pt-32 pb-20 bg-[#050505]">
+      <main className="min-h-screen pt-44 pb-20 bg-[#050505]">
       <div className="container mx-auto px-6 mb-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>

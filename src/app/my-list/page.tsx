@@ -3,7 +3,7 @@ import { Bookmark } from "lucide-react";
 
 export default function MyListPage() {
   return (
-    <main className="min-h-screen pt-32 pb-20">
+    <main className="min-h-screen pt-44 pb-20">
       <div className="container mx-auto px-6 mb-12 flex items-center gap-4">
         <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
           <Bookmark className="w-6 h-6 text-white" />

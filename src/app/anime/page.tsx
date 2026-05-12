@@ -8,7 +8,7 @@ export default async function AnimePage() {
   const animeFantasy = await fetchMovies("/discover/movie", { with_genres: "16,14", sort_by: "popularity.desc" });
 
   return (
-    <main className="min-h-screen pt-32 pb-20 bg-[#050505]">
+    <main className="min-h-screen pt-44 pb-20 bg-[#050505]">
       <div className="container mx-auto px-6 mb-16">
         <div className="flex items-center gap-4 mb-4">
           <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center shadow-[0_0_20px_rgba(236,72,153,0.4)]">
