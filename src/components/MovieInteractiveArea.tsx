@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Plus, Info, Volume2, VolumeX, X, ChevronDown, AlertTriangle } from "lucide-react";
+import { Play, Plus, Info, Volume2, VolumeX, X, ChevronDown, AlertTriangle, RotateCcw } from "lucide-react";
 import SafeImage from "./SafeImage";
 import { Movie, TVDetail, getImageUrl } from "@/lib/tmdb";
 import VideoPlayer from "./VideoPlayer";
@@ -19,13 +19,29 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedEpisode, setSelectedEpisode] = useState(1);
   const [showSeasonSelector, setShowSeasonSelector] = useState(false);
+  const [savedProgress, setSavedProgress] = useState<number | null>(null);
 
-  // Auto-scroll to top on load
+  const videoId = isTV ? `tmdb-${movie.id}-s${selectedSeason}-e${selectedEpisode}` : `tmdb-${movie.id}`;
+
+
+  // Auto-scroll to top on load and check progress
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [movie.id]);
+    const progress = localStorage.getItem(`netfast_progress_${videoId}`);
+    if (progress) {
+      setSavedProgress(parseFloat(progress));
+    } else {
+      setSavedProgress(null);
+    }
+  }, [movie.id, videoId]);
 
   const currentSeason = tvData?.seasons?.find(s => s.season_number === selectedSeason) || { episode_count: 12 };
+
+  const handleResetProgress = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    localStorage.removeItem(`netfast_progress_${videoId}`);
+    setSavedProgress(null);
+  };
 
   return (
     <div className="relative w-full overflow-hidden">
@@ -58,6 +74,9 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
               <span className="text-green-400">{Math.round(movie.vote_average * 10)}% Match</span>
               <span className="text-gray-400">{movie.release_date?.substring(0,4)}</span>
               <span className="border border-white/40 px-2 py-0.5 rounded-[4px] text-[8px] md:text-[10px] text-white">4K ULTRA HD</span>
+              {savedProgress && savedProgress > 60 && (
+                <span className="bg-[#e50914] text-white px-2 py-0.5 rounded-[4px] text-[8px] md:text-[10px] animate-pulse">RESUMING AT {Math.floor(savedProgress / 60)}M</span>
+              )}
             </div>
 
             <p className="text-base md:text-lg text-gray-300 mb-8 line-clamp-3 md:line-clamp-none">
@@ -65,13 +84,26 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
             </p>
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
-              <button 
-                onClick={() => setIsPlaying(true)}
-                className="flex items-center justify-center gap-2 bg-white text-black hover:bg-[#e50914] hover:text-white px-8 py-4 md:py-3 rounded-xl md:rounded-md font-bold text-base md:text-lg transition-all shadow-xl"
-              >
-                <Play className="fill-current w-5 h-5" /> 
-                {isTV ? `Play S${selectedSeason}:E${selectedEpisode}` : 'Watch Now'}
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button 
+                  onClick={() => setIsPlaying(true)}
+                  className="flex items-center justify-center gap-2 bg-white text-black hover:bg-[#e50914] hover:text-white px-8 py-4 md:py-3 rounded-xl md:rounded-md font-bold text-base md:text-lg transition-all shadow-xl"
+                >
+                  <Play className="fill-current w-5 h-5" /> 
+                  {isTV ? `Play S${selectedSeason}:E${selectedEpisode}` : (savedProgress && savedProgress > 60 ? 'Resume Movie' : 'Watch Now')}
+                </button>
+
+                {savedProgress && (
+                  <button 
+                    onClick={handleResetProgress}
+                    className="flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 px-4 py-4 md:py-3 rounded-xl md:rounded-md font-bold text-sm transition-all border border-white/10"
+                    title="Start from Beginning"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                    <span className="sm:hidden">Reset Progress</span>
+                  </button>
+                )}
+              </div>
               
               <div className="flex items-center gap-3 justify-center sm:justify-start">
                 <button className="flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/20 hover:border-white transition-colors bg-black/20">
@@ -164,13 +196,15 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
       {isPlaying && (
         <VideoPlayer 
           movieTitle={tvData ? tvData.name : (movie as any).title} 
-          videoId={`tmdb-${movie.id}`} 
+          videoId={videoId} 
           type={isTV ? "tv" : "movie"}
           season={selectedSeason}
           episode={selectedEpisode}
+          posterPath={getImageUrl(movie.poster_path, "w500")}
           onClose={() => setIsPlaying(false)} 
         />
       )}
     </div>
   );
 }
+

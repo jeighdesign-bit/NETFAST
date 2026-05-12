@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  ArrowLeft, RefreshCw, AlertCircle, AlertTriangle
+  ArrowLeft, RefreshCw, AlertCircle, AlertTriangle, History
 } from "lucide-react";
 
 interface VideoPlayerProps {
@@ -13,53 +13,93 @@ interface VideoPlayerProps {
   type?: "movie" | "tv";
   season?: number;
   episode?: number;
+  posterPath?: string;
 }
 
 type Provider = "codespecter" | "vidsrc_xyz" | "vidsrc_to" | "embed_su";
 
-export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movie", season = 1, episode = 1 }: VideoPlayerProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+export default function VideoPlayer({ 
+  movieTitle, 
+  onClose, 
+  videoId, 
+  type = "movie", 
+  season = 1, 
+  episode = 1,
+  posterPath 
+}: VideoPlayerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const [key, setKey] = useState(0);
   const [provider, setProvider] = useState<Provider>("codespecter");
+  const [progress, setProgress] = useState(0);
+  const startTimeRef = useRef<number>(Date.now());
+  const initialProgressRef = useRef<number>(0);
 
   const tmdbId = videoId.replace('tmdb-', '');
   
+  // Load initial progress
+  useEffect(() => {
+    const savedProgress = localStorage.getItem(`netfast_progress_${videoId}`);
+    if (savedProgress) {
+      initialProgressRef.current = parseFloat(savedProgress);
+      setProgress(parseFloat(savedProgress));
+    }
+  }, [videoId]);
+
+
+  // Simulated progress tracking since iframe doesn't report time
+  useEffect(() => {
+    startTimeRef.current = Date.now();
+    
+    const interval = setInterval(() => {
+      const elapsedSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
+      const currentProgress = initialProgressRef.current + elapsedSeconds;
+      
+      localStorage.setItem(`netfast_progress_${videoId}`, currentProgress.toString());
+      localStorage.setItem(`netfast_time_${videoId}`, Date.now().toString());
+      localStorage.setItem(`netfast_info_${videoId}`, JSON.stringify({
+        title: movieTitle,
+        posterPath: posterPath || `https://image.tmdb.org/t/p/w500/${tmdbId}`,
+        type,
+        season,
+        episode
+      }));
+      // Default duration 2 hours if unknown
+      localStorage.setItem(`netfast_duration_${videoId}`, "7200"); 
+      
+      setProgress(currentProgress);
+    }, 5000); // Save every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [videoId, movieTitle, tmdbId, posterPath, type, season, episode]);
+
   const getEmbedUrl = (p: Provider) => {
     const isTV = type === "tv";
+    const timeParam = progress > 10 ? `&t=${progress}` : "";
+    
     switch(p) {
       case "codespecter":
         return isTV 
-          ? `https://api.codespecters.com/embed/tv/${tmdbId}/${season}/${episode}?apikey=${process.env.NEXT_PUBLIC_EMBED_API_KEY}`
-          : `https://api.codespecters.com/embed/movie/${tmdbId}?apikey=${process.env.NEXT_PUBLIC_EMBED_API_KEY}`;
+          ? `https://api.codespecters.com/embed/tv/${tmdbId}/${season}/${episode}?apikey=${process.env.NEXT_PUBLIC_EMBED_API_KEY}${timeParam}`
+          : `https://api.codespecters.com/embed/movie/${tmdbId}?apikey=${process.env.NEXT_PUBLIC_EMBED_API_KEY}${timeParam}`;
       case "vidsrc_xyz":
         return isTV
-          ? `https://vidsrc.xyz/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}`
-          : `https://vidsrc.xyz/embed/movie?tmdb=${tmdbId}`;
+          ? `https://vidsrc.xyz/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}${timeParam}`
+          : `https://vidsrc.xyz/embed/movie?tmdb=${tmdbId}${timeParam}`;
       case "vidsrc_to":
         return isTV
-          ? `https://vidsrc.to/embed/tv/${tmdbId}/${season}/${episode}`
-          : `https://vidsrc.to/embed/movie/${tmdbId}`;
+          ? `https://vidsrc.to/embed/tv/${tmdbId}/${season}/${episode}${timeParam}`
+          : `https://vidsrc.to/embed/movie/${tmdbId}${timeParam}`;
       case "embed_su":
         return isTV
-          ? `https://embed.su/embed/tv/${tmdbId}/${season}/${episode}`
-          : `https://embed.su/embed/movie/${tmdbId}`;
+          ? `https://embed.su/embed/tv/${tmdbId}/${season}/${episode}${timeParam}`
+          : `https://embed.su/embed/movie/${tmdbId}${timeParam}`;
       default:
         return "";
     }
   };
 
   const embedUrl = getEmbedUrl(provider);
-
-  useEffect(() => {
-    localStorage.setItem(`netfast_info_${videoId}`, JSON.stringify({
-      title: movieTitle,
-      posterPath: `https://image.tmdb.org/t/p/w500/${tmdbId}`
-    }));
-    localStorage.setItem(`netfast_time_${videoId}`, Date.now().toString());
-    localStorage.setItem(`netfast_duration_${videoId}`, "7200"); 
-  }, [videoId, movieTitle, tmdbId]);
 
   const handleProviderChange = (newProvider: Provider) => {
     if (newProvider === provider) return;
@@ -84,28 +124,40 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
         className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 md:p-8"
       >
         {/* Source Selector Bar */}
-        <motion.div 
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="flex flex-wrap items-center justify-center gap-1.5 md:gap-2 mb-4 p-1.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md max-w-full overflow-x-auto hide-scrollbar"
-        >
-          <span className="hidden sm:inline text-[9px] md:text-[10px] uppercase tracking-widest text-gray-500 px-3 font-bold">Servers:</span>
-          {(["codespecter", "vidsrc_xyz", "vidsrc_to", "embed_su"] as Provider[]).map((p) => (
-            <button
-              key={p}
-              onClick={() => handleProviderChange(p)}
-              className={`px-3 md:px-4 py-2 md:py-1.5 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-tighter transition-all whitespace-nowrap ${
-                provider === p 
-                  ? "bg-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.5)]" 
-                  : "text-gray-400 hover:text-white hover:bg-white/10"
-              }`}
+        <div className="w-full max-w-6xl flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
+          <motion.div 
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            className="flex flex-wrap items-center gap-2 p-1.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md"
+          >
+            <span className="hidden sm:inline text-[10px] uppercase tracking-widest text-gray-500 px-3 font-bold">Servers:</span>
+            {(["codespecter", "vidsrc_xyz", "vidsrc_to", "embed_su"] as Provider[]).map((p) => (
+              <button
+                key={p}
+                onClick={() => handleProviderChange(p)}
+                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all whitespace-nowrap ${
+                  provider === p 
+                    ? "bg-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.5)]" 
+                    : "text-gray-400 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                {p === "codespecter" ? "Premium" : p.replace('_', ' ')}
+              </button>
+            ))}
+          </motion.div>
+
+          {progress > 60 && (
+            <motion.div 
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-xs text-gray-400"
             >
-              {p === "codespecter" ? "Premium" : p.replace('_', ' ')}
-            </button>
-          ))}
-        </motion.div>
+              <History className="w-3.5 h-3.5" />
+              <span>Resuming from {Math.floor(progress / 60)}m {progress % 60}s</span>
+            </motion.div>
+          )}
+        </div>
         
-        {/* Browser Recommendation Alert - Below Server Menu */}
         <motion.div 
           initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -120,7 +172,7 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
 
         <div className="relative w-full max-w-6xl aspect-video bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,1)] border border-white/10 group">
           
-          {/* Internal Top Bar - Hidden on idle, shows on hover */}
+          {/* Internal Top Bar */}
           <div className="absolute top-0 left-0 right-0 z-50 p-4 md:p-8 flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
             <div className="flex items-center gap-3 md:gap-6 pointer-events-auto">
               <button 
@@ -192,13 +244,6 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
               </div>
             )}
           </div>
-
-          {/* Close interaction for mobile */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 md:hidden pointer-events-none">
-            <div className="px-6 py-3 bg-black/60 backdrop-blur-xl rounded-full border border-white/10 text-[9px] text-gray-300 font-bold uppercase tracking-[0.2em] shadow-2xl">
-              Tap for Player Controls
-            </div>
-          </div>
         </div>
 
         {/* Backdrop click to close */}
@@ -207,3 +252,4 @@ export default function VideoPlayer({ movieTitle, onClose, videoId, type = "movi
     </AnimatePresence>
   );
 }
+
