@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Plus, Info, Volume2, VolumeX, X, ChevronDown, AlertTriangle, RotateCcw } from "lucide-react";
 import SafeImage from "./SafeImage";
@@ -16,13 +16,25 @@ interface MovieInteractiveAreaProps {
 export default function MovieInteractiveArea({ movie, isTV = false, tvData }: MovieInteractiveAreaProps) {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  
+  // Filter out Season 0 (Specials)
+  const filteredSeasons = useMemo(() => {
+    return tvData?.seasons?.filter(s => s.season_number > 0) || [];
+  }, [tvData]);
+
   const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedEpisode, setSelectedEpisode] = useState(1);
   const [showSeasonSelector, setShowSeasonSelector] = useState(false);
   const [savedProgress, setSavedProgress] = useState<number | null>(null);
 
-  const videoId = isTV ? `tmdb-${movie.id}-s${selectedSeason}-e${selectedEpisode}` : `tmdb-${movie.id}`;
+  // Initialize selected season to the first available season
+  useEffect(() => {
+    if (isTV && filteredSeasons.length > 0) {
+      setSelectedSeason(filteredSeasons[0].season_number);
+    }
+  }, [isTV, filteredSeasons]);
 
+  const videoId = isTV ? `tmdb-${movie.id}-s${selectedSeason}-e${selectedEpisode}` : `tmdb-${movie.id}`;
 
   // Auto-scroll to top on load and check progress
   useEffect(() => {
@@ -35,7 +47,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
     }
   }, [movie.id, videoId]);
 
-  const currentSeason = tvData?.seasons?.find(s => s.season_number === selectedSeason) || { episode_count: 12 };
+  const currentSeason = filteredSeasons.find(s => s.season_number === selectedSeason) || filteredSeasons[0] || { episode_count: 0 };
 
   const handleResetProgress = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -133,7 +145,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
             </motion.div>
 
             {/* TV Show Episode Selector */}
-            {isTV && tvData && (
+            {isTV && filteredSeasons.length > 0 && (
               <div className="mt-8 md:mt-12 p-5 md:p-6 glass rounded-[2rem] border border-white/10 max-w-2xl bg-black/40 backdrop-blur-3xl shadow-2xl">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8">
                   <div className="flex items-center gap-4">
@@ -153,7 +165,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
                             exit={{ opacity: 0, y: 10 }}
                             className="absolute bottom-full left-0 mb-4 bg-[#0a0a0a] border border-white/10 rounded-2xl overflow-hidden z-[100] min-w-[160px] shadow-2xl backdrop-blur-2xl"
                           >
-                            {tvData.seasons.map(s => (
+                            {filteredSeasons.map(s => (
                               <button 
                                 key={s.id}
                                 onClick={() => { setSelectedSeason(s.season_number); setSelectedEpisode(1); setShowSeasonSelector(false); }}
@@ -207,4 +219,5 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
     </div>
   );
 }
+
 
