@@ -32,28 +32,28 @@ export default function VideoPlayer({
   const [key, setKey] = useState(0);
   const [provider, setProvider] = useState<Provider>("codespecter");
   const [progress, setProgress] = useState(0);
+  const [initialProgress, setInitialProgress] = useState(0);
   const startTimeRef = useRef<number>(Date.now());
-  const initialProgressRef = useRef<number>(0);
 
   const tmdbId = videoId.replace('tmdb-', '');
   
-  // Load initial progress
+  // Load initial progress once
   useEffect(() => {
     const savedProgress = localStorage.getItem(`netfast_progress_${videoId}`);
     if (savedProgress) {
-      initialProgressRef.current = parseFloat(savedProgress);
-      setProgress(parseFloat(savedProgress));
+      const p = parseFloat(savedProgress);
+      setInitialProgress(p);
+      setProgress(p);
     }
   }, [videoId]);
 
-
-  // Simulated progress tracking since iframe doesn't report time
+  // Simulated progress tracking
   useEffect(() => {
     startTimeRef.current = Date.now();
     
     const interval = setInterval(() => {
       const elapsedSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
-      const currentProgress = initialProgressRef.current + elapsedSeconds;
+      const currentProgress = initialProgress + elapsedSeconds;
       
       localStorage.setItem(`netfast_progress_${videoId}`, currentProgress.toString());
       localStorage.setItem(`netfast_time_${videoId}`, Date.now().toString());
@@ -64,18 +64,18 @@ export default function VideoPlayer({
         season,
         episode
       }));
-      // Default duration 2 hours if unknown
       localStorage.setItem(`netfast_duration_${videoId}`, "7200"); 
       
       setProgress(currentProgress);
-    }, 5000); // Save every 5 seconds
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [videoId, movieTitle, tmdbId, posterPath, type, season, episode]);
+  }, [videoId, movieTitle, tmdbId, posterPath, type, season, episode, initialProgress]);
 
   const getEmbedUrl = (p: Provider) => {
     const isTV = type === "tv";
-    const timeParam = progress > 10 ? `&t=${progress}` : "";
+    // USE initialProgress here so it doesn't change every 5 seconds
+    const timeParam = initialProgress > 10 ? `&t=${Math.floor(initialProgress)}` : "";
     
     switch(p) {
       case "codespecter":
@@ -103,6 +103,8 @@ export default function VideoPlayer({
 
   const handleProviderChange = (newProvider: Provider) => {
     if (newProvider === provider) return;
+    // Update initialProgress to current progress before switching provider
+    setInitialProgress(progress);
     setProvider(newProvider);
     setIsLoading(true);
     setError(false);
@@ -110,6 +112,7 @@ export default function VideoPlayer({
   };
 
   const handleRefresh = () => {
+    setInitialProgress(progress);
     setKey(prev => prev + 1);
     setIsLoading(true);
     setError(false);
@@ -123,40 +126,27 @@ export default function VideoPlayer({
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 md:p-8"
       >
-        {/* Source Selector Bar */}
-        <div className="w-full max-w-6xl flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
-          <motion.div 
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            className="flex flex-wrap items-center gap-2 p-1.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md"
-          >
-            <span className="hidden sm:inline text-[10px] uppercase tracking-widest text-gray-500 px-3 font-bold">Servers:</span>
-            {(["codespecter", "vidsrc_xyz", "vidsrc_to", "embed_su"] as Provider[]).map((p) => (
-              <button
-                key={p}
-                onClick={() => handleProviderChange(p)}
-                className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter transition-all whitespace-nowrap ${
-                  provider === p 
-                    ? "bg-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.5)]" 
-                    : "text-gray-400 hover:text-white hover:bg-white/10"
-                }`}
-              >
-                {p === "codespecter" ? "Premium" : p.replace('_', ' ')}
-              </button>
-            ))}
-          </motion.div>
-
-          {progress > 60 && (
-            <motion.div 
-              initial={{ x: 20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              className="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl border border-white/10 text-xs text-gray-400"
+        {/* Source Selector Bar - Restored to original centered style */}
+        <motion.div 
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="flex flex-wrap items-center justify-center gap-1.5 md:gap-2 mb-4 p-1.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md max-w-full overflow-x-auto hide-scrollbar"
+        >
+          <span className="hidden sm:inline text-[9px] md:text-[10px] uppercase tracking-widest text-gray-500 px-3 font-bold">Servers:</span>
+          {(["codespecter", "vidsrc_xyz", "vidsrc_to", "embed_su"] as Provider[]).map((p) => (
+            <button
+              key={p}
+              onClick={() => handleProviderChange(p)}
+              className={`px-3 md:px-4 py-2 md:py-1.5 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-tighter transition-all whitespace-nowrap ${
+                provider === p 
+                  ? "bg-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.5)]" 
+                  : "text-gray-400 hover:text-white hover:bg-white/10"
+              }`}
             >
-              <History className="w-3.5 h-3.5" />
-              <span>Resuming from {Math.floor(progress / 60)}m {progress % 60}s</span>
-            </motion.div>
-          )}
-        </div>
+              {p === "codespecter" ? "Premium" : p.replace('_', ' ')}
+            </button>
+          ))}
+        </motion.div>
         
         <motion.div 
           initial={{ y: -10, opacity: 0 }}
@@ -191,12 +181,20 @@ export default function VideoPlayer({
               </div>
             </div>
             
-            <button 
-              onClick={handleRefresh} 
-              className="pointer-events-auto text-white/40 hover:text-white p-2.5 md:p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5"
-            >
-              <RefreshCw className="w-4 h-4 md:w-5 md:h-5" />
-            </button>
+            <div className="flex items-center gap-4 pointer-events-auto">
+              {progress > 60 && (
+                <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md rounded-xl border border-white/10 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                  <History className="w-3 h-3 text-[#e50914]" />
+                  <span>Resuming: {Math.floor(progress / 60)}m</span>
+                </div>
+              )}
+              <button 
+                onClick={handleRefresh} 
+                className="text-white/40 hover:text-white p-2.5 md:p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5"
+              >
+                <RefreshCw className="w-4 h-4 md:w-5 md:h-5" />
+              </button>
+            </div>
           </div>
 
           <div className="w-full h-full relative bg-black">
@@ -252,4 +250,5 @@ export default function VideoPlayer({
     </AnimatePresence>
   );
 }
+
 
