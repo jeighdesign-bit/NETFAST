@@ -26,7 +26,7 @@ export default async function Home() {
     <main className="relative min-h-screen">
       <HeroBanner movie={heroMovie} />
       
-      <div className="relative z-10 pb-20 mt-8 md:-mt-32 space-y-16 md:space-y-48">
+      <div className="relative z-10 pb-20 mt-8 md:-mt-24 space-y-16 md:space-y-48">
         <AISearch />
         
         {/* Quick Category Bar */}
@@ -44,7 +44,7 @@ export default async function Home() {
               <Link 
                 key={cat.name} 
                 href={cat.lang ? `/movies?lang=${cat.lang}` : `/movies?genre=${cat.id}`}
-                className="px-6 py-2 rounded-xl bg-white/5 border border-white/10 text-gray-400 font-bold text-xs uppercase tracking-widest hover:bg-[#e50914] hover:text-white hover:border-[#e50914] transition-all duration-300"
+                className="px-6 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-gray-400 font-bold text-[10px] uppercase tracking-[0.15em] hover:bg-[#e50914] hover:text-white hover:border-[#e50914] hover:scale-105 transition-all duration-300"
               >
                 {cat.name}
               </Link>
