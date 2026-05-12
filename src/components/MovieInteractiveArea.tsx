@@ -17,6 +17,13 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   
+  const [selectedSeason, setSelectedSeason] = useState(1);
+  const [selectedEpisode, setSelectedEpisode] = useState(1);
+  const [showSeasonSelector, setShowSeasonSelector] = useState(false);
+  const [savedProgress, setSavedProgress] = useState<number | null>(null);
+  const [seasonDetail, setSeasonDetail] = useState<TVSeasonDetail | null>(null);
+  const [isLoadingSeason, setIsLoadingSeason] = useState(false);
+
   // Filter out Season 0 (Specials) and duplicates
   const filteredSeasons = useMemo(() => {
     if (!tvData?.seasons) return [];
@@ -48,13 +55,6 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
       return true;
     });
   }, [seasonDetail]);
-
-  const [selectedSeason, setSelectedSeason] = useState(1);
-  const [selectedEpisode, setSelectedEpisode] = useState(1);
-  const [showSeasonSelector, setShowSeasonSelector] = useState(false);
-  const [savedProgress, setSavedProgress] = useState<number | null>(null);
-  const [seasonDetail, setSeasonDetail] = useState<TVSeasonDetail | null>(null);
-  const [isLoadingSeason, setIsLoadingSeason] = useState(false);
 
   // Initialize selected season to the first available season
   useEffect(() => {
