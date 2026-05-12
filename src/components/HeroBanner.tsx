@@ -33,24 +33,24 @@ export default function HeroBanner({ movie }: { movie: Movie }) {
           />
         </div>
 
-        <div className="container mx-auto px-6 relative z-20 flex items-start h-full pt-48 md:pt-40">
+        <div className="container mx-auto px-6 relative z-20 flex items-start h-full pt-32 md:pt-40">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="max-w-2xl"
           >
-            <div className="inline-block px-3 py-1 mb-4 rounded-full glass border border-[#e50914]/50 text-[#ff4b4b] text-[10px] md:text-xs font-bold tracking-widest uppercase">
+            <div className="inline-block px-3 py-1 mb-3 md:mb-4 rounded-full glass border border-[#e50914]/50 text-[#ff4b4b] text-[9px] md:text-xs font-bold tracking-widest uppercase">
               #1 Trending Worldwide
             </div>
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black mb-4 text-white drop-shadow-2xl leading-[1.1] uppercase tracking-tighter" style={{ fontFamily: "var(--font-outfit)" }}>
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-black mb-3 md:mb-4 text-white drop-shadow-2xl leading-tight uppercase tracking-tighter" style={{ fontFamily: "var(--font-outfit)" }}>
               {movie.title || (movie as any).name}
             </h1>
-            <p className="text-sm md:text-xl text-gray-300 mb-8 max-w-lg leading-relaxed line-clamp-3 md:line-clamp-none">
+            <p className="text-xs md:text-xl text-gray-300 mb-6 md:mb-8 max-w-lg leading-relaxed line-clamp-3 md:line-clamp-none">
               {movie.overview}
             </p>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
               <button 
                 onClick={() => setIsPlaying(true)}
                 className="flex items-center justify-center gap-2 bg-[#e50914] hover:bg-[#ff4b4b] text-white px-8 py-4 md:py-3 rounded-xl md:rounded-md font-bold text-base md:text-lg transition-all duration-300 shadow-[0_10px_20px_rgba(229,9,20,0.3)] hover:shadow-[0_15px_30px_rgba(229,9,20,0.5)]"

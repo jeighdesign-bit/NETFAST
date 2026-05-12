@@ -12,6 +12,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +25,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -57,23 +58,30 @@ export default function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`fixed top-0 w-full transition-all duration-300 ${
-        isMobileMenuOpen ? "z-[9999]" : "z-[100]"
+      className={`fixed top-0 w-full transition-all duration-500 ease-in-out ${
+        isMobileMenuOpen ? "z-[9999]" : "z-[1000]"
       } ${
-        isScrolled || isMobileMenuOpen ? "bg-black/90 backdrop-blur-md shadow-[0_0_15px_rgba(229,9,20,0.2)]" : "bg-gradient-to-b from-black/80 via-black/40 to-transparent"
+        isScrolled ? "bg-black/80 backdrop-blur-xl border-b border-white/5" : "bg-gradient-to-b from-black/90 via-black/40 to-transparent"
       }`}
     >
-      {/* Global Experience Notice Bar */}
-      <div className="w-full bg-yellow-500 py-1 md:py-1.5 z-[100] relative">
-        <div className="container mx-auto px-6 flex items-center justify-center gap-3">
-          <AlertTriangle className="w-3.5 h-3.5 text-black animate-pulse" />
-          <p className="text-[10px] md:text-xs text-black font-black uppercase tracking-[0.15em]">
-            No Ads: Use{" "}
-            <span className="underline decoration-black/30">uBlock Origin</span> (PC) or{" "}
-            <span className="underline decoration-black/30">Brave Browser</span> (Mobile)
-          </p>
-        </div>
-      </div>
+      {/* Premium Notification Bar */}
+      <AnimatePresence>
+        {!isScrolled && !isMobileMenuOpen && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="w-full bg-gradient-to-r from-[#e50914] to-[#ff4b4b] py-1 md:py-1.5 overflow-hidden"
+          >
+            <div className="container mx-auto px-6 flex items-center justify-center gap-3">
+              <AlertTriangle className="w-3 h-3 text-white animate-pulse" />
+              <p className="text-[9px] md:text-xs text-white font-black uppercase tracking-[0.1em]">
+                Optimal Experience: Use <span className="font-bold border-b border-white/50">uBlock Origin</span> (PC) or <span className="font-bold border-b border-white/50">Brave</span> (Mobile)
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
         <div className="flex items-center gap-6">
@@ -142,23 +150,48 @@ export default function Navbar() {
           </ul>
         </div>
         
-        <div className="flex items-center gap-6">
-          <form onSubmit={handleSearch} className="hidden md:flex items-center relative group">
-            <input 
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search..."
-              className="bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-xs font-bold text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#e50914]/50 focus:bg-white/10 transition-all w-40 focus:w-64"
-            />
-            <Search className="absolute left-3 w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
-          </form>
+        <div className="flex items-center gap-2 md:gap-6">
+          {/* Search Section */}
+          <div className="flex items-center relative group">
+            <AnimatePresence>
+              {(isSearchVisible || !isMobileMenuOpen) && (
+                <motion.form 
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ 
+                    width: isSearchVisible || !isMobileMenuOpen ? (typeof window !== 'undefined' && window.innerWidth < 768 ? "140px" : "240px") : 0, 
+                    opacity: 1 
+                  }}
+                  onSubmit={handleSearch} 
+                  className={`flex items-center relative ${isSearchVisible ? 'flex' : 'hidden md:flex'}`}
+                >
+                  <input 
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Titles, people, genres..."
+                    className="bg-black/40 border border-white/20 rounded-full py-1.5 md:py-2 pl-9 md:pl-10 pr-4 text-[10px] md:text-xs font-medium text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#e50914] focus:bg-black/60 transition-all w-full backdrop-blur-md"
+                    autoFocus={isSearchVisible}
+                    onBlur={() => { if (!searchQuery) setIsSearchVisible(false); }}
+                  />
+                  <Search className="absolute left-3 w-3.5 h-3.5 md:w-4 md:h-4 text-gray-400" />
+                </motion.form>
+              )}
+            </AnimatePresence>
+            
+            <button 
+              className="md:hidden text-white p-2 hover:bg-white/10 rounded-full transition-colors ml-1"
+              onClick={() => setIsSearchVisible(!isSearchVisible)}
+            >
+              {!isSearchVisible && <Search className="w-5 h-5" />}
+            </button>
+          </div>
 
           <button 
-            className="md:hidden text-white p-2 hover:bg-white/10 rounded-full transition-colors"
+            className="text-white p-2 hover:bg-white/10 rounded-full transition-all active:scale-90"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Menu"
           >
-            {isMobileMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
+            {isMobileMenuOpen ? <X className="w-7 h-7 md:w-8 md:h-8" /> : <Menu className="w-7 h-7 md:w-8 md:h-8" />}
           </button>
         </div>
       </div>
@@ -167,115 +200,76 @@ export default function Navbar() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black md:hidden overflow-y-auto"
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-[9998] bg-black/95 backdrop-blur-2xl md:hidden overflow-y-auto"
           >
-            <div className="flex flex-col min-h-screen p-6 pt-24 pb-12">
-              <button 
-                className="fixed top-8 right-8 p-3 text-white bg-white/5 rounded-full border border-white/10 active:scale-90 transition-all" 
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <X className="w-8 h-8" />
-              </button>
+            <div className="flex flex-col min-h-screen p-8 pt-28 pb-12">
+              {/* Profile Section */}
+              <div className="flex items-center gap-4 mb-12 p-4 rounded-3xl bg-white/5 border border-white/10">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#e50914] to-[#ff4b4b] flex items-center justify-center shadow-lg">
+                  <User className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-black uppercase tracking-widest text-sm">Guest User</h3>
+                  <p className="text-gray-500 text-[10px] uppercase font-bold tracking-[0.2em]">Cinematic Explorer</p>
+                </div>
+              </div>
 
-              {/* Search Bar */}
-              <motion.form 
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                onSubmit={handleSearch} 
-                className="relative mb-10"
-              >
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-500" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search movies, tv shows..."
-                  className="w-full bg-white/5 border border-white/10 rounded-3xl py-5 pl-14 pr-6 text-white text-lg font-medium placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#e50914]/50 focus:border-[#e50914] transition-all"
-                />
-              </motion.form>
-
-              {/* Primary Nav Cards */}
-              <div className="grid grid-cols-2 gap-4 mb-10">
+              {/* Navigation Links */}
+              <div className="space-y-6 mb-12">
                 {navLinks.map((link, i) => (
                   <motion.div
                     key={link.name}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: i * 0.05 }}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.1 }}
                   >
                     <Link
                       href={link.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className={`flex flex-col items-center justify-center p-8 rounded-[2.5rem] border transition-all active:scale-95 shadow-2xl ${
-                        pathname === link.href 
-                          ? "bg-gradient-to-br from-[#e50914] to-[#8b5cf6] border-none" 
-                          : "bg-white/5 border-white/10 hover:bg-white/10"
+                      className={`text-4xl font-black tracking-tighter transition-all block ${
+                        pathname === link.href ? "text-[#e50914] translate-x-4" : "text-gray-600 hover:text-white"
                       }`}
                     >
-                      <span className="text-xl font-black tracking-tight uppercase text-white">{link.name}</span>
+                      {link.name}
                     </Link>
                   </motion.div>
                 ))}
               </div>
 
-              {/* Discover Content Section */}
-              <div className="mb-10">
-                <motion.h3 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-[11px] font-black uppercase tracking-[0.4em] text-gray-500 mb-8 px-2"
-                >
-                  Discover Content
-                </motion.h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {browseItems.map((item, i) => {
-                    const icons: Record<string, any> = { TrendingUp, Star, Globe, Calendar, Clock, Tag, Layers, Monitor, PlayCircle, Radio };
-                    const Icon = icons[item.icon];
-                    return (
-                      <motion.div
-                        key={item.name}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2 + (i * 0.05) }}
+              {/* Browse Categories */}
+              <div className="grid grid-cols-2 gap-4">
+                {browseItems.map((item, i) => {
+                  const icons: Record<string, any> = { TrendingUp, Star, Globe, Calendar, Clock, Tag, Layers, Monitor, PlayCircle, Radio };
+                  const Icon = icons[item.icon];
+                  return (
+                    <motion.div
+                      key={item.name}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.3 + (i * 0.05) }}
+                    >
+                      <Link
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/15 transition-all group"
                       >
-                        <Link
-                          href={item.href}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className="flex items-center gap-4 p-4 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all active:scale-95 group"
-                        >
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#e50914]/20 to-[#8b5cf6]/20 flex items-center justify-center border border-white/10 group-hover:from-[#e50914]/40 group-hover:to-[#8b5cf6]/40 transition-all shadow-lg">
-                            {Icon && <Icon className="w-6 h-6 text-white" />}
-                          </div>
-                          <span className="text-[10px] font-black uppercase tracking-widest text-gray-300 group-hover:text-white transition-colors">{item.name}</span>
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
-                </div>
+                        <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-[#e50914] transition-colors">
+                          {Icon && <Icon className="w-5 h-5 text-gray-400 group-hover:text-white" />}
+                        </div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white">{item.name}</span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
               </div>
-
-              {/* Quick Profile/Notice */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-auto p-6 rounded-[2.5rem] bg-gradient-to-r from-yellow-500/10 to-orange-500/10 border border-yellow-500/20 backdrop-blur-md flex items-center gap-5"
-              >
-                <div className="w-14 h-14 rounded-full bg-yellow-500/20 flex items-center justify-center shrink-0 border border-yellow-500/30">
-                  <AlertTriangle className="w-7 h-7 text-yellow-500" />
-                </div>
-                <div>
-                  <p className="text-white text-sm font-black uppercase tracking-widest mb-1">Premium Tip</p>
-                  <p className="text-gray-400 text-[10px] leading-relaxed">
-                    Use <span className="text-yellow-500 font-bold">uBlock Origin</span> or <span className="text-yellow-500 font-bold">Brave Browser</span> for a zero-ad cinematic experience.
-                  </p>
-                </div>
-              </motion.div>
             </div>
           </motion.div>
         )}
+      </AnimatePresence>
       </AnimatePresence>
     </motion.nav>
   );

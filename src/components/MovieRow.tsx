@@ -26,21 +26,21 @@ export default function MovieRow({ title, category, highlight, movies, variant =
   if (!movies || movies.length === 0) return null;
 
   return (
-    <div className="w-full relative py-8 md:py-12">
-      <div className="container mx-auto px-6 flex items-center justify-between mb-6 md:mb-8">
-        <h2 className={`text-2xl md:text-3xl font-black uppercase tracking-tighter ${highlight ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#8b5cf6]' : 'text-white'}`} style={{ fontFamily: "var(--font-outfit)" }}>
+    <div className="w-full relative py-4 md:py-12">
+      <div className="container mx-auto px-6 flex items-center justify-between mb-4 md:mb-8">
+        <h2 className={`text-xl md:text-3xl font-black uppercase tracking-tighter ${highlight ? 'text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#8b5cf6]' : 'text-white'}`} style={{ fontFamily: "var(--font-outfit)" }}>
           {title}
         </h2>
         <Link 
           href={category} 
-          className="group flex items-center gap-1 text-gray-500 hover:text-white transition-all text-[10px] md:text-sm font-bold uppercase tracking-widest py-1 px-3 rounded-full bg-white/5 border border-white/5"
+          className="group flex items-center gap-1 text-gray-400 hover:text-white transition-all text-[9px] md:text-sm font-bold uppercase tracking-widest py-1 px-3 rounded-full bg-white/5 border border-white/5"
         >
           <span>See All</span>
-          <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <ChevronRight className="w-3 h-3 md:w-4 md:h-4 group-hover:translate-x-1 transition-transform" />
         </Link>
       </div>
       
-      <div className="flex gap-4 md:gap-6 overflow-x-auto hide-scrollbar pb-10 pt-2 px-6">
+      <div className="flex gap-3 md:gap-6 overflow-x-auto hide-scrollbar pb-6 md:pb-10 pt-2 px-6">
         {movies.map((movie, index) => {
           const isTV = !movie.title && (movie as any).name;
           const href = isTV ? `/tv/${movie.id}` : `/movie/${movie.id}`;

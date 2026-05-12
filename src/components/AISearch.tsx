@@ -50,14 +50,14 @@ export default function AISearch() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="glass p-5 md:p-8 rounded-[1.5rem] md:rounded-[2rem] relative overflow-hidden group border-white/5"
+        className="glass p-4 md:p-8 rounded-[1.5rem] md:rounded-[2rem] relative overflow-hidden group border-white/5"
       >
         {/* Glow effect */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#e50914]/5 via-[#8b5cf6]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
         
-        <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 relative z-10">
-          <div className="flex-shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-tr from-[#e50914] to-[#ff4b4b] flex items-center justify-center shadow-[0_0_30px_rgba(229,9,20,0.4)]">
-            <Sparkles className="w-6 h-6 md:w-7 md:h-7 text-white" />
+        <div className="flex flex-col md:flex-row items-center gap-3 md:gap-6 relative z-10">
+          <div className="flex-shrink-0 w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-gradient-to-tr from-[#e50914] to-[#ff4b4b] flex items-center justify-center shadow-[0_0_30px_rgba(229,9,20,0.4)]">
+            <Sparkles className="w-5 h-5 md:w-7 md:h-7 text-white" />
           </div>
           <div className="flex-1 w-full relative">
             <div className="relative">
