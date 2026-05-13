@@ -3,6 +3,7 @@ import MovieRow from "@/components/MovieRow";
 import MovieInteractiveArea from "@/components/MovieInteractiveArea";
 import Image from "next/image";
 import { Metadata } from "next";
+import AdBanner from "@/components/AdBanner";
 
 export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const params = await props.params;
@@ -96,6 +97,7 @@ export default async function MovieDetailPage(props: { params: Promise<{ id: str
 
         {trailer && (
           <div className="mb-20">
+            <AdBanner format="728x90" />
             <h2 className="text-3xl font-bold mb-8 text-white uppercase tracking-tight" style={{ fontFamily: "var(--font-outfit)" }}>Official Trailer</h2>
             <div className="w-full aspect-video rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10">
               <iframe 
@@ -110,6 +112,7 @@ export default async function MovieDetailPage(props: { params: Promise<{ id: str
 
         <div className="pb-20">
           <MovieRow title="More Like This" category="similar" movies={similarMovies} />
+          <AdBanner format="468x60" />
         </div>
       </div>
     </div>

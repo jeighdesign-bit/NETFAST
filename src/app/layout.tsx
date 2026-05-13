@@ -7,6 +7,7 @@ import FAQSection from "@/components/FAQSection";
 import Link from "next/link";
 import { BackgroundProvider } from "@/context/BackgroundContext";
 import DynamicBackground from "@/components/DynamicBackground";
+import GlobalAds from "@/components/GlobalAds";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -72,6 +73,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${outfit.variable} dark antialiased`}>
       <body className="bg-black text-white overflow-x-hidden min-h-screen flex flex-col">
         <BackgroundProvider>
+          <GlobalAds />
           <DynamicBackground />
           <Navbar />
           <div className="flex-1">

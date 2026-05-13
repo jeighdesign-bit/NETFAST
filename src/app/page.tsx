@@ -9,6 +9,7 @@ import Link from "next/link";
 import ExperienceNotice from "@/components/ExperienceNotice";
 
 import NetworkRow from "@/components/NetworkRow";
+import AdBanner from "@/components/AdBanner";
 
 export default async function Home() {
   const trending = await fetchMovies("/trending/movie/day");
@@ -60,11 +61,15 @@ export default async function Home() {
 
         <NetworkRow />
         
+        <AdBanner format="728x90" />
+        
         <MovieRow title="Trending This Week" category="/movies?sort=trending" movies={trending.slice(0, 10)} variant="ranked" />
         
         <MovieRow title="Pinoy Blockbusters" category="/movies?lang=tl" highlight={true} movies={pinoy} />
         
         <MovieRow title="Top Rated & AI Recommended" category="/movies" movies={topRated} />
+        
+        <AdBanner format="468x60" />
         
         <MovieRow title="Marvel Cinematic Universe" category="/movies?search=Marvel" movies={action.slice(0, 10)} highlight={true} />
         
@@ -77,6 +82,8 @@ export default async function Home() {
         <MovieRow title="Action & Adventure" category="/movies?genre=28" movies={action} />
         
         <MovieRow title="Romance & Drama" category="/movies?genre=10749" movies={romance} />
+        
+        <AdBanner format="300x250" />
         
         <MovieRow title="Comedy Central" category="/movies?genre=35" movies={comedy} />
 

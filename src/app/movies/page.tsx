@@ -5,6 +5,7 @@ import SafeImage from "@/components/SafeImage";
 import { AlertTriangle, Filter, ArrowRight, Compass } from "lucide-react";
 import Pagination from "@/components/Pagination";
 import { Suspense } from "react";
+import AdBanner from "@/components/AdBanner";
 
 export default async function MoviesPage(props: { searchParams: Promise<{ genre?: string; lang?: string; page?: string; search?: string; sort?: string; year?: string; type?: string; network?: string }> }) {
   const searchParams = await props.searchParams;
@@ -174,6 +175,8 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
             })}
           </div>
 
+          <AdBanner format="728x90" />
+
           <Pagination currentPage={gridData.page} totalPages={gridData.total_pages} searchParams={searchParams} />
         </div>
       ) : (
@@ -182,6 +185,7 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
           <MovieRow title="Adrenaline Fueled" category="movies?genre=28" movies={action} />
           <MovieRow title="Future Shock" category="movies?genre=878" movies={scifi} />
           <MovieRow title="Psychological Thrills" category="movies?genre=53" movies={thriller} />
+          <AdBanner format="468x60" />
           <MovieRow title="Nightmare Fuel" category="movies?genre=27" movies={horror} />
           <MovieRow title="Endless Laughter" category="movies?genre=35" movies={comedy} />
         </div>

@@ -1,6 +1,7 @@
 import MovieRow from "@/components/MovieRow";
 import { fetchMovies } from "@/lib/tmdb";
 import { Sparkles, AlertTriangle } from "lucide-react";
+import AdBanner from "@/components/AdBanner";
 
 export default async function AnimePage() {
   const animePopular = await fetchMovies("/discover/movie", { with_genres: "16", sort_by: "popularity.desc" });
@@ -25,6 +26,7 @@ export default async function AnimePage() {
 
       <div className="space-y-24">
         <MovieRow title="Top Anime Hits" category="anime" movies={animePopular} />
+        <AdBanner format="728x90" />
         <MovieRow title="Explosive Action" category="anime" movies={animeAction} />
         <MovieRow title="Magical Worlds" category="anime" movies={animeFantasy} />
       </div>
