@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 interface AdBannerProps {
-  format: '160x300' | '160x600' | '300x250' | '320x50' | '468x60' | '728x90';
+  format: '160x300' | '160x600' | '300x250' | '320x50' | '468x60' | '728x90' | 'native';
 }
 
 const adConfigs = {
@@ -13,6 +13,7 @@ const adConfigs = {
   '320x50': { key: 'ddc22b558d7318f4fa6036c4d0c29ade', width: 320, height: 50 },
   '468x60': { key: '0551caa7274247b3a993e5bf2f206acb', width: 468, height: 60 },
   '728x90': { key: '4ba56285f56afc024ba1faac28e8eacf', width: 728, height: 90 },
+  'native': { key: '1723101ca20f818bcebcd0d7d40cfdce', width: '100%', height: 'auto' },
 };
 
 export default function AdBanner({ format }: AdBannerProps) {
@@ -25,24 +26,36 @@ export default function AdBanner({ format }: AdBannerProps) {
     // Clear previous content
     containerRef.current.innerHTML = '';
 
-    const script = document.createElement('script');
-    const atOptions = {
-      key: config.key,
-      format: 'iframe',
-      height: config.height,
-      width: config.width,
-      params: {},
-    };
+    if (format === 'native') {
+      const nativeContainer = document.createElement('div');
+      nativeContainer.id = `container-${config.key}`;
+      
+      const nativeScript = document.createElement('script');
+      nativeScript.src = `https://pl29435454.profitablecpmratenetwork.com/${config.key}/invoke.js`;
+      nativeScript.async = true;
+      nativeScript.setAttribute('data-cfasync', 'false');
 
-    const optionsScript = document.createElement('script');
-    optionsScript.innerHTML = `atOptions = ${JSON.stringify(atOptions)};`;
-    
-    const invokeScript = document.createElement('script');
-    invokeScript.src = `https://www.highperformanceformat.com/${config.key}/invoke.js`;
-    invokeScript.async = true;
+      containerRef.current.appendChild(nativeScript);
+      containerRef.current.appendChild(nativeContainer);
+    } else {
+      const atOptions = {
+        key: config.key,
+        format: 'iframe',
+        height: config.height as number,
+        width: config.width as number,
+        params: {},
+      };
 
-    containerRef.current.appendChild(optionsScript);
-    containerRef.current.appendChild(invokeScript);
+      const optionsScript = document.createElement('script');
+      optionsScript.innerHTML = `atOptions = ${JSON.stringify(atOptions)};`;
+      
+      const invokeScript = document.createElement('script');
+      invokeScript.src = `https://www.highperformanceformat.com/${config.key}/invoke.js`;
+      invokeScript.async = true;
+
+      containerRef.current.appendChild(optionsScript);
+      containerRef.current.appendChild(invokeScript);
+    }
 
     return () => {
       if (containerRef.current) {
@@ -52,13 +65,13 @@ export default function AdBanner({ format }: AdBannerProps) {
   }, [format, config]);
 
   return (
-    <div className="flex justify-center my-8 overflow-hidden">
+    <div className="flex justify-center my-8 overflow-hidden w-full">
       <div 
         ref={containerRef} 
-        style={{ width: config.width, height: config.height }}
-        className="bg-white/5 rounded-lg flex items-center justify-center text-[10px] text-white/20 uppercase tracking-widest border border-white/5"
+        style={{ width: config.width, minHeight: format === 'native' ? '100px' : config.height }}
+        className="bg-white/5 rounded-lg flex flex-col items-center justify-center text-[10px] text-white/20 uppercase tracking-widest border border-white/5 w-full max-w-[1200px]"
       >
-        Advertisement
+        {!containerRef.current?.innerHTML && <span>Advertisement</span>}
       </div>
     </div>
   );

@@ -86,6 +86,8 @@ export default async function Home() {
         <AdBanner format="300x250" />
         
         <MovieRow title="Comedy Central" category="/movies?genre=35" movies={comedy} />
+        
+        <AdBanner format="native" />
 
         {/* Final CTA */}
         <div className="container mx-auto px-6 py-10 flex justify-center">
