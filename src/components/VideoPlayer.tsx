@@ -47,7 +47,7 @@ export default function VideoPlayer({
     }
   }, [videoId]);
 
-  // Simulated progress tracking
+  // Optimized progress tracking - run every 10 seconds instead of 5 to save resources
   useEffect(() => {
     startTimeRef.current = Date.now();
     
@@ -55,19 +55,27 @@ export default function VideoPlayer({
       const elapsedSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
       const currentProgress = initialProgress + elapsedSeconds;
       
-      localStorage.setItem(`netfast_progress_${videoId}`, currentProgress.toString());
-      localStorage.setItem(`netfast_time_${videoId}`, Date.now().toString());
-      localStorage.setItem(`netfast_info_${videoId}`, JSON.stringify({
-        title: movieTitle,
-        posterPath: posterPath || `https://image.tmdb.org/t/p/w500/${tmdbId}`,
-        type,
-        season,
-        episode
-      }));
-      localStorage.setItem(`netfast_duration_${videoId}`, "7200"); 
+      // Batch localStorage updates
+      const progressData = {
+        progress: currentProgress.toString(),
+        time: Date.now().toString(),
+        info: JSON.stringify({
+          title: movieTitle,
+          posterPath: posterPath || `https://image.tmdb.org/t/p/w500/${tmdbId}`,
+          type,
+          season,
+          episode
+        }),
+        duration: "7200"
+      };
+
+      localStorage.setItem(`netfast_progress_${videoId}`, progressData.progress);
+      localStorage.setItem(`netfast_time_${videoId}`, progressData.time);
+      localStorage.setItem(`netfast_info_${videoId}`, progressData.info);
+      localStorage.setItem(`netfast_duration_${videoId}`, progressData.duration);
       
       setProgress(currentProgress);
-    }, 5000);
+    }, 10000); // 10 seconds is enough for progress tracking
 
     return () => clearInterval(interval);
   }, [videoId, movieTitle, tmdbId, posterPath, type, season, episode, initialProgress]);
