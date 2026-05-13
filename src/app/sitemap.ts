@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { fetchMovies } from '@/lib/tmdb';
 
-const BASE_URL = 'https://netfast.vercel.app';
+const BASE_URL = 'https://netfast.stream';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [

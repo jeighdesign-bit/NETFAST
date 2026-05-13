@@ -16,8 +16,8 @@ export const metadata: Metadata = {
     default: "NETFAST | AI-Powered Cinematic Experience",
     template: "%s | NETFAST"
   },
-  description: "NETFAST is the next-generation futuristic entertainment platform. Stream movies, anime, and TV shows with AI-powered discovery and lightning-fast playback.",
-  keywords: ["movies", "streaming", "anime", "cinema", "AI movie recommendations", "NETFAST", "watch movies online"],
+  description: "NETFAST | Stream the latest movies, Pinoy blockbusters, TV shows, and trending anime for free. Experience the future of cinema with AI-powered discovery and ultra-fast streaming on netfast.stream.",
+  keywords: ["movies", "streaming", "anime", "cinema", "AI movie recommendations", "NETFAST", "watch movies online", "free pinoy movies", "tagalog movies", "latest tv shows", "netfast stream"],
   authors: [{ name: "NETFAST Team" }],
   creator: "NETFAST",
   publisher: "NETFAST",
@@ -29,13 +29,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://netfast.vercel.app",
+    url: "https://netfast.stream",
     siteName: "NETFAST",
-    title: "NETFAST | Watch Movies & Anime Online",
-    description: "Stream the latest blockbusters and trending anime on NETFAST. AI-powered search and ad-free experience.",
+    title: "NETFAST | Watch Movies, TV Shows & Anime Online Free",
+    description: "Watch the latest movies and trending anime on NETFAST. AI-powered search, lightning-fast streaming, and a premium cinematic experience on netfast.stream.",
     images: [
       {
-        url: "https://netfast.vercel.app/og-image.jpg",
+        url: "https://netfast.stream/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "NETFAST Cinematic Experience",
@@ -45,8 +45,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "NETFAST | AI-Powered Cinematic Experience",
-    description: "The future of movie discovery is here. Stream now on NETFAST.",
-    images: ["https://netfast.vercel.app/og-image.jpg"],
+    description: "The future of movie discovery is here. Stream movies and anime for free on netfast.stream.",
+    images: ["https://netfast.stream/og-image.jpg"],
   },
   robots: {
     index: true,
