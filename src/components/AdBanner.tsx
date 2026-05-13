@@ -38,22 +38,19 @@ export default function AdBanner({ format }: AdBannerProps) {
       containerRef.current.appendChild(nativeScript);
       containerRef.current.appendChild(nativeContainer);
     } else {
-      const atOptions = {
+      // Set atOptions on window object - many ad scripts expect this globally
+      (window as any).atOptions = {
         key: config.key,
         format: 'iframe',
         height: config.height as number,
         width: config.width as number,
         params: {},
       };
-
-      const optionsScript = document.createElement('script');
-      optionsScript.innerHTML = `atOptions = ${JSON.stringify(atOptions)};`;
       
       const invokeScript = document.createElement('script');
       invokeScript.src = `https://www.highperformanceformat.com/${config.key}/invoke.js`;
       invokeScript.async = true;
 
-      containerRef.current.appendChild(optionsScript);
       containerRef.current.appendChild(invokeScript);
     }
 
@@ -61,6 +58,8 @@ export default function AdBanner({ format }: AdBannerProps) {
       if (containerRef.current) {
         containerRef.current.innerHTML = '';
       }
+      // Clean up global options
+      delete (window as any).atOptions;
     };
   }, [format, config]);
 
@@ -68,10 +67,14 @@ export default function AdBanner({ format }: AdBannerProps) {
     <div className="flex justify-center my-8 overflow-hidden w-full">
       <div 
         ref={containerRef} 
-        style={{ width: config.width, minHeight: format === 'native' ? '100px' : config.height }}
+        style={{ 
+          width: typeof config.width === 'number' ? `${config.width}px` : config.width, 
+          minHeight: format === 'native' ? '100px' : (typeof config.height === 'number' ? `${config.height}px` : 'auto') 
+        }}
         className="bg-white/5 rounded-lg flex flex-col items-center justify-center text-[10px] text-white/20 uppercase tracking-widest border border-white/5 w-full max-w-[1200px]"
       >
-        {!containerRef.current?.innerHTML && <span>Advertisement</span>}
+        {/* Placeholder text will disappear once the ad loads */}
+        <span className="py-4">Advertisement</span>
       </div>
     </div>
   );
