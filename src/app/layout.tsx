@@ -61,6 +61,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { Analytics } from "@vercel/analytics/react";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -77,6 +79,7 @@ export default function RootLayout({
           </div>
           <FAQSection />
           <Chatbot />
+          <Analytics />
         </BackgroundProvider>
         <footer className="bg-[#0a0a0a] border-t border-white/5 pt-20 pb-10 relative z-10 mt-20">
           <div className="container mx-auto px-6">
