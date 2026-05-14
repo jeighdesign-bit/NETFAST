@@ -41,15 +41,15 @@ export default function HeroBanner({ movies }: { movies: Movie[] }) {
             transition={{ duration: 1 }}
             className="absolute inset-0 z-0"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent z-10" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent z-10" />
             <SafeImage
               src={getImageUrl(movie.backdrop_path, "original")}
               alt={movie.title || (movie as any).name}
               fill
               priority
               quality={90}
-              className="object-cover opacity-60"
+              className="object-cover opacity-90 md:opacity-100"
             />
           </motion.div>
         </AnimatePresence>
