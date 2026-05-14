@@ -1,7 +1,6 @@
 import HeroBanner from "@/components/HeroBanner";
 import MovieRow from "@/components/MovieRow";
 import ContinueWatching from "@/components/ContinueWatching";
-import PersonalizedRow from "@/components/PersonalizedRow";
 import { fetchMovies } from "@/lib/tmdb";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -56,8 +55,6 @@ export default async function Home() {
         <ExperienceNotice />
         
         <ContinueWatching />
-        
-        <PersonalizedRow />
         
         <AdBanner format="728x90" />
         
