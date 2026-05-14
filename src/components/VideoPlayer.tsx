@@ -16,7 +16,7 @@ interface VideoPlayerProps {
   posterPath?: string;
 }
 
-type Provider = "codespecter" | "vidsrc_xyz" | "vidsrc_to" | "embed_su";
+type Provider = "codespecter" | "vidsrc_xyz" | "vidsrc_to" | "embed_su" | "smashystream" | "vidlink" | "vidsrc_me" | "superflix";
 
 export default function VideoPlayer({ 
   movieTitle, 
@@ -102,6 +102,22 @@ export default function VideoPlayer({
         return isTV
           ? `https://embed.su/embed/tv/${tmdbId}/${season}/${episode}?autoplay=1${timeValue ? `&t=${timeValue}` : ''}`
           : `https://embed.su/embed/movie/${tmdbId}?autoplay=1${timeValue ? `&t=${timeValue}` : ''}`;
+      case "smashystream":
+        return isTV
+          ? `https://player.smashy.stream/tv/${tmdbId}?s=${season}&e=${episode}&autoplay=1`
+          : `https://player.smashy.stream/movie/${tmdbId}?autoplay=1`;
+      case "vidlink":
+        return isTV
+          ? `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}?autoplay=1`
+          : `https://vidlink.pro/movie/${tmdbId}?autoplay=1`;
+      case "vidsrc_me":
+        return isTV
+          ? `https://vidsrc.me/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}&autoplay=1`
+          : `https://vidsrc.me/embed/movie?tmdb=${tmdbId}&autoplay=1`;
+      case "superflix":
+        return isTV
+          ? `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1&s=${season}&e=${episode}&autoplay=1`
+          : `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1&autoplay=1`;
       default:
         return "";
     }
@@ -141,7 +157,7 @@ export default function VideoPlayer({
           className="flex flex-wrap items-center justify-center gap-1.5 md:gap-2 mb-4 p-1.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md max-w-full overflow-x-auto hide-scrollbar"
         >
           <span className="hidden sm:inline text-[9px] md:text-[10px] uppercase tracking-widest text-gray-500 px-3 font-bold">Servers:</span>
-          {(["codespecter", "vidsrc_xyz", "vidsrc_to", "embed_su"] as Provider[]).map((p) => (
+          {(["codespecter", "vidsrc_xyz", "vidsrc_to", "embed_su", "smashystream", "vidlink", "vidsrc_me", "superflix"] as Provider[]).map((p) => (
             <button
               key={p}
               onClick={() => handleProviderChange(p)}
