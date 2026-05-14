@@ -40,7 +40,7 @@ export default function MovieRow({ title, category, highlight, movies, variant =
         </Link>
       </div>
       
-      <div className="flex gap-3 md:gap-6 overflow-x-auto hide-scrollbar pb-6 md:pb-10 pt-2 px-6">
+      <div className="flex gap-3 md:gap-6 overflow-x-auto hide-scrollbar pb-6 md:pb-10 pt-2 px-6 snap-x snap-mandatory scroll-smooth">
         {movies.map((movie, index) => {
           const isTV = !movie.title && (movie as any).name;
           const href = isTV ? `/tv/${movie.id}` : `/movie/${movie.id}`;
@@ -51,7 +51,7 @@ export default function MovieRow({ title, category, highlight, movies, variant =
               whileHover={{ scale: 1.05, zIndex: 10 }}
               onMouseEnter={() => setBackdrop(getImageUrl(movie.backdrop_path, 'original'))}
               onMouseLeave={() => setBackdrop(null)}
-              className={`relative ${variant === 'ranked' ? 'min-w-[240px] md:min-w-[320px] ml-12 md:ml-16' : 'min-w-[160px] md:min-w-[260px]'} h-[240px] md:h-[390px] rounded-2xl overflow-hidden cursor-pointer group bg-[#111] shrink-0 shadow-2xl border border-white/5`}
+              className={`relative ${variant === 'ranked' ? 'min-w-[240px] md:min-w-[320px] ml-12 md:ml-16' : 'min-w-[140px] md:min-w-[260px]'} h-[210px] md:h-[390px] rounded-2xl overflow-hidden cursor-pointer group bg-[#111] shrink-0 shadow-2xl border border-white/5 snap-start md:snap-none active:scale-95 transition-transform duration-300`}
               onClick={() => router.push(href)}
             >
               {variant === 'ranked' && (

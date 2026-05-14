@@ -21,7 +21,7 @@ export default function NetworkRow() {
         <div className="h-1 w-12 bg-[#e50914] mt-2" />
       </div>
       
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-6">
         {networks.map((network) => (
           <Link 
             key={network.id} 

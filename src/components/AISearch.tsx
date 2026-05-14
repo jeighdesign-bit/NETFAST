@@ -76,12 +76,12 @@ export default function AISearch() {
           </div>
         </div>
         
-        <div className="flex gap-2 mt-4 md:mt-6 overflow-x-auto hide-scrollbar pb-2">
+        <div className="flex gap-2 mt-4 md:mt-6 overflow-x-auto hide-scrollbar scroll-smooth snap-x snap-mandatory pb-4">
           {["Action", "Sci-Fi", "Drama", "Anime", "90s"].map((suggestion, idx) => (
             <button 
               key={idx} 
               onClick={() => setQuery(suggestion)} 
-              className="whitespace-nowrap text-[9px] md:text-[10px] uppercase font-black tracking-widest bg-white/5 hover:bg-[#e50914] hover:text-white border border-white/5 rounded-full px-4 md:px-5 py-2 text-gray-400 transition-all duration-300"
+              className="snap-start shrink-0 whitespace-nowrap text-[9px] md:text-[10px] uppercase font-black tracking-widest bg-white/5 hover:bg-[#e50914] hover:text-white border border-white/5 rounded-full px-5 py-2.5 text-gray-400 active:scale-95 transition-all duration-300"
             >
               {suggestion}
             </button>

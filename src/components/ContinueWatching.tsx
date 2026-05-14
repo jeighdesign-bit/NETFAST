@@ -96,7 +96,7 @@ export default function ContinueWatching() {
       </div>
 
       <div className="relative group">
-        <div className="flex gap-6 overflow-x-auto px-6 pb-8 scrollbar-hide snap-x snap-mandatory">
+        <div className="flex gap-4 md:gap-6 overflow-x-auto px-6 pb-8 hide-scrollbar scroll-smooth snap-x snap-mandatory">
           <AnimatePresence mode="popLayout">
             {items.map((item) => (
               <motion.div
@@ -106,7 +106,7 @@ export default function ContinueWatching() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
                 whileHover={{ y: -10 }}
-                className="flex-none w-[300px] md:w-[380px] snap-start"
+                className="flex-none w-[280px] md:w-[380px] snap-start active:scale-95 transition-transform duration-300"
               >
                 <Link 
                   href={`/${item.type}/${item.tmdbId}${item.type === 'tv' ? `?s=${item.season}&e=${item.episode}` : ''}`} 

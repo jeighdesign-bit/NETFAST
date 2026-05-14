@@ -27,12 +27,12 @@ export default async function Home() {
     <main className="relative min-h-screen">
       <HeroBanner movies={heroMovies} />
       
-      <div className="relative z-10 pb-20 mt-8 md:-mt-24 space-y-16 md:space-y-48">
+      <div className="relative z-10 pb-20 -mt-10 md:-mt-24 space-y-10 md:space-y-32">
         <AISearch />
         
         {/* Quick Category Bar */}
         <div className="container mx-auto px-6">
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex overflow-x-auto hide-scrollbar scroll-smooth snap-x snap-mandatory gap-3 pb-4 md:pb-0 md:flex-wrap">
             {[
               { name: "Action", id: "28" },
               { name: "Sci-Fi", id: "878" },
@@ -45,7 +45,7 @@ export default async function Home() {
               <Link 
                 key={cat.name} 
                 href={cat.lang ? `/movies?lang=${cat.lang}` : `/movies?genre=${cat.id}`}
-                className="px-6 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-gray-400 font-bold text-[10px] uppercase tracking-[0.15em] hover:bg-[#e50914] hover:text-white hover:border-[#e50914] hover:scale-105 transition-all duration-300"
+                className="snap-start shrink-0 px-6 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-gray-400 font-bold text-[10px] md:text-xs uppercase tracking-[0.15em] hover:bg-[#e50914] hover:text-white hover:border-[#e50914] hover:scale-105 active:scale-95 transition-all duration-300"
               >
                 {cat.name}
               </Link>
