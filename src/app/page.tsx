@@ -5,9 +5,8 @@ import { fetchMovies } from "@/lib/tmdb";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import ExperienceNotice from "@/components/ExperienceNotice";
-
 import NetworkRow from "@/components/NetworkRow";
-import AdBanner from "@/components/AdBanner";
+import ExoclickBanner from "@/components/ExoclickBanner";
 
 export default async function Home() {
   const trending = await fetchMovies("/trending/movie/day");
@@ -56,7 +55,7 @@ export default async function Home() {
         
         <ContinueWatching />
         
-        <AdBanner format="728x90" />
+        <ExoclickBanner zoneId="5926632" />
         
         <MovieRow title="Trending This Week" category="/movies?sort=trending" movies={trending.slice(0, 10)} variant="ranked" />
         
@@ -64,7 +63,7 @@ export default async function Home() {
         
         <MovieRow title="Top Rated & AI Recommended" category="/movies" movies={topRated} />
         
-        <AdBanner format="468x60" />
+        <ExoclickBanner zoneId="5926632" />
         
         <MovieRow title="Marvel Cinematic Universe" category="/movies?search=Marvel" movies={action.slice(0, 10)} highlight={true} />
         
@@ -78,11 +77,11 @@ export default async function Home() {
         
         <MovieRow title="Romance & Drama" category="/movies?genre=10749" movies={romance} />
         
-        <AdBanner format="300x250" />
+        <ExoclickBanner zoneId="5926632" />
         
         <MovieRow title="Comedy Central" category="/movies?genre=35" movies={comedy} />
         
-        <AdBanner format="native" />
+        <ExoclickBanner zoneId="5926632" />
 
         {/* Final CTA */}
         <div className="container mx-auto px-6 py-10 flex justify-center">
