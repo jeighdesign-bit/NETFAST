@@ -98,11 +98,11 @@ export default function Navbar() {
             <div className="relative group">
               {/* Subtle ambient glow behind logo */}
               <div className="absolute inset-0 bg-[#e50914]/20 blur-2xl rounded-full scale-[1.8] pointer-events-none opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
-              <Link href="/" className="relative shrink-0 group/logo">
+              <Link href="/" className="relative shrink-0 group/logo flex items-center">
                 <img 
                   src="/navbar-logo.png" 
                   alt="NETFAST Logo" 
-                  className="h-8 md:h-10 w-auto object-contain drop-shadow-[0_0_15px_rgba(229,9,20,0.4)] group-hover/logo:scale-105 transition-transform duration-300" 
+                  className="w-[110px] md:w-[150px] h-7 md:h-10 object-cover object-center drop-shadow-[0_0_15px_rgba(229,9,20,0.4)] group-hover/logo:scale-105 transition-transform duration-300" 
                 />
               </Link>
             </div>
