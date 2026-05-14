@@ -98,8 +98,15 @@ export default function Navbar() {
             <div className="relative group">
               {/* Subtle ambient glow behind logo */}
               <div className="absolute inset-0 bg-[#e50914]/20 blur-2xl rounded-full scale-[1.8] pointer-events-none opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
-              <Link href="/" className="relative text-3xl md:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#ff4b4b] shrink-0 drop-shadow-[0_0_15px_rgba(229,9,20,0.4)]" style={{ fontFamily: "var(--font-outfit)" }}>
-                NETFAST
+              <Link href="/" className="relative flex items-center gap-2 md:gap-3 shrink-0 group/logo">
+                <img 
+                  src="/logo.png" 
+                  alt="NETFAST Logo" 
+                  className="h-7 md:h-9 w-auto object-contain drop-shadow-[0_0_15px_rgba(229,9,20,0.4)] group-hover/logo:scale-105 transition-transform duration-300" 
+                />
+                <span className="text-2xl md:text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#ff4b4b] drop-shadow-[0_0_15px_rgba(229,9,20,0.4)]" style={{ fontFamily: "var(--font-outfit)" }}>
+                  NETFAST
+                </span>
               </Link>
             </div>
           </div>
