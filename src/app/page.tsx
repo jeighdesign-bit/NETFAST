@@ -26,11 +26,11 @@ export default async function Home() {
     <main className="relative min-h-screen">
       <HeroBanner movies={heroMovies} />
       
-      <div className="relative z-10 pb-20 -mt-10 md:-mt-24 space-y-10 md:space-y-32">
+      <div className="relative z-40 pb-20 -mt-6 md:-mt-12 space-y-10 md:space-y-32 pt-4">
         
         {/* Quick Category Bar */}
         <div className="container mx-auto px-6">
-          <div className="flex overflow-x-auto hide-scrollbar scroll-smooth snap-x snap-mandatory gap-3 pb-4 md:pb-0 md:flex-wrap">
+          <div className="flex overflow-x-auto hide-scrollbar scroll-smooth snap-x snap-mandatory gap-3 pb-4 md:pb-0 md:flex-wrap md:justify-center">
             {[
               { name: "Action", id: "28" },
               { name: "Sci-Fi", id: "878" },
