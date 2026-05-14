@@ -1,5 +1,6 @@
 const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY || "";
 const BASE_URL = "https://api.themoviedb.org/3";
+import { redis } from './redis';
 
 export interface Movie {
   id: number;
@@ -117,8 +118,22 @@ export async function fetchTMDB(endpoint: string, params: Record<string, string>
     url.searchParams.append("api_key", TMDB_API_KEY);
     Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, value));
 
+    const cacheKey = `tmdb:${endpoint}:${JSON.stringify(params)}`;
+    
+    // Check sa Upstash Redis kung naa na bay gi-save ani
+    const cachedData = await redis.get<TMDBResponse>(cacheKey);
+    if (cachedData) {
+      return cachedData;
+    }
+
     const response = await fetch(url.toString(), { next: { revalidate: 3600 } });
     const data = await response.json();
+    
+    // I-save ang resulta sa Redis para sunod paspas na (1 Hour expiration)
+    if (data && !data.success && data.success !== false) {
+      await redis.set(cacheKey, data, { ex: 3600 });
+    }
+    
     return data;
   } catch (error) {
     console.error("Error fetching TMDB:", error);
