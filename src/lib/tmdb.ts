@@ -135,7 +135,8 @@ export async function fetchTMDB(endpoint: string, params: Record<string, string>
     }
     
     return data;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.digest === 'DYNAMIC_SERVER_USAGE') throw error;
     console.error("Error fetching TMDB:", error);
     return { results: mockMovies, total_pages: 1, total_results: mockMovies.length, page: 1 };
   }
@@ -152,7 +153,8 @@ export async function fetchMovieDetails(id: string): Promise<MovieDetail> {
     const data = await response.json();
     if (data.success === false) return { ...mockMovieDetail, id: Number(id) };
     return data;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.digest === 'DYNAMIC_SERVER_USAGE') throw error;
     return { ...mockMovieDetail, id: Number(id) };
   }
 }
@@ -187,7 +189,8 @@ export async function getMovieVideos(id: string) {
     const url = `${BASE_URL}/movie/${id}/videos?api_key=${TMDB_API_KEY}`;
     const response = await fetch(url, { next: { revalidate: 3600 } });
     return await response.json();
-  } catch (error) {
+  } catch (error: any) {
+    if (error.digest === 'DYNAMIC_SERVER_USAGE') throw error;
     return { results: [] };
   }
 }
@@ -233,7 +236,8 @@ export async function fetchTVDetails(id: string): Promise<TVDetail> {
     const response = await fetch(url, { next: { revalidate: 3600 } });
     const data = await response.json();
     return data;
-  } catch (error) {
+  } catch (error: any) {
+    if (error.digest === 'DYNAMIC_SERVER_USAGE') throw error;
     return { ...mockMovieDetail, id: Number(id), name: "Error TV", number_of_seasons: 0, number_of_episodes: 0, seasons: [] } as any;
   }
 }
@@ -247,7 +251,8 @@ export async function fetchTVSeason(id: string, seasonNumber: number): Promise<T
     const url = `${BASE_URL}/tv/${id}/season/${seasonNumber}?api_key=${TMDB_API_KEY}`;
     const response = await fetch(url, { next: { revalidate: 3600 } });
     return await response.json();
-  } catch (error) {
+  } catch (error: any) {
+    if (error.digest === 'DYNAMIC_SERVER_USAGE') throw error;
     return { episodes: [] } as any;
   }
 }
