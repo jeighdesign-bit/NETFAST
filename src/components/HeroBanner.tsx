@@ -93,7 +93,7 @@ export default function HeroBanner({ movies }: { movies: Movie[] }) {
         </div>
 
         {/* Carousel Indicators */}
-        <div className="absolute bottom-8 left-0 right-0 z-30 flex justify-center gap-2">
+        <div className="absolute bottom-16 md:bottom-32 left-0 right-0 z-30 flex justify-center gap-2">
           {movies.map((_, idx) => (
             <button
               key={idx}
