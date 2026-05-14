@@ -74,18 +74,18 @@ export default function HeroBanner({ movies }: { movies: Movie[] }) {
               {movie.overview}
             </p>
 
-            <div className="flex flex-wrap items-center gap-3 md:gap-5">
+            <div className="flex flex-wrap items-center gap-3 md:gap-4 mt-2">
               <button 
                 onClick={() => setIsPlaying(true)}
-                className="flex items-center justify-center gap-3 bg-[#e50914] hover:bg-[#ff4b4b] text-white px-8 py-4 rounded-2xl font-bold text-base md:text-lg transition-all duration-300 shadow-[0_10px_40px_rgba(229,9,20,0.4)] hover:scale-105 active:scale-95"
+                className="flex items-center justify-center gap-2.5 bg-white text-black hover:bg-gray-200 px-7 md:px-8 py-3 md:py-3.5 rounded-xl font-bold text-base md:text-lg transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_4px_20px_rgba(255,255,255,0.2)]"
               >
-                <Play className="fill-current w-5 h-5" /> Watch Now
+                <Play className="fill-current w-5 h-5 md:w-6 md:h-6" /> Play
               </button>
               <Link 
                 href={href}
-                className="flex items-center justify-center gap-3 glass border border-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-2xl font-bold text-base md:text-lg transition-all duration-300 hover:scale-105 active:scale-95"
+                className="flex items-center justify-center gap-2.5 bg-white/20 hover:bg-white/30 backdrop-blur-xl border border-white/10 hover:border-white/20 text-white px-7 md:px-8 py-3 md:py-3.5 rounded-xl font-semibold text-base md:text-lg transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
               >
-                <Info className="w-5 h-5" /> More Info
+                <Info className="w-5 h-5 md:w-6 md:h-6" /> More Info
               </Link>
             </div>
             </motion.div>
