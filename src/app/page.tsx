@@ -1,5 +1,4 @@
 import HeroBanner from "@/components/HeroBanner";
-import AISearch from "@/components/AISearch";
 import MovieRow from "@/components/MovieRow";
 import ContinueWatching from "@/components/ContinueWatching";
 import PersonalizedRow from "@/components/PersonalizedRow";
@@ -28,7 +27,6 @@ export default async function Home() {
       <HeroBanner movies={heroMovies} />
       
       <div className="relative z-10 pb-20 -mt-10 md:-mt-24 space-y-10 md:space-y-32">
-        <AISearch />
         
         {/* Quick Category Bar */}
         <div className="container mx-auto px-6">
