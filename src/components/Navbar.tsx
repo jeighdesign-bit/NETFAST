@@ -84,19 +84,24 @@ export default function Navbar() {
       </AnimatePresence>
 
       <div className="container mx-auto px-6 py-4 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center gap-6 lg:gap-10">
+          <div className="flex items-center gap-5 md:gap-7">
             {pathname !== "/" && (
               <button 
                 onClick={() => router.back()}
-                className="text-white hover:text-[#e50914] transition-colors"
+                className="group flex items-center justify-center w-10 h-10 md:w-11 md:h-11 rounded-full md:rounded-[14px] bg-white/5 backdrop-blur-xl border border-white/10 hover:bg-white/15 hover:border-white/25 transition-all duration-300 shadow-[0_8px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:scale-105 active:scale-95"
+                aria-label="Go Back"
               >
-                <ArrowLeft className="w-6 h-6" />
+                <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors duration-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]" />
               </button>
             )}
-            <Link href="/" className="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#ff4b4b] neon-text shrink-0" style={{ fontFamily: "var(--font-outfit)" }}>
-              NETFAST
-            </Link>
+            <div className="relative group">
+              {/* Subtle ambient glow behind logo */}
+              <div className="absolute inset-0 bg-[#e50914]/20 blur-2xl rounded-full scale-[1.8] pointer-events-none opacity-50 group-hover:opacity-80 transition-opacity duration-500" />
+              <Link href="/" className="relative text-3xl md:text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#e50914] to-[#ff4b4b] shrink-0 drop-shadow-[0_0_15px_rgba(229,9,20,0.4)]" style={{ fontFamily: "var(--font-outfit)" }}>
+                NETFAST
+              </Link>
+            </div>
           </div>
           <ul className="hidden lg:flex items-center gap-8 text-sm font-bold text-gray-400 tracking-wide uppercase">
             {navLinks.map((link) => (
