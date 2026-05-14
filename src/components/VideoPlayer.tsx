@@ -30,7 +30,7 @@ export default function VideoPlayer({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const [key, setKey] = useState(0);
-  const [provider, setProvider] = useState<Provider>("vidsrc_to");
+  const [provider, setProvider] = useState<Provider>("codespecter");
   const [progress, setProgress] = useState(0);
   const [initialProgress, setInitialProgress] = useState(0);
   const startTimeRef = useRef<number>(Date.now());
