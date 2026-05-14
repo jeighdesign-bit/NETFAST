@@ -51,13 +51,13 @@ export default async function Home() {
           </div>
         </div>
         
+        <NetworkRow />
+        
         <ExperienceNotice />
         
         <ContinueWatching />
         
         <PersonalizedRow />
-
-        <NetworkRow />
         
         <AdBanner format="728x90" />
         
