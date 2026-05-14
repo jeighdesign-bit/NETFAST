@@ -30,7 +30,7 @@ export default function VideoPlayer({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const [key, setKey] = useState(0);
-  const [provider, setProvider] = useState<Provider>("codespecter");
+  const [provider, setProvider] = useState<Provider>("vidsrc_to");
   const [progress, setProgress] = useState(0);
   const [initialProgress, setInitialProgress] = useState(0);
   const startTimeRef = useRef<number>(Date.now());
@@ -83,25 +83,25 @@ export default function VideoPlayer({
   const getEmbedUrl = (p: Provider) => {
     const isTV = type === "tv";
     // USE initialProgress here so it doesn't change every 5 seconds
-    const timeParam = initialProgress > 10 ? `&t=${Math.floor(initialProgress)}` : "";
+    const timeValue = initialProgress > 10 ? Math.floor(initialProgress) : null;
     
     switch(p) {
       case "codespecter":
         return isTV 
-          ? `https://api.codespecters.com/embed/tv/${tmdbId}/${season}/${episode}?apikey=${process.env.NEXT_PUBLIC_EMBED_API_KEY}${timeParam}`
-          : `https://api.codespecters.com/embed/movie/${tmdbId}?apikey=${process.env.NEXT_PUBLIC_EMBED_API_KEY}${timeParam}`;
+          ? `https://api.codespecters.com/embed/tv/${tmdbId}/${season}/${episode}?apikey=${process.env.NEXT_PUBLIC_EMBED_API_KEY}&autoplay=1${timeValue ? `&t=${timeValue}` : ''}`
+          : `https://api.codespecters.com/embed/movie/${tmdbId}?apikey=${process.env.NEXT_PUBLIC_EMBED_API_KEY}&autoplay=1${timeValue ? `&t=${timeValue}` : ''}`;
       case "vidsrc_xyz":
         return isTV
-          ? `https://vidsrc.xyz/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}${timeParam}`
-          : `https://vidsrc.xyz/embed/movie?tmdb=${tmdbId}${timeParam}`;
+          ? `https://vidsrc.xyz/embed/tv?tmdb=${tmdbId}&season=${season}&episode=${episode}&autoplay=1${timeValue ? `&t=${timeValue}` : ''}`
+          : `https://vidsrc.xyz/embed/movie?tmdb=${tmdbId}&autoplay=1${timeValue ? `&t=${timeValue}` : ''}`;
       case "vidsrc_to":
         return isTV
-          ? `https://vidsrc.to/embed/tv/${tmdbId}/${season}/${episode}${timeParam}`
-          : `https://vidsrc.to/embed/movie/${tmdbId}${timeParam}`;
+          ? `https://vidsrc.to/embed/tv/${tmdbId}/${season}/${episode}?autoplay=1${timeValue ? `&t=${timeValue}` : ''}`
+          : `https://vidsrc.to/embed/movie/${tmdbId}?autoplay=1${timeValue ? `&t=${timeValue}` : ''}`;
       case "embed_su":
         return isTV
-          ? `https://embed.su/embed/tv/${tmdbId}/${season}/${episode}${timeParam}`
-          : `https://embed.su/embed/movie/${tmdbId}${timeParam}`;
+          ? `https://embed.su/embed/tv/${tmdbId}/${season}/${episode}?autoplay=1${timeValue ? `&t=${timeValue}` : ''}`
+          : `https://embed.su/embed/movie/${tmdbId}?autoplay=1${timeValue ? `&t=${timeValue}` : ''}`;
       default:
         return "";
     }
