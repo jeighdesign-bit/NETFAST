@@ -21,11 +21,11 @@ export default async function Home() {
   const comedy = await fetchMovies("/discover/movie", { with_genres: "35" });
   const pinoy = await fetchMovies("/discover/movie", { with_original_language: "tl", sort_by: "revenue.desc" });
 
-  const heroMovie = trending[Math.floor(Math.random() * Math.min(trending.length, 5))];
+  const heroMovies = trending.slice(0, 5);
 
   return (
     <main className="relative min-h-screen">
-      <HeroBanner movie={heroMovie} />
+      <HeroBanner movies={heroMovies} />
       
       <div className="relative z-10 pb-20 mt-8 md:-mt-24 space-y-16 md:space-y-48">
         <AISearch />

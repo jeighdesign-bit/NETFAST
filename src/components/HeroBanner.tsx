@@ -1,18 +1,30 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Play, Info, AlertTriangle } from "lucide-react";
 import Link from "next/link";
 import SafeImage from "./SafeImage";
 import VideoPlayer from "./VideoPlayer";
 import { Movie, getImageUrl } from "@/lib/tmdb";
 
-export default function HeroBanner({ movie }: { movie: Movie }) {
+export default function HeroBanner({ movies }: { movies: Movie[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  if (!movie) return null;
+  useEffect(() => {
+    if (isPlaying || !movies || movies.length === 0) return;
+    
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % movies.length);
+    }, 8000); // 8 seconds per slide
+    
+    return () => clearInterval(interval);
+  }, [isPlaying, movies]);
 
+  if (!movies || movies.length === 0) return null;
+
+  const movie = movies[currentIndex];
   const isTV = !movie.title && (movie as any).name;
   const href = isTV ? `/tv/${movie.id}` : `/movie/${movie.id}`;
 
@@ -20,26 +32,38 @@ export default function HeroBanner({ movie }: { movie: Movie }) {
     <>
       <div className="relative w-full min-h-screen md:h-[90vh] flex items-center overflow-hidden">
         {/* Background with overlay */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent z-10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
-          <SafeImage
-            src={getImageUrl(movie.backdrop_path, "original")}
-            alt={movie.title || (movie as any).name}
-            fill
-            priority
-            quality={90}
-            className="object-cover opacity-60"
-          />
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div 
+            key={`bg-${currentIndex}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="absolute inset-0 z-0"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
+            <SafeImage
+              src={getImageUrl(movie.backdrop_path, "original")}
+              alt={movie.title || (movie as any).name}
+              fill
+              priority
+              quality={90}
+              className="object-cover opacity-60"
+            />
+          </motion.div>
+        </AnimatePresence>
 
         <div className="container mx-auto px-6 relative z-20 flex items-center h-full pt-20 md:pt-0">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="max-w-2xl"
-          >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`content-${currentIndex}`}
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 50 }}
+              transition={{ duration: 0.8 }}
+              className="max-w-2xl"
+            >
             <div className="inline-block px-3 py-1 mb-3 md:mb-4 rounded-full glass border border-[#e50914]/50 text-[#ff4b4b] text-[9px] md:text-xs font-bold tracking-widest uppercase">
               #1 Trending Worldwide
             </div>
@@ -65,7 +89,20 @@ export default function HeroBanner({ movie }: { movie: Movie }) {
               </Link>
             </div>
 
-          </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Carousel Indicators */}
+        <div className="absolute bottom-8 left-0 right-0 z-30 flex justify-center gap-2">
+          {movies.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                idx === currentIndex ? "w-8 bg-[#e50914]" : "w-2 bg-white/30 hover:bg-white/60"
+              }`}
+            />
+          ))}
         </div>
       </div>
 
