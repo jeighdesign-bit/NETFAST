@@ -10,7 +10,7 @@ const networks = [
   { name: "Disney+", logo: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg", id: "2739" },
   { name: "Apple TV+", logo: "https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg", id: "2552" },
   { name: "Amazon Prime", logo: "https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg", id: "1024" },
-  { name: "Hulu", logo: "https://image.tmdb.org/t/p/w300/pq2lsRQ2ObK04vj9xRssLdoE840.png", id: "453" },
+  { name: "Hulu", logo: "https://cdn.worldvectorlogo.com/logos/hulu.svg", id: "453" },
 ];
 
 export default function NetworkRow() {
