@@ -88,7 +88,7 @@ export default function HeroBanner({ movies }: { movies: Movie[] }) {
                 <Info className="w-5 h-5" /> More Info
               </Link>
             </div>
-
+            </motion.div>
           </AnimatePresence>
         </div>
 
