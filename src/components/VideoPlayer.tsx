@@ -268,8 +268,8 @@ export default function VideoPlayer({
           </div>
         </div>
 
-        {/* Backdrop click to close */}
-        <div className="absolute inset-0 -z-10 cursor-pointer" onClick={onClose} />
+        {/* Backdrop background */}
+        <div className="absolute inset-0 -z-10" />
       </motion.div>
     </AnimatePresence>
   );
