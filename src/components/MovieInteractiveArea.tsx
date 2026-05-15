@@ -135,20 +135,20 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
               {movie.overview}
             </p>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4 relative z-10">
               <div className="flex flex-col sm:flex-row gap-3">
                 <button 
                   onClick={() => setIsPlaying(true)}
-                  className="flex items-center justify-center gap-2 bg-white text-black hover:bg-[#e50914] hover:text-white px-8 py-4 md:py-3 rounded-xl md:rounded-md font-bold text-base md:text-lg transition-all shadow-xl"
+                  className="flex items-center justify-center gap-2.5 bg-white text-black hover:bg-[#e50914] hover:text-white px-8 min-h-[56px] md:min-h-0 md:py-3 rounded-xl md:rounded-md font-bold text-lg md:text-lg transition-all shadow-xl active:scale-95"
                 >
-                  <Play className="fill-current w-5 h-5" /> 
+                  <Play className="fill-current w-6 h-6" /> 
                   {isTV ? `Play S${selectedSeason}:E${selectedEpisode}` : (savedProgress && savedProgress > 60 ? 'Resume Movie' : 'Watch Now')}
                 </button>
 
                 {savedProgress && (
                   <button 
                     onClick={handleResetProgress}
-                    className="flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 px-4 py-4 md:py-3 rounded-xl md:rounded-md font-bold text-sm transition-all border border-white/10"
+                    className="flex items-center justify-center gap-2 bg-white/10 text-white hover:bg-white/20 px-4 min-h-[48px] md:min-h-0 md:py-3 rounded-xl md:rounded-md font-bold text-sm transition-all border border-white/10 active:scale-95"
                     title="Start from Beginning"
                   >
                     <RotateCcw className="w-4 h-4" />
@@ -158,13 +158,13 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
               </div>
               
               <div className="flex items-center gap-3 justify-center sm:justify-start">
-                <button className="flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/20 hover:border-white transition-colors bg-black/20">
+                <button className="flex items-center justify-center w-12 h-12 md:w-12 md:h-12 rounded-full border-2 border-white/20 hover:border-white transition-colors bg-black/20 active:scale-90">
                   <Plus className="text-white w-6 h-6" />
                 </button>
 
                 <button 
                   onClick={() => setIsMuted(!isMuted)}
-                  className="flex items-center justify-center w-12 h-12 rounded-full border-2 border-white/20 hover:border-white transition-colors bg-black/20"
+                  className="flex items-center justify-center w-12 h-12 md:w-12 md:h-12 rounded-full border-2 border-white/20 hover:border-white transition-colors bg-black/20 active:scale-90"
                 >
                   {isMuted ? <VolumeX className="text-white w-5 h-5" /> : <Volume2 className="text-white w-5 h-5" />}
                 </button>

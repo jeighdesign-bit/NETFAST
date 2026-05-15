@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  ArrowLeft, RefreshCw, AlertCircle, History
+  ArrowLeft, RefreshCw, AlertCircle, History, Smartphone
 } from "lucide-react";
 
 interface VideoPlayerProps {
@@ -33,6 +33,7 @@ export default function VideoPlayer({
   const [provider, setProvider] = useState<Provider>("codespecter");
   const [progress, setProgress] = useState(0);
   const [initialProgress, setInitialProgress] = useState(0);
+  const [isLandscape, setIsLandscape] = useState(false);
   const startTimeRef = useRef<number>(Date.now());
 
   const tmdbId = videoId.replace('tmdb-', '');
@@ -142,6 +143,34 @@ export default function VideoPlayer({
     setError(false);
   };
 
+  // Landscape toggle for mobile — uses Screen Orientation API
+  const toggleLandscape = useCallback(async () => {
+    try {
+      const screenOrientation = screen?.orientation as any;
+      if (!screenOrientation?.lock) return;
+
+      if (isLandscape) {
+        screenOrientation.unlock();
+        setIsLandscape(false);
+      } else {
+        await screenOrientation.lock('landscape');
+        setIsLandscape(true);
+      }
+    } catch {
+      // Orientation lock not supported or permission denied — silent fail
+    }
+  }, [isLandscape]);
+
+  // Unlock orientation when player closes
+  useEffect(() => {
+    return () => {
+      try {
+        const screenOrientation = screen?.orientation as any;
+        screenOrientation?.unlock?.();
+      } catch {}
+    };
+  }, []);
+
   return (
     <AnimatePresence>
       <motion.div 
@@ -205,7 +234,20 @@ export default function VideoPlayer({
               </div>
             </div>
             
-            <div className="flex items-center gap-4 pointer-events-auto">
+            <div className="flex items-center gap-2">
+              {/* Landscape button — mobile only */}
+              <button
+                onClick={toggleLandscape}
+                className={`md:hidden flex items-center justify-center w-10 h-10 rounded-xl transition-all border backdrop-blur-md active:scale-90 ${
+                  isLandscape
+                    ? "bg-[#e50914] border-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.4)]"
+                    : "bg-black/60 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
+                }`}
+                aria-label={isLandscape ? "Exit Landscape" : "Go Landscape"}
+              >
+                <Smartphone className={`w-4 h-4 transition-transform ${isLandscape ? "rotate-90" : ""}`} />
+              </button>
+
               {progress > 60 && (
                 <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md rounded-xl border border-white/10 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                   <History className="w-3 h-3 text-[#e50914]" />
@@ -214,7 +256,7 @@ export default function VideoPlayer({
               )}
               <button 
                 onClick={handleRefresh} 
-                className="text-white/40 hover:text-white p-2.5 md:p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5"
+                className="w-10 h-10 flex items-center justify-center rounded-xl bg-black/60 hover:bg-white/10 transition-all border border-white/10 backdrop-blur-md text-white/40 hover:text-white active:scale-90"
               >
                 <RefreshCw className="w-4 h-4 md:w-5 md:h-5" />
               </button>
