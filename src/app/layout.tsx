@@ -73,6 +73,10 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${outfit.variable} dark antialiased`}>
       <head>
         <meta name="6a97888e-site-verification" content="471ece48be511e3bd2035444764b2aab" />
+        {/* Explicit favicon links — helps Google Search index and display the favicon */}
+        <link rel="icon" type="image/png" href="/favicon.ico" />
+        <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/favicon.ico" />
       </head>
       <body className="bg-black text-white overflow-x-hidden min-h-screen flex flex-col">
         <BackgroundProvider>
