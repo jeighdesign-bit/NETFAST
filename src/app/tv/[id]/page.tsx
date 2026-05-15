@@ -28,6 +28,7 @@ export default async function TVDetailPage(props: { params: Promise<{ id: string
 
   const filteredSeasonsCount = tv.seasons?.filter(s => s.season_number > 0).length || tv.number_of_seasons;
   const totalEpisodesCount = tv.seasons?.filter(s => s.season_number > 0).reduce((acc, s) => acc + s.episode_count, 0) || tv.number_of_episodes;
+  const similarShows = tv.similar?.results || [];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -96,6 +97,12 @@ export default async function TVDetailPage(props: { params: Promise<{ id: string
             </div>
           </div>
         </div>
+
+        {similarShows.length > 0 && (
+          <div className="pb-20">
+            <MovieRow title="More Like This" category="similar" movies={similarShows} hideSeeAll />
+          </div>
+        )}
       </div>
     </main>
   );

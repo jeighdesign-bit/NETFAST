@@ -111,7 +111,7 @@ export default async function MovieDetailPage(props: { params: Promise<{ id: str
         )}
 
         <div className="pb-20">
-          <MovieRow title="More Like This" category="similar" movies={similarMovies} />
+          <MovieRow title="More Like This" category="similar" movies={similarMovies} hideSeeAll />
           <AdBanner format="468x60" />
         </div>
       </div>

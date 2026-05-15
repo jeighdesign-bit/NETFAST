@@ -200,6 +200,7 @@ export interface TVDetail extends Movie {
   number_of_seasons: number;
   number_of_episodes: number;
   seasons: { id: number; season_number: number; episode_count: number; name: string }[];
+  similar?: { results: Movie[] };
 }
 
 export interface TVSeasonDetail {
