@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Info, AlertTriangle } from "lucide-react";
+import { Play, Info, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import SafeImage from "./SafeImage";
 import VideoPlayer from "./VideoPlayer";
@@ -11,6 +11,21 @@ import { Movie, getImageUrl } from "@/lib/tmdb";
 export default function HeroBanner({ movies }: { movies: Movie[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].screenX;
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) setCurrentIndex((p) => (p + 1) % movies.length); // swipe left = next
+      else setCurrentIndex((p) => (p - 1 + movies.length) % movies.length); // swipe right = prev
+    }
+  };
 
   useEffect(() => {
     if (isPlaying || !movies || movies.length === 0) return;
@@ -30,7 +45,11 @@ export default function HeroBanner({ movies }: { movies: Movie[] }) {
 
   return (
     <>
-      <div className="relative w-full h-[85vh] md:h-[90vh] flex items-center overflow-hidden">
+      <div
+        className="relative w-full h-[70vh] md:h-[90vh] flex items-center overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {/* Background with overlay */}
         <AnimatePresence mode="wait">
           <motion.div 
@@ -43,12 +62,14 @@ export default function HeroBanner({ movies }: { movies: Movie[] }) {
           >
             <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent z-10" />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent z-10" />
+            {/* Mobile: use w780 to reduce bandwidth; desktop: original quality */}
             <SafeImage
               src={getImageUrl(movie.backdrop_path, "original")}
               alt={movie.title || (movie as any).name}
               fill
               priority
-              quality={90}
+              sizes="(max-width: 768px) 100vw, 100vw"
+              quality={75}
               className="object-cover opacity-90 md:opacity-100"
             />
           </motion.div>
@@ -92,8 +113,24 @@ export default function HeroBanner({ movies }: { movies: Movie[] }) {
           </AnimatePresence>
         </div>
 
+        {/* Carousel Controls */}
+        <button
+          onClick={() => setCurrentIndex((p) => (p - 1 + movies.length) % movies.length)}
+          className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all active:scale-90"
+          aria-label="Previous"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => setCurrentIndex((p) => (p + 1) % movies.length)}
+          className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all active:scale-90"
+          aria-label="Next"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+
         {/* Carousel Indicators */}
-        <div className="absolute bottom-16 md:bottom-32 left-0 right-0 z-30 flex justify-center gap-2">
+        <div className="absolute bottom-6 md:bottom-10 left-0 right-0 z-30 flex justify-center gap-2">
           {movies.map((_, idx) => (
             <button
               key={idx}
@@ -101,6 +138,7 @@ export default function HeroBanner({ movies }: { movies: Movie[] }) {
               className={`h-1.5 rounded-full transition-all duration-300 ${
                 idx === currentIndex ? "w-8 bg-[#e50914]" : "w-2 bg-white/30 hover:bg-white/60"
               }`}
+              aria-label={`Go to slide ${idx + 1}`}
             />
           ))}
         </div>

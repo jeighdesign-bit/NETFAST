@@ -9,14 +9,17 @@ import NetworkRow from "@/components/NetworkRow";
 import ExoclickBanner from "@/components/ExoclickBanner";
 
 export default async function Home() {
-  const trending = await fetchMovies("/trending/movie/day");
-  const topRated = await fetchMovies("/movie/top_rated");
-  const anime = await fetchMovies("/discover/movie", { with_genres: "16", sort_by: "popularity.desc" });
-  const action = await fetchMovies("/discover/movie", { with_genres: "28" });
-  const horror = await fetchMovies("/discover/movie", { with_genres: "27" });
-  const romance = await fetchMovies("/discover/movie", { with_genres: "10749" });
-  const comedy = await fetchMovies("/discover/movie", { with_genres: "35" });
-  const pinoy = await fetchMovies("/discover/movie", { with_original_language: "tl", sort_by: "revenue.desc" });
+  // Fetch all data in parallel — dramatically faster than sequential awaits
+  const [trending, topRated, anime, action, horror, romance, comedy, pinoy] = await Promise.all([
+    fetchMovies("/trending/movie/day"),
+    fetchMovies("/movie/top_rated"),
+    fetchMovies("/discover/movie", { with_genres: "16", sort_by: "popularity.desc" }),
+    fetchMovies("/discover/movie", { with_genres: "28" }),
+    fetchMovies("/discover/movie", { with_genres: "27" }),
+    fetchMovies("/discover/movie", { with_genres: "10749" }),
+    fetchMovies("/discover/movie", { with_genres: "35" }),
+    fetchMovies("/discover/movie", { with_original_language: "tl", sort_by: "revenue.desc" }),
+  ]);
 
   const heroMovies = trending.slice(0, 5);
 
@@ -55,33 +58,26 @@ export default async function Home() {
         
         <ContinueWatching />
         
-        <ExoclickBanner zoneId="5926632" />
-        
         <MovieRow title="Trending This Week" category="/movies?sort=trending" movies={trending.slice(0, 10)} variant="ranked" />
         
         <MovieRow title="Pinoy Blockbusters" category="/movies?lang=tl" highlight={true} movies={pinoy} />
         
         <MovieRow title="Top Rated & AI Recommended" category="/movies" movies={topRated} />
-        
-        <ExoclickBanner zoneId="5926632" />
-        
+
         <MovieRow title="Marvel Cinematic Universe" category="/movies?search=Marvel" movies={action.slice(0, 10)} highlight={true} />
         
         <MovieRow title="Horror Nights" category="/movies?genre=27" movies={horror} />
         
+        {/* Single mid-page ad — keeps revenue without overwhelming mobile users */}
+        <ExoclickBanner zoneId="5926632" />
+        
         <MovieRow title="Anime Masterpieces" category="/anime" movies={anime.slice(0, 10)} highlight={true} />
-
-        <MovieRow title="Popular Anime" category="/anime" movies={anime} />
         
         <MovieRow title="Action & Adventure" category="/movies?genre=28" movies={action} />
         
         <MovieRow title="Romance & Drama" category="/movies?genre=10749" movies={romance} />
         
-        <ExoclickBanner zoneId="5926632" />
-        
         <MovieRow title="Comedy Central" category="/movies?genre=35" movies={comedy} />
-        
-        <ExoclickBanner zoneId="5926632" />
 
         {/* Final CTA */}
         <div className="container mx-auto px-6 py-10 flex justify-center">

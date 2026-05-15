@@ -52,7 +52,7 @@ export default function MovieRow({ title, category, highlight, movies, variant =
               whileHover={{ scale: 1.05, zIndex: 10 }}
               onMouseEnter={() => setBackdrop(getImageUrl(movie.backdrop_path, 'original'))}
               onMouseLeave={() => setBackdrop(null)}
-              className={`relative ${variant === 'ranked' ? 'min-w-[240px] md:min-w-[320px] ml-12 md:ml-16' : 'min-w-[140px] md:min-w-[260px]'} h-[210px] md:h-[390px] rounded-2xl overflow-hidden cursor-pointer group bg-[#111] shrink-0 shadow-2xl border border-white/5 snap-start md:snap-none active:scale-95 transition-transform duration-300`}
+              className={`relative ${variant === 'ranked' ? 'min-w-[200px] md:min-w-[320px] ml-10 md:ml-16' : 'min-w-[160px] md:min-w-[260px]'} h-[240px] md:h-[390px] rounded-2xl overflow-hidden cursor-pointer group bg-[#111] shrink-0 shadow-2xl border border-white/5 snap-start active:scale-95 transition-transform duration-200`}
               onClick={() => router.push(href)}
             >
               {variant === 'ranked' && (
@@ -117,9 +117,13 @@ export default function MovieRow({ title, category, highlight, movies, variant =
                   </div>
                 </div>
 
-                {/* Mobile Info Overlay (Visible always or simplified) */}
-                <div className="md:hidden absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black to-transparent">
-                   <h3 className="font-bold text-xs text-white line-clamp-1">{movie.title || (movie as any).name}</h3>
+                {/* Mobile Info Overlay — always visible, bigger text, rating badge */}
+                <div className="md:hidden absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black via-black/80 to-transparent">
+                  <h3 className="font-bold text-sm text-white line-clamp-1 leading-tight">{movie.title || (movie as any).name}</h3>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <span className="text-[10px] font-bold text-green-400">{Math.round(movie.vote_average * 10)}%</span>
+                    <span className="text-[9px] text-gray-400">{movie.release_date?.substring(0,4)}</span>
+                  </div>
                 </div>
               </div>
             </motion.div>

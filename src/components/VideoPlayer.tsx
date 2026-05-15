@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  ArrowLeft, RefreshCw, AlertCircle, AlertTriangle, History
+  ArrowLeft, RefreshCw, AlertCircle, History
 } from "lucide-react";
 
 interface VideoPlayerProps {
@@ -150,57 +150,57 @@ export default function VideoPlayer({
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 md:p-8"
       >
-        {/* Source Selector Bar - Restored to original centered style */}
+        {/* Source Selector Bar - scrollable on mobile */}
         <motion.div 
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="flex flex-wrap items-center justify-center gap-1.5 md:gap-2 mb-4 p-1.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md max-w-full overflow-x-auto hide-scrollbar"
+          className="flex items-center gap-1.5 mb-3 p-1.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md w-full max-w-4xl overflow-x-auto hide-scrollbar"
         >
-          <span className="hidden sm:inline text-[9px] md:text-[10px] uppercase tracking-widest text-gray-500 px-3 font-bold">Servers:</span>
+          <span className="hidden sm:inline text-[9px] uppercase tracking-widest text-gray-500 px-2 font-bold shrink-0">Server:</span>
           {(["codespecter", "vidsrc_xyz", "vidsrc_to", "embed_su", "smashystream", "vidlink", "vidsrc_me", "superflix"] as Provider[]).map((p) => (
             <button
               key={p}
               onClick={() => handleProviderChange(p)}
-              className={`px-3 md:px-4 py-2 md:py-1.5 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-tighter transition-all whitespace-nowrap ${
+              className={`shrink-0 px-3 py-2.5 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-tight transition-all min-h-[40px] ${
                 provider === p 
-                  ? "bg-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.5)]" 
-                  : "text-gray-400 hover:text-white hover:bg-white/10"
+                  ? "bg-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.4)]" 
+                  : "text-gray-400 hover:text-white hover:bg-white/10 active:bg-white/20"
               }`}
             >
-              {p === "codespecter" ? "Premium" : p.replace('_', ' ')}
+              {p === "codespecter" ? "⭐ Premium" : p === "vidsrc_xyz" ? "VidSrc" : p === "vidsrc_to" ? "VidSrc.to" : p === "embed_su" ? "Embed.su" : p === "smashystream" ? "Smashy" : p === "vidlink" ? "VidLink" : p === "vidsrc_me" ? "VidSrc.me" : "SuperFlix"}
             </button>
           ))}
         </motion.div>
         
+        {/* Tip — hidden on small phones to save space */}
         <motion.div 
           initial={{ y: -10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="mb-4 w-full max-w-6xl p-2.5 rounded-xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-md flex items-center justify-center gap-2 md:gap-3 group hover:border-yellow-500/40 transition-all duration-300"
+          className="hidden sm:flex mb-3 w-full max-w-4xl p-2 rounded-xl border border-yellow-500/20 bg-yellow-500/5 backdrop-blur-md items-center justify-center gap-2"
         >
-          <AlertTriangle className="w-3.5 h-3.5 md:w-4 md:h-4 text-yellow-500/80 shrink-0 group-hover:scale-110 transition-transform" />
-          <p className="text-gray-400 text-[9px] md:text-xs font-medium tracking-wide">
+          <p className="text-gray-400 text-[10px] font-medium tracking-wide">
             Zero Ads: Use <span className="font-bold text-white">uBlock Origin</span> (PC) or <span className="font-bold text-white">Brave Browser</span> (Mobile)
           </p>
         </motion.div>
 
-        <div className="relative w-full max-w-6xl aspect-video bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,1)] border border-white/10 group">
+        <div className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,1)] border border-white/10 group">
           
-          {/* Internal Top Bar */}
-          <div className="absolute top-0 left-0 right-0 z-50 p-4 md:p-8 flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-            <div className="flex items-center gap-3 md:gap-6 pointer-events-auto">
+          {/* Always-visible close button on mobile, hover-only on desktop */}
+          <div className="absolute top-0 left-0 right-0 z-50 p-3 md:p-6 flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
+            <div className="flex items-center gap-2 md:gap-4">
               <button 
                 onClick={onClose} 
-                className="text-white hover:bg-[#e50914] p-2.5 md:p-3 rounded-xl md:rounded-2xl transition-all bg-black/60 border border-white/10 backdrop-blur-md"
+                className="text-white hover:bg-[#e50914] p-2 md:p-3 rounded-xl transition-all bg-black/60 border border-white/10 backdrop-blur-md active:scale-90"
               >
-                <ArrowLeft className="w-5 h-5 md:w-8 md:h-8" />
+                <ArrowLeft className="w-5 h-5 md:w-7 md:h-7" />
               </button>
               <div>
-                <h2 className="text-base md:text-3xl font-black text-white tracking-tight leading-none line-clamp-1" style={{ fontFamily: 'var(--font-outfit)' }}>
+                <h2 className="text-sm md:text-2xl font-black text-white tracking-tight leading-none line-clamp-1" style={{ fontFamily: 'var(--font-outfit)' }}>
                   {movieTitle}
                 </h2>
                 {type === "tv" && (
-                  <p className="text-[#e50914] font-bold text-[9px] md:text-sm mt-1 md:mt-2 uppercase tracking-widest">S{season} • E{episode}</p>
+                  <p className="text-[#e50914] font-bold text-[9px] md:text-sm mt-0.5 uppercase tracking-widest">S{season} • E{episode}</p>
                 )}
               </div>
             </div>
