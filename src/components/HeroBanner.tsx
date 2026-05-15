@@ -95,18 +95,18 @@ export default function HeroBanner({ movies }: { movies: Movie[] }) {
               {movie.overview}
             </p>
 
-            <div className="flex items-center gap-3 md:gap-4 mt-2 w-full md:w-auto relative z-30">
+            <div className="flex items-center gap-3 md:gap-4 mt-2 w-full md:w-auto">
               <button 
                 onClick={() => setIsPlaying(true)}
-                className="flex-1 md:flex-none flex items-center justify-center gap-2.5 bg-white text-black hover:bg-gray-200 px-6 md:px-8 min-h-[52px] md:min-h-0 py-3.5 rounded-xl font-bold text-base md:text-lg transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_4px_20px_rgba(255,255,255,0.2)]"
+                className="flex-1 md:flex-none flex items-center justify-center gap-2.5 bg-white text-black hover:bg-gray-200 px-4 md:px-8 py-3.5 md:py-3.5 rounded-xl font-bold text-sm md:text-lg transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_4px_20px_rgba(255,255,255,0.2)]"
               >
-                <Play className="fill-current w-6 h-6 md:w-6 md:h-6" /> Play
+                <Play className="fill-current w-5 h-5 md:w-6 md:h-6" /> Play
               </button>
               <Link 
                 href={href}
-                className="flex-1 md:flex-none flex items-center justify-center gap-2.5 bg-white/20 hover:bg-white/30 backdrop-blur-xl border border-white/10 hover:border-white/20 text-white px-6 md:px-8 min-h-[52px] md:min-h-0 py-3.5 rounded-xl font-semibold text-base md:text-lg transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
+                className="flex-1 md:flex-none flex items-center justify-center gap-2.5 bg-white/20 hover:bg-white/30 backdrop-blur-xl border border-white/10 hover:border-white/20 text-white px-4 md:px-8 py-3.5 md:py-3.5 rounded-xl font-semibold text-sm md:text-lg transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
               >
-                <Info className="w-6 h-6 md:w-6 md:h-6" /> More Info
+                <Info className="w-5 h-5 md:w-6 md:h-6" /> More Info
               </Link>
             </div>
             </motion.div>

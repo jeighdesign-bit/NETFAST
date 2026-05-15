@@ -215,9 +215,9 @@ export default function VideoPlayer({
 
         <div className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,1)] border border-white/10 group">
           
-          {/* Always-visible close button on mobile, hover-only on desktop */}
-          <div className="absolute top-0 left-0 right-0 z-50 p-3 md:p-6 flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-            <div className="flex items-center gap-2 md:gap-4">
+          {/* Controls overlay — pointer-events-none so taps pass through to iframe video controls */}
+          <div className="absolute top-0 left-0 right-0 z-50 p-3 md:p-6 flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            <div className="flex items-center gap-2 md:gap-4 pointer-events-auto">
               <button 
                 onClick={onClose} 
                 className="text-white hover:bg-[#e50914] p-2 md:p-3 rounded-xl transition-all bg-black/60 border border-white/10 backdrop-blur-md active:scale-90"
@@ -234,7 +234,7 @@ export default function VideoPlayer({
               </div>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 pointer-events-auto">
               {/* Landscape button — mobile only */}
               <button
                 onClick={toggleLandscape}
