@@ -11,6 +11,10 @@
 
 html {
   scroll-behavior: smooth;
+  /* Offset anchored scroll targets from under the fixed navbar */
+  scroll-padding-top: 80px;
+  /* Prevent rubber-band bounce from affecting layout on desktop */
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -19,6 +23,29 @@ body {
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Allow natural momentum scrolling on touch devices */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Custom scrollbar (vertical) ─────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(229, 9, 20, 0.45);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(229, 9, 20, 0.75);
+}
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(229, 9, 20, 0.45) transparent;
 }
 
 @layer utilities {
@@ -38,6 +65,8 @@ body {
   .smooth-transition {
     @apply transition-all duration-300 ease-in-out;
   }
+
+  /* ── Scrollbar helpers ────────────────────────────────────────── */
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -45,8 +74,40 @@ body {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+  /* Thin red scrollbar for horizontal rows */
+  .row-scrollbar::-webkit-scrollbar {
+    height: 3px;
+  }
+  .row-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .row-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(229, 9, 20, 0.5);
+    border-radius: 999px;
+  }
+
+  /* ── Animation helpers ────────────────────────────────────────── */
   .animate-spin-slow {
     animation: spin 8s linear infinite;
+  }
+
+  /* ── Performance: promote GPU-composited layers ───────────────── */
+  /* Apply to cards, images, and animated elements */
+  .gpu {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  /* ── Scroll-driven fade-in for page sections ──────────────────── */
+  .fade-in-section {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .fade-in-section.visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

@@ -197,6 +197,18 @@ const nextConfig: NextConfig = {
     qualities: [75, 85, 90],
   },
 
+  // Enable gzip/brotli compression for all responses
+  compress: true,
+
+  // Client-side router cache: keeps prefetched pages alive so back/forward
+  // navigation is instant without a server round-trip.
+  experimental: {
+    staleTimes: {
+      dynamic: 30,   // dynamic pages cached 30s on client router
+      static: 300,   // static pages cached 5min on client router
+    },
+  },
+
   async headers() {
     return [
       {

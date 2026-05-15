@@ -126,12 +126,12 @@ export async function fetchTMDB(endpoint: string, params: Record<string, string>
       return cachedData;
     }
 
-    const response = await fetch(url.toString(), { next: { revalidate: 3600 } });
+    const response = await fetch(url.toString(), { next: { revalidate: 21600 } }); // 6h ISR
     const data = await response.json();
     
-    // I-save ang resulta sa Redis para sunod paspas na (1 Hour expiration)
+    // I-save ang resulta sa Redis para sunod paspas na (6 Hour expiration)
     if (data && !data.success && data.success !== false) {
-      await redis.set(cacheKey, data, { ex: 3600 });
+      await redis.set(cacheKey, data, { ex: 21600 }); // 6h
     }
     
     return data;
@@ -149,7 +149,7 @@ export async function fetchMovieDetails(id: string): Promise<MovieDetail> {
   }
   try {
     const url = `${BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}&append_to_response=videos,similar`;
-    const response = await fetch(url, { next: { revalidate: 3600 } });
+    const response = await fetch(url, { next: { revalidate: 86400 } }); // 24h — details rarely change
     const data = await response.json();
     if (data.success === false) return { ...mockMovieDetail, id: Number(id) };
     return data;
@@ -187,7 +187,7 @@ export async function getMovieVideos(id: string) {
   if (!TMDB_API_KEY) return { results: [] };
   try {
     const url = `${BASE_URL}/movie/${id}/videos?api_key=${TMDB_API_KEY}`;
-    const response = await fetch(url, { next: { revalidate: 3600 } });
+    const response = await fetch(url, { next: { revalidate: 86400 } }); // 24h — video keys don't change
     return await response.json();
   } catch (error: any) {
     if (error.digest === 'DYNAMIC_SERVER_USAGE') throw error;
@@ -234,7 +234,7 @@ export async function fetchTVDetails(id: string): Promise<TVDetail> {
   }
   try {
     const url = `${BASE_URL}/tv/${id}?api_key=${TMDB_API_KEY}&append_to_response=videos,similar`;
-    const response = await fetch(url, { next: { revalidate: 3600 } });
+    const response = await fetch(url, { next: { revalidate: 86400 } }); // 24h — TV details are stable
     const data = await response.json();
     return data;
   } catch (error: any) {
@@ -250,7 +250,7 @@ export async function fetchTVSeason(id: string, seasonNumber: number): Promise<T
   }
   try {
     const url = `${BASE_URL}/tv/${id}/season/${seasonNumber}?api_key=${TMDB_API_KEY}`;
-    const response = await fetch(url, { next: { revalidate: 3600 } });
+    const response = await fetch(url, { next: { revalidate: 21600 } }); // 6h — season episode lists
     return await response.json();
   } catch (error: any) {
     if (error.digest === 'DYNAMIC_SERVER_USAGE') throw error;
