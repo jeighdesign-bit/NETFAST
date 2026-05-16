@@ -283,17 +283,24 @@ export default function VideoPlayer({
             </div>
             
             <div className="flex items-center gap-2 pointer-events-auto">
-              {/* Landscape button — restored for mobile only as requested */}
+              {/* Reliable Custom Fullscreen Button */}
               <button
                 onClick={toggleFullscreen}
-                className={`md:hidden flex items-center justify-center w-10 h-10 rounded-xl transition-all border backdrop-blur-md active:scale-90 pointer-events-auto ${
+                className={`flex items-center justify-center px-4 py-2 h-10 rounded-xl transition-all border backdrop-blur-md active:scale-90 pointer-events-auto ${
                   isFullscreen
                     ? "bg-[#e50914] border-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.4)]"
-                    : "bg-black/60 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
+                    : "bg-black/80 border-white/20 text-white hover:bg-white/20"
                 }`}
-                aria-label={isFullscreen ? "Exit Fullscreen" : "Go Fullscreen"}
+                title="Use this if the video's fullscreen button fails"
               >
-                <Smartphone className={`w-4 h-4 transition-transform ${isFullscreen ? "rotate-90" : ""}`} />
+                <span className="text-[10px] font-bold uppercase tracking-widest mr-2 hidden sm:inline">
+                  {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                </span>
+                {isFullscreen ? (
+                  <Minimize className="w-4 h-4" />
+                ) : (
+                  <Maximize className="w-4 h-4" />
+                )}
               </button>
 
               {progress > 60 && (
