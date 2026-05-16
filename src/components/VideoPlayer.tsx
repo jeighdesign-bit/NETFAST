@@ -143,6 +143,79 @@ export default function VideoPlayer({
     setError(false);
   };
 
+  // Professional Fullscreen API Implementation
+  const requestFullscreen = useCallback(async () => {
+    if (!playerContainerRef.current) return;
+    try {
+      const el = playerContainerRef.current as any;
+      if (el.requestFullscreen) await el.requestFullscreen();
+      else if (el.webkitRequestFullscreen) await el.webkitRequestFullscreen();
+      else if (el.mozRequestFullScreen) await el.mozRequestFullScreen();
+      else if (el.msRequestFullscreen) await el.msRequestFullscreen();
+      
+      // Lock orientation on mobile if supported
+      try {
+        const screenOrientation = screen?.orientation as any;
+        if (screenOrientation?.lock) await screenOrientation.lock('landscape');
+      } catch (e) {
+        console.log("Orientation lock not supported", e);
+      }
+    } catch (err) {
+      console.error("Fullscreen error:", err);
+    }
+  }, []);
+
+  const exitFullscreen = useCallback(async () => {
+    try {
+      const doc = document as any;
+      if (doc.exitFullscreen) await doc.exitFullscreen();
+      else if (doc.webkitExitFullscreen) await doc.webkitExitFullscreen();
+      else if (doc.mozCancelFullScreen) await doc.mozCancelFullScreen();
+      else if (doc.msExitFullscreen) await doc.msExitFullscreen();
+      
+      try {
+        const screenOrientation = screen?.orientation as any;
+        if (screenOrientation?.unlock) screenOrientation.unlock();
+      } catch (e) {}
+    } catch (err) {
+      console.error("Exit fullscreen error:", err);
+    }
+  }, []);
+
+  // Debugging: Listen for postMessage from the iframe to see if it's asking the parent to go fullscreen
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Temporary console log to debug cross-origin click events
+      console.log("Received message from iframe:", event.data);
+      
+      try {
+        // Many players send JSON strings, some send objects
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        
+        // Check for common fullscreen event signatures from players like JWPlayer, VideoJS, etc.
+        if (
+          data === 'fullscreen' || 
+          data.event === 'fullscreen' || 
+          data.type === 'fullscreen' ||
+          data.name === 'fullscreen' ||
+          (data.type === 'player:fullscreen' && data.payload)
+        ) {
+          console.log("Fullscreen event intercepted! Triggering native API.");
+          if (!document.fullscreenElement) {
+            requestFullscreen();
+          } else {
+            exitFullscreen();
+          }
+        }
+      } catch (e) {
+        // Not JSON, ignore
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [requestFullscreen, exitFullscreen]);
+
   return (
     <AnimatePresence>
       <motion.div 
@@ -234,7 +307,7 @@ export default function VideoPlayer({
               key={key}
               src={embedUrl}
               className="w-full h-full border-0 relative z-10"
-              allowFullScreen
+              allowFullScreen={true}
               allow="autoplay; encrypted-media; gyroscope; accelerometer; picture-in-picture; fullscreen"
               onLoad={() => setIsLoading(false)}
               onError={() => setError(true)}
