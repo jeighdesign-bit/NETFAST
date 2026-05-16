@@ -317,6 +317,10 @@ export default function VideoPlayer({
               src={embedUrl}
               className="w-full h-full border-0"
               allowFullScreen
+              // @ts-ignore
+              webkitallowfullscreen="true"
+              // @ts-ignore
+              mozallowfullscreen="true"
               allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
               onLoad={() => setIsLoading(false)}
               onError={() => setError(true)}
