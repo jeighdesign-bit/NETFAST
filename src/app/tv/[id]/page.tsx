@@ -1,4 +1,4 @@
-import { TVDetail, fetchTVDetails, getImageUrl } from "@/lib/tmdb";
+import { TVDetail, fetchTVDetails, getImageUrl, getImageUrlSafe } from "@/lib/tmdb";
 import MovieInteractiveArea from "@/components/MovieInteractiveArea";
 import MovieRow from "@/components/MovieRow";
 import { Metadata } from "next";
@@ -13,7 +13,7 @@ export async function generateMetadata(props: { params: Promise<{ id: string }> 
     openGraph: {
       title: `${tv.name} | Watch on NETFAST`,
       description: tv.overview,
-      images: [getImageUrl(tv.backdrop_path, "original")],
+      images: [getImageUrlSafe(tv.backdrop_path, "original")],
       type: "video.tv_show",
     },
   };
@@ -35,7 +35,7 @@ export default async function TVDetailPage(props: { params: Promise<{ id: string
     "@type": "TVSeries",
     "name": tv.name,
     "description": tv.overview,
-    "image": getImageUrl(tv.poster_path, "original"),
+    "image": getImageUrlSafe(tv.poster_path, "original"),
     "datePublished": tv.release_date,
     "numberOfSeasons": tv.number_of_seasons,
     "numberOfEpisodes": tv.number_of_episodes,
