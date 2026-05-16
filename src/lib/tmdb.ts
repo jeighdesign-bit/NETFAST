@@ -118,7 +118,8 @@ export async function fetchTMDB(endpoint: string, params: Record<string, string>
     url.searchParams.append("api_key", TMDB_API_KEY);
     Object.entries(params).forEach(([key, value]) => url.searchParams.append(key, value));
 
-    const cacheKey = `tmdb:${endpoint}:${JSON.stringify(params)}`;
+    // Changed cache key to v2 to forcefully bust the stale cache causing missing posters
+    const cacheKey = `tmdb_v2:${endpoint}:${JSON.stringify(params)}`;
     
     // Check sa Upstash Redis kung naa na bay gi-save ani
     const cachedData = await redis.get<TMDBResponse>(cacheKey);
