@@ -11,7 +11,7 @@ interface ContinueItem {
   tmdbId: string;
   title: string;
   posterPath: string;
-  backdropPath?: string;
+  backdropPath?: string | null;
   progress: number;
   duration: number;
   timestamp: number;

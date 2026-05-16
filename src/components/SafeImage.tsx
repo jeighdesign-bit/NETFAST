@@ -6,7 +6,7 @@ import { Film } from "lucide-react";
 
 interface SafeImageProps extends Omit<ImageProps, "src" | "onError"> {
   src: ImageProps["src"] | null | undefined;
-  fallbackSrc?: string;
+  fallbackSrc?: string | null;
   /** Shown in the placeholder when no image is available */
   alt: string;
 }
