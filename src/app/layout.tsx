@@ -59,6 +59,20 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  icons: {
+    icon: [
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      { rel: "mask-icon", url: "/favicon.ico", color: "#e50914" },
+    ],
+  },
+  manifest: "/site.webmanifest",
 };
 
 import { Analytics } from "@vercel/analytics/react";
@@ -72,10 +86,6 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${outfit.variable} dark antialiased`}>
       <head>
         <meta name="6a97888e-site-verification" content="471ece48be511e3bd2035444764b2aab" />
-        {/* Explicit favicon links — helps Google Search index and display the favicon */}
-        <link rel="icon" type="image/png" href="/favicon.ico" />
-        <link rel="shortcut icon" type="image/png" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/favicon.ico" />
       </head>
       <body className="bg-black text-white overflow-x-hidden min-h-screen flex flex-col">
         <BackgroundProvider>
