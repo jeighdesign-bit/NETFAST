@@ -33,6 +33,7 @@ export default function VideoPlayer({
   const [provider, setProvider] = useState<Provider>("codespecter");
   const [progress, setProgress] = useState(0);
   const [initialProgress, setInitialProgress] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const startTimeRef = useRef<number>(Date.now());
   const playerContainerRef = useRef<HTMLDivElement>(null);
 
@@ -182,6 +183,36 @@ export default function VideoPlayer({
     }
   }, []);
 
+  const toggleFullscreen = useCallback(async (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (!document.fullscreenElement) {
+      await requestFullscreen();
+    } else {
+      await exitFullscreen();
+    }
+  }, [requestFullscreen, exitFullscreen]);
+
+  // Sync fullscreen state with browser events (e.g. ESC key)
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
+  }, []);
+
   // Debugging: Listen for postMessage from the iframe to see if it's asking the parent to go fullscreen
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -260,7 +291,11 @@ export default function VideoPlayer({
 
         <div 
           ref={playerContainerRef}
-          className="relative w-full transition-all duration-500 bg-black shadow-[0_0_80px_rgba(0,0,0,1)] group max-w-4xl aspect-video rounded-2xl md:rounded-3xl border border-white/10"
+          className={`relative w-full transition-all duration-500 bg-black shadow-[0_0_80px_rgba(0,0,0,1)] group ${
+            isFullscreen 
+              ? 'w-full h-full' 
+              : 'max-w-4xl aspect-video rounded-2xl md:rounded-3xl border border-white/10'
+          }`}
         >
           
           {/* Controls overlay — pointer-events-none so taps pass through to iframe video controls */}
@@ -306,11 +341,19 @@ export default function VideoPlayer({
             <iframe
               key={key}
               src={embedUrl}
-              className="w-full h-full border-0 relative z-10"
+              className="w-full h-full border-0 relative z-10 pointer-events-auto"
               allowFullScreen={true}
               allow="autoplay; encrypted-media; gyroscope; accelerometer; picture-in-picture; fullscreen"
               onLoad={() => setIsLoading(false)}
               onError={() => setError(true)}
+            />
+            
+            {/* Transparent Overlay Hack for Fullscreen Button */}
+            <button
+              onClick={toggleFullscreen}
+              className="absolute bottom-[2px] right-[2px] w-12 h-12 z-50 opacity-0 cursor-pointer"
+              title="Fullscreen"
+              aria-label="Fullscreen toggle"
             />
             
             {/* Loading Overlay */}
