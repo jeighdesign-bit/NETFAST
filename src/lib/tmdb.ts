@@ -180,8 +180,10 @@ export async function getTrendingMovies(timeWindow: "day" | "week" = "day"): Pro
 }
 
 export function getImageUrl(path: string | null, size: "w500" | "original" = "w500"): string | null {
-  if (!path || path === "" || path === "null") return null;
-  return `https://image.tmdb.org/t/p/${size}${path}`;
+  if (!path || path === "" || path === "null" || path === "undefined" || path === "false") return null;
+  // Ensure the path starts with a slash
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  return `https://image.tmdb.org/t/p/${size}${cleanPath}`;
 }
 
 /** Use this in metadata, OG images, and CSS backgrounds that require a real string URL */

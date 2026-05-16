@@ -20,6 +20,9 @@ export default function SafeImage({
   const [error, setError] = useState(false);
   const [useFallback, setUseFallback] = useState(false);
 
+  // Detect if 'fill' prop is used to apply correct positioning to placeholder
+  const isFill = "fill" in props && !!props.fill;
+
   // Treat the Unsplash clapperboard as "no real image" — show placeholder instead
   const CLAPPERBOARD =
     "https://images.unsplash.com/photo-1485846234645-a62644f84728";
@@ -32,7 +35,8 @@ export default function SafeImage({
       path.includes(CLAPPERBOARD) || 
       path.endsWith("null") || 
       path.endsWith("undefined") ||
-      path.includes("/w500/.jpg") // Common broken TMDB path
+      path.includes("/w500/.jpg") ||
+      path.includes("/original/.jpg")
     );
   };
 
@@ -51,16 +55,20 @@ export default function SafeImage({
     const initial = (alt || "?").charAt(0).toUpperCase();
     return (
       <div
-        className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] select-none"
+        className={`${isFill ? "absolute inset-0" : "w-full h-full"} flex flex-col items-center justify-center bg-gradient-to-br from-[#121212] via-[#1a1a2e] to-[#0f0f0f] select-none border border-white/5`}
         aria-label={alt}
       >
-        <Film className="w-8 h-8 text-white/20 mb-2" />
-        <span className="text-4xl font-black text-white/30" style={{ fontFamily: "var(--font-outfit)" }}>
-          {initial}
-        </span>
-        <span className="text-[9px] text-white/20 uppercase tracking-widest mt-2 px-3 text-center line-clamp-2 font-bold">
-          {alt}
-        </span>
+        <div className="relative flex flex-col items-center">
+          <Film className="w-12 h-12 text-white/10 mb-4 animate-pulse" />
+          <span className="text-6xl font-black text-white/20 tracking-tighter" style={{ fontFamily: "var(--font-outfit)" }}>
+            {initial}
+          </span>
+          <span className="text-[10px] text-white/30 uppercase tracking-[0.3em] mt-4 px-6 text-center line-clamp-2 font-bold max-w-[200px]">
+            {alt}
+          </span>
+        </div>
+        {/* Subtle noise/texture overlay for premium look */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
       </div>
     );
   }
@@ -73,6 +81,8 @@ export default function SafeImage({
       src={currentSrc as any}
       alt={alt}
       onError={handleError}
+      // Add a tiny random param to bust potential bad edge caches if it's a TMDB URL
+      {...(typeof currentSrc === 'string' && currentSrc.includes('tmdb.org') ? { unoptimized: true } : {})}
     />
   );
 }
