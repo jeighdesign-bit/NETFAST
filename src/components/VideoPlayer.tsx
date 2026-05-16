@@ -13,7 +13,7 @@ interface VideoPlayerProps {
   type?: "movie" | "tv";
   season?: number;
   episode?: number;
-  posterPath?: string;
+  posterPath?: string | null;
 }
 
 type Provider = "codespecter" | "vidsrc_xyz" | "vidsrc_to" | "embed_su" | "smashystream" | "vidlink" | "vidsrc_me" | "superflix";
