@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  ArrowLeft, RefreshCw, AlertCircle, History, Smartphone
+  ArrowLeft, RefreshCw, AlertCircle, History, Smartphone, Maximize, Minimize
 } from "lucide-react";
 
 interface VideoPlayerProps {
