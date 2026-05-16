@@ -178,10 +178,16 @@ export async function getTrendingMovies(timeWindow: "day" | "week" = "day"): Pro
   return fetchMovies(`/trending/movie/${timeWindow}`);
 }
 
-export function getImageUrl(path: string | null, size: "w500" | "original" = "w500") {
-  if (!path || path === "" || path === "null") return "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=1000&auto=format&fit=crop";
+export function getImageUrl(path: string | null, size: "w500" | "original" = "w500"): string | null {
+  if (!path || path === "" || path === "null") return null;
   return `https://image.tmdb.org/t/p/${size}${path}`;
 }
+
+/** Use this in metadata, OG images, and CSS backgrounds that require a real string URL */
+export function getImageUrlSafe(path: string | null, size: "w500" | "original" = "w500"): string {
+  return getImageUrl(path, size) ?? `https://netfast.stream/og-image.jpg`;
+}
+
 
 export async function getMovieVideos(id: string) {
   if (!TMDB_API_KEY) return { results: [] };

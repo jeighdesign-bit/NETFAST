@@ -1,4 +1,4 @@
-import { fetchMovieDetails, getImageUrl } from "@/lib/tmdb";
+import { fetchMovieDetails, getImageUrl, getImageUrlSafe } from "@/lib/tmdb";
 import MovieRow from "@/components/MovieRow";
 import MovieInteractiveArea from "@/components/MovieInteractiveArea";
 import Image from "next/image";
@@ -15,14 +15,14 @@ export async function generateMetadata(props: { params: Promise<{ id: string }> 
     openGraph: {
       title: `${movie.title} | Watch on NETFAST`,
       description: movie.overview,
-      images: [getImageUrl(movie.backdrop_path, "original")],
+      images: [getImageUrlSafe(movie.backdrop_path, "original")],
       type: "video.movie",
     },
     twitter: {
       card: "summary_large_image",
       title: movie.title,
       description: movie.overview?.substring(0, 160),
-      images: [getImageUrl(movie.backdrop_path, "original")],
+      images: [getImageUrlSafe(movie.backdrop_path, "original")],
     }
   };
 }
@@ -40,7 +40,7 @@ export default async function MovieDetailPage(props: { params: Promise<{ id: str
     "@type": "Movie",
     "name": movie.title,
     "description": movie.overview,
-    "image": getImageUrl(movie.poster_path, "original"),
+    "image": getImageUrlSafe(movie.poster_path, "original"),
     "datePublished": movie.release_date,
     "aggregateRating": {
       "@type": "AggregateRating",

@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  ArrowLeft, RefreshCw, AlertCircle, History, Smartphone
+  ArrowLeft, RefreshCw, AlertCircle, History, Maximize, Minimize
 } from "lucide-react";
 
 interface VideoPlayerProps {
@@ -33,8 +33,9 @@ export default function VideoPlayer({
   const [provider, setProvider] = useState<Provider>("codespecter");
   const [progress, setProgress] = useState(0);
   const [initialProgress, setInitialProgress] = useState(0);
-  const [isLandscape, setIsLandscape] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const startTimeRef = useRef<number>(Date.now());
+  const playerContainerRef = useRef<HTMLDivElement>(null);
 
   const tmdbId = videoId.replace('tmdb-', '');
   
@@ -143,23 +144,63 @@ export default function VideoPlayer({
     setError(false);
   };
 
-  // Landscape toggle for mobile — uses Screen Orientation API
-  const toggleLandscape = useCallback(async () => {
-    try {
-      const screenOrientation = screen?.orientation as any;
-      if (!screenOrientation?.lock) return;
+  // Fullscreen toggle — handles both browser fullscreen and orientation
+  const toggleFullscreen = useCallback(async () => {
+    if (!playerContainerRef.current) return;
 
-      if (isLandscape) {
-        screenOrientation.unlock();
-        setIsLandscape(false);
+    try {
+      if (!document.fullscreenElement) {
+        if (playerContainerRef.current.requestFullscreen) {
+          await playerContainerRef.current.requestFullscreen();
+        } else if ((playerContainerRef.current as any).webkitRequestFullscreen) {
+          await (playerContainerRef.current as any).webkitRequestFullscreen();
+        } else if ((playerContainerRef.current as any).msRequestFullscreen) {
+          await (playerContainerRef.current as any).msRequestFullscreen();
+        }
+
+        // Try to lock orientation if supported
+        const screenOrientation = screen?.orientation as any;
+        if (screenOrientation?.lock) {
+          await screenOrientation.lock('landscape').catch(() => {});
+        }
+        setIsFullscreen(true);
       } else {
-        await screenOrientation.lock('landscape');
-        setIsLandscape(true);
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          await (document as any).webkitExitFullscreen();
+        } else if ((document as any).msExitFullscreen) {
+          await (document as any).msExitFullscreen();
+        }
+        
+        const screenOrientation = screen?.orientation as any;
+        if (screenOrientation?.unlock) {
+          screenOrientation.unlock();
+        }
+        setIsFullscreen(false);
       }
-    } catch {
-      // Orientation lock not supported or permission denied — silent fail
+    } catch (err) {
+      console.error("Fullscreen error:", err);
     }
-  }, [isLandscape]);
+  }, []);
+
+  // Sync fullscreen state with browser events (e.g. ESC key)
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
+    };
+  }, []);
 
   // Unlock orientation when player closes
   useEffect(() => {
@@ -213,10 +254,17 @@ export default function VideoPlayer({
           </p>
         </motion.div>
 
-        <div className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl md:rounded-3xl overflow-hidden shadow-[0_0_80px_rgba(0,0,0,1)] border border-white/10 group">
+        <div 
+          ref={playerContainerRef}
+          className={`relative w-full transition-all duration-500 bg-black overflow-hidden shadow-[0_0_80px_rgba(0,0,0,1)] group ${
+            isFullscreen 
+              ? 'fixed inset-0 z-[200] h-screen w-screen' 
+              : 'max-w-4xl aspect-video rounded-2xl md:rounded-3xl border border-white/10'
+          }`}
+        >
           
           {/* Controls overlay — pointer-events-none so taps pass through to iframe video controls */}
-          <div className="absolute top-0 left-0 right-0 z-50 p-3 md:p-6 flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+          <div className="absolute top-0 left-0 right-0 z-50 p-3 md:p-6 h-fit flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
             <div className="flex items-center gap-2 md:gap-4 pointer-events-auto">
               <button 
                 onClick={onClose} 
@@ -235,17 +283,21 @@ export default function VideoPlayer({
             </div>
             
             <div className="flex items-center gap-2 pointer-events-auto">
-              {/* Landscape button — mobile only */}
+              {/* Fullscreen button — enhanced for all devices */}
               <button
-                onClick={toggleLandscape}
-                className={`md:hidden flex items-center justify-center w-10 h-10 rounded-xl transition-all border backdrop-blur-md active:scale-90 ${
-                  isLandscape
+                onClick={toggleFullscreen}
+                className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all border backdrop-blur-md active:scale-90 pointer-events-auto ${
+                  isFullscreen
                     ? "bg-[#e50914] border-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.4)]"
                     : "bg-black/60 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
                 }`}
-                aria-label={isLandscape ? "Exit Landscape" : "Go Landscape"}
+                aria-label={isFullscreen ? "Exit Fullscreen" : "Go Fullscreen"}
               >
-                <Smartphone className={`w-4 h-4 transition-transform ${isLandscape ? "rotate-90" : ""}`} />
+                {isFullscreen ? (
+                  <Minimize className="w-4 h-4 md:w-5 md:h-5" />
+                ) : (
+                  <Maximize className="w-4 h-4 md:w-5 md:h-5" />
+                )}
               </button>
 
               {progress > 60 && (
