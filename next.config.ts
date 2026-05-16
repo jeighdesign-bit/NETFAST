@@ -86,6 +86,9 @@ const frameSrc = [
   // AdBanner iframes
   "https://*.profitablecpmratenetwork.com",
   "https://www.highperformanceformat.com",
+  // YouTube for trailers
+  "https://www.youtube.com",
+  "https://youtube.com",
 ].join(" ");
 
 const mediaSrc = [
