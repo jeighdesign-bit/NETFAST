@@ -249,11 +249,8 @@ export default function VideoPlayer({
 
   return (
     <AnimatePresence>
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center"
+      <div 
+        className="fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center animate-in fade-in duration-300"
       >
         {/* Source Selector Bar - scrollable on mobile */}
         <motion.div 
@@ -341,19 +338,11 @@ export default function VideoPlayer({
             <iframe
               key={key}
               src={embedUrl}
-              className="w-full h-full border-0 relative z-10 pointer-events-auto"
+              className="w-full h-full border-0 relative z-10"
               allowFullScreen={true}
               allow="autoplay; encrypted-media; gyroscope; accelerometer; picture-in-picture; fullscreen"
               onLoad={() => setIsLoading(false)}
               onError={() => setError(true)}
-            />
-            
-            {/* Transparent Overlay Hack for Fullscreen Button */}
-            <button
-              onClick={toggleFullscreen}
-              className="absolute bottom-[2px] right-[2px] w-12 h-12 z-50 opacity-0 cursor-pointer"
-              title="Fullscreen"
-              aria-label="Fullscreen toggle"
             />
             
             {/* Loading Overlay */}
@@ -394,7 +383,7 @@ export default function VideoPlayer({
 
         {/* Backdrop background */}
         <div className="absolute inset-0 -z-10" />
-      </motion.div>
+      </div>
     </AnimatePresence>
   );
 }
