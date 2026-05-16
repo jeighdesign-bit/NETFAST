@@ -25,11 +25,10 @@ export default function SafeImage({
   const hasRealSrc =
     !!src &&
     (typeof src === "string" 
-      ? (src !== "" && !src.includes(CLAPPERBOARD)) 
+      ? (src !== "" && !src.includes(CLAPPERBOARD) && !src.endsWith("null") && !src.endsWith("undefined")) 
       : true);
 
   if (error || !hasRealSrc) {
-    // Styled gradient placeholder — unique per title initial
     const initial = (alt || "?").charAt(0).toUpperCase();
     return (
       <div
