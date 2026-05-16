@@ -5,7 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Play, Plus, Info, Volume2, VolumeX, X, ChevronDown, AlertTriangle, RotateCcw } from "lucide-react";
 import SafeImage from "./SafeImage";
 import { Movie, TVDetail, TVSeasonDetail, getImageUrl, fetchTVSeason } from "@/lib/tmdb";
-import VideoPlayer from "./VideoPlayer";
+import dynamic from "next/dynamic";
+
+const VideoPlayer = dynamic(() => import("./VideoPlayer"), { ssr: false });
 
 interface MovieInteractiveAreaProps {
   movie: Movie;

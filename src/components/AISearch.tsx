@@ -6,7 +6,9 @@ import { Sparkles, Search, Play, AlertTriangle, Loader2 } from "lucide-react";
 import { Movie, getImageUrl } from "@/lib/tmdb";
 import Link from "next/link";
 import SafeImage from "./SafeImage";
-import VideoPlayer from "./VideoPlayer";
+import dynamic from "next/dynamic";
+
+const VideoPlayer = dynamic(() => import("./VideoPlayer"), { ssr: false });
 
 export default function AISearch() {
   const [query, setQuery] = useState("");

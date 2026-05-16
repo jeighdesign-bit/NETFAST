@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import Chatbot from "@/components/Chatbot";
-import FAQSection from "@/components/FAQSection";
-import Link from "next/link";
 import { BackgroundProvider } from "@/context/BackgroundContext";
 import DynamicBackground from "@/components/DynamicBackground";
 import GlobalAds from "@/components/GlobalAds";
+import dynamic from "next/dynamic";
+
+const Chatbot = dynamic(() => import("@/components/Chatbot"), { ssr: false });
+const FAQSection = dynamic(() => import("@/components/FAQSection"), { ssr: false });
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });

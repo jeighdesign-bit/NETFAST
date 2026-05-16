@@ -5,7 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Play, Info, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import SafeImage from "./SafeImage";
-import VideoPlayer from "./VideoPlayer";
+import dynamic from "next/dynamic";
+
+const VideoPlayer = dynamic(() => import("./VideoPlayer"), { ssr: false });
 import { Movie, getImageUrl } from "@/lib/tmdb";
 
 export default function HeroBanner({ movies }: { movies: Movie[] }) {
