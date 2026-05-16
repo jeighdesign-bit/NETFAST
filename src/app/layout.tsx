@@ -2,13 +2,11 @@ import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Link from "next/link";
 import { BackgroundProvider } from "@/context/BackgroundContext";
 import DynamicBackground from "@/components/DynamicBackground";
 import GlobalAds from "@/components/GlobalAds";
-import dynamic from "next/dynamic";
-
-const Chatbot = dynamic(() => import("@/components/Chatbot"), { ssr: false });
-const FAQSection = dynamic(() => import("@/components/FAQSection"), { ssr: false });
+import ClientSideComponents from "@/components/ClientSideComponents";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -87,8 +85,7 @@ export default function RootLayout({
           <div className="flex-1">
             {children}
           </div>
-          <FAQSection />
-          <Chatbot />
+          <ClientSideComponents />
           <Analytics />
         </BackgroundProvider>
         <footer className="bg-[#0a0a0a] border-t border-white/5 pt-20 pb-10 relative z-10 mt-20">
