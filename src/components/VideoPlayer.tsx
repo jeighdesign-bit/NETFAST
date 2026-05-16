@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  ArrowLeft, RefreshCw, AlertCircle, History, Maximize, Minimize
+  ArrowLeft, RefreshCw, AlertCircle, History, Smartphone
 } from "lucide-react";
 
 interface VideoPlayerProps {
@@ -283,21 +283,17 @@ export default function VideoPlayer({
             </div>
             
             <div className="flex items-center gap-2 pointer-events-auto">
-              {/* Fullscreen button — enhanced for all devices */}
+              {/* Landscape button — restored for mobile only as requested */}
               <button
                 onClick={toggleFullscreen}
-                className={`flex items-center justify-center w-10 h-10 rounded-xl transition-all border backdrop-blur-md active:scale-90 pointer-events-auto ${
+                className={`md:hidden flex items-center justify-center w-10 h-10 rounded-xl transition-all border backdrop-blur-md active:scale-90 pointer-events-auto ${
                   isFullscreen
                     ? "bg-[#e50914] border-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.4)]"
                     : "bg-black/60 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
                 }`}
                 aria-label={isFullscreen ? "Exit Fullscreen" : "Go Fullscreen"}
               >
-                {isFullscreen ? (
-                  <Minimize className="w-4 h-4 md:w-5 md:h-5" />
-                ) : (
-                  <Maximize className="w-4 h-4 md:w-5 md:h-5" />
-                )}
+                <Smartphone className={`w-4 h-4 transition-transform ${isFullscreen ? "rotate-90" : ""}`} />
               </button>
 
               {progress > 60 && (
@@ -321,7 +317,7 @@ export default function VideoPlayer({
               src={embedUrl}
               className="w-full h-full border-0"
               allowFullScreen
-              allow="autoplay; encrypted-media; picture-in-picture"
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
               onLoad={() => setIsLoading(false)}
               onError={() => setError(true)}
             />
