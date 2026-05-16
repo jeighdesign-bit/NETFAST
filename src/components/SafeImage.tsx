@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Image, { ImageProps, StaticImport } from "next/image";
+import Image, { ImageProps } from "next/image";
 import { Film } from "lucide-react";
 
 interface SafeImageProps extends Omit<ImageProps, "src" | "onError"> {
-  src: string | StaticImport | null | undefined;
+  src: ImageProps["src"] | null | undefined;
   fallbackSrc?: string;
   /** Shown in the placeholder when no image is available */
   alt: string;
@@ -50,7 +50,7 @@ export default function SafeImage({
   return (
     <Image
       {...props}
-      src={src as string | StaticImport}
+      src={src as any}
       alt={alt}
       onError={() => setError(true)}
     />
