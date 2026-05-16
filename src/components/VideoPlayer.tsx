@@ -338,11 +338,23 @@ export default function VideoPlayer({
             <iframe
               key={key}
               src={embedUrl}
-              className="w-full h-full border-0 relative z-10"
+              className="w-full h-full border-0 relative z-10 pointer-events-auto"
               allowFullScreen={true}
+              // @ts-ignore
+              webkitallowfullscreen="true"
+              // @ts-ignore
+              mozallowfullscreen="true"
               allow="autoplay; encrypted-media; gyroscope; accelerometer; picture-in-picture; fullscreen"
               onLoad={() => setIsLoading(false)}
               onError={() => setError(true)}
+            />
+            
+            {/* Transparent Overlay Hack for Fullscreen Button */}
+            <button
+              onClick={toggleFullscreen}
+              className="absolute bottom-1 right-1 md:bottom-2 md:right-2 w-14 h-14 md:w-16 md:h-16 z-50 opacity-0 cursor-pointer"
+              title="Force Fullscreen"
+              aria-label="Force Fullscreen"
             />
             
             {/* Loading Overlay */}
