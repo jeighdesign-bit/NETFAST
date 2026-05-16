@@ -65,6 +65,7 @@ export default function HeroBanner({ movies }: { movies: Movie[] }) {
             {/* Mobile: use w780 to reduce bandwidth; desktop: original quality */}
             <SafeImage
               src={getImageUrl(movie.backdrop_path, "original")}
+              fallbackSrc={getImageUrl(movie.poster_path, "original")}
               alt={movie.title || (movie as any).name}
               fill
               priority
@@ -149,6 +150,8 @@ export default function HeroBanner({ movies }: { movies: Movie[] }) {
           movieTitle={movie.title || (movie as any).name} 
           videoId={`tmdb-${movie.id}`} 
           type={(!movie.title && (movie as any).name) ? "tv" : "movie"}
+          posterPath={getImageUrl(movie.poster_path, "w500")}
+          backdropPath={getImageUrl(movie.backdrop_path, "original")}
           onClose={() => setIsPlaying(false)} 
         />
       )}

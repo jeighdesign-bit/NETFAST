@@ -127,6 +127,7 @@ export default function AISearch() {
                         >
                           <SafeImage 
                             src={getImageUrl(movie.poster_path)} 
+                            fallbackSrc={getImageUrl(movie.backdrop_path)}
                             alt={movie.title || (movie as any).name} 
                             fill 
                             sizes="(max-width: 768px) 50vw, 200px"
@@ -166,6 +167,8 @@ export default function AISearch() {
           movieTitle={activeMovie.title || (activeMovie as any).name} 
           videoId={`tmdb-${activeMovie.id}`} 
           type={(!activeMovie.title && (activeMovie as any).name) ? "tv" : "movie"}
+          posterPath={getImageUrl(activeMovie.poster_path, "w500")}
+          backdropPath={getImageUrl(activeMovie.backdrop_path, "original")}
           onClose={() => setActiveMovie(null)} 
         />
       )}

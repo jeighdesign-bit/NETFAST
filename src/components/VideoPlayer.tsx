@@ -14,6 +14,7 @@ interface VideoPlayerProps {
   season?: number;
   episode?: number;
   posterPath?: string | null;
+  backdropPath?: string | null;
 }
 
 type Provider = "codespecter" | "vidsrc_xyz" | "vidsrc_to" | "embed_su" | "smashystream" | "vidlink" | "vidsrc_me" | "superflix";
@@ -25,7 +26,8 @@ export default function VideoPlayer({
   type = "movie", 
   season = 1, 
   episode = 1,
-  posterPath 
+  posterPath,
+  backdropPath
 }: VideoPlayerProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -53,6 +55,9 @@ export default function VideoPlayer({
   useEffect(() => {
     startTimeRef.current = Date.now();
     
+    // Extract base TMDB ID for the fallback image path (e.g., "12345-s1-e1" -> "12345")
+    const baseId = tmdbId.split('-')[0];
+    
     const interval = setInterval(() => {
       const elapsedSeconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
       const currentProgress = initialProgress + elapsedSeconds;
@@ -63,7 +68,8 @@ export default function VideoPlayer({
         time: Date.now().toString(),
         info: JSON.stringify({
           title: movieTitle,
-          posterPath: posterPath || `https://image.tmdb.org/t/p/w500/${tmdbId}`,
+          posterPath: posterPath || `https://image.tmdb.org/t/p/w500/${baseId}.jpg`,
+          backdropPath: backdropPath || `https://image.tmdb.org/t/p/original/${baseId}.jpg`,
           type,
           season,
           episode

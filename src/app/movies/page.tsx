@@ -157,6 +157,7 @@ export default async function MoviesPage(props: { searchParams: Promise<{ genre?
                   <div className="relative aspect-[2/3] rounded-2xl overflow-hidden mb-4 border border-white/5 group-hover:border-[#e50914]/50 shadow-2xl transition-all duration-500 bg-[#111]">
                     <SafeImage 
                       src={getImageUrl(movie.poster_path)} 
+                      fallbackSrc={getImageUrl(movie.backdrop_path)}
                       alt={movie.title || (movie as any).name} 
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-80 group-hover:opacity-100"

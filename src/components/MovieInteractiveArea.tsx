@@ -101,6 +101,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
       <div className="absolute inset-0 z-0 h-full">
         <SafeImage 
           src={getImageUrl(movie.backdrop_path, "original")} 
+          fallbackSrc={getImageUrl(movie.poster_path, "original")}
           alt={movie.title || (movie as any).name} 
           fill
           priority
@@ -261,6 +262,7 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
           season={selectedSeason}
           episode={selectedEpisode}
           posterPath={getImageUrl(movie.poster_path, "w500")}
+          backdropPath={getImageUrl(movie.backdrop_path, "original")}
           onClose={() => setIsPlaying(false)} 
         />
       )}

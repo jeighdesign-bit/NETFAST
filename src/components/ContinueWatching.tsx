@@ -11,6 +11,7 @@ interface ContinueItem {
   tmdbId: string;
   title: string;
   posterPath: string;
+  backdropPath?: string;
   progress: number;
   duration: number;
   timestamp: number;
@@ -45,6 +46,7 @@ export default function ContinueWatching() {
               title: parsed.title,
 
               posterPath: parsed.posterPath,
+              backdropPath: parsed.backdropPath,
               progress,
               duration,
               timestamp,
@@ -115,6 +117,7 @@ export default function ContinueWatching() {
                   <div className="relative aspect-video rounded-2xl overflow-hidden glass border border-white/10 shadow-2xl">
                     <SafeImage
                       src={item.posterPath}
+                      fallbackSrc={item.backdropPath}
                       alt={item.title}
                       fill
                       className="object-cover opacity-60 group-hover/card:opacity-90 transition-all duration-500 group-hover/card:scale-110"

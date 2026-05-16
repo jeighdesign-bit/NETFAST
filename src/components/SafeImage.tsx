@@ -18,17 +18,36 @@ export default function SafeImage({
   ...props
 }: SafeImageProps) {
   const [error, setError] = useState(false);
+  const [useFallback, setUseFallback] = useState(false);
 
   // Treat the Unsplash clapperboard as "no real image" — show placeholder instead
   const CLAPPERBOARD =
     "https://images.unsplash.com/photo-1485846234645-a62644f84728";
-  const hasRealSrc =
-    !!src &&
-    (typeof src === "string" 
-      ? (src !== "" && !src.includes(CLAPPERBOARD) && !src.endsWith("null") && !src.endsWith("undefined")) 
-      : true);
+  
+  const isInvalid = (path: any) => {
+    if (!path) return true;
+    if (typeof path !== "string") return false;
+    return (
+      path === "" || 
+      path.includes(CLAPPERBOARD) || 
+      path.endsWith("null") || 
+      path.endsWith("undefined") ||
+      path.includes("/w500/.jpg") // Common broken TMDB path
+    );
+  };
 
-  if (error || !hasRealSrc) {
+  const mainInvalid = isInvalid(src);
+  const fallbackInvalid = isInvalid(fallbackSrc);
+
+  const handleError = () => {
+    if (!useFallback && !fallbackInvalid) {
+      setUseFallback(true);
+    } else {
+      setError(true);
+    }
+  };
+
+  if (error || (mainInvalid && (fallbackInvalid || useFallback))) {
     const initial = (alt || "?").charAt(0).toUpperCase();
     return (
       <div
@@ -46,12 +65,14 @@ export default function SafeImage({
     );
   }
 
+  const currentSrc = (mainInvalid || useFallback) ? fallbackSrc : src;
+
   return (
     <Image
       {...props}
-      src={src as any}
+      src={currentSrc as any}
       alt={alt}
-      onError={() => setError(true)}
+      onError={handleError}
     />
   );
 }
