@@ -218,7 +218,7 @@ export default function VideoPlayer({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 md:p-8"
+        className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center"
       >
         {/* Source Selector Bar - scrollable on mobile */}
         <motion.div 
@@ -264,37 +264,41 @@ export default function VideoPlayer({
         >
           
           {/* Controls overlay — pointer-events-none so taps pass through to iframe video controls */}
-          <div className="absolute top-0 left-0 right-0 z-50 p-3 md:p-6 h-fit flex items-center justify-between bg-gradient-to-b from-black/90 via-black/40 to-transparent md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-            <div className="flex items-center gap-2 md:gap-4 pointer-events-auto">
-              <button 
-                onClick={onClose} 
-                className="text-white hover:bg-[#e50914] p-2 md:p-3 rounded-xl transition-all bg-black/60 border border-white/10 backdrop-blur-md active:scale-90"
-              >
-                <ArrowLeft className="w-5 h-5 md:w-7 md:h-7" />
-              </button>
-              <div>
-                <h2 className="text-sm md:text-2xl font-black text-white tracking-tight leading-none line-clamp-1" style={{ fontFamily: 'var(--font-outfit)' }}>
-                  {movieTitle}
-                </h2>
-                {type === "tv" && (
-                  <p className="text-[#e50914] font-bold text-[9px] md:text-sm mt-0.5 uppercase tracking-widest">S{season} • E{episode}</p>
-                )}
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-2 pointer-events-auto">
-              {progress > 60 && (
-                <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md rounded-xl border border-white/10 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                  <History className="w-3 h-3 text-[#e50914]" />
-                  <span>Resuming: {Math.floor(progress / 60)}m</span>
+          {/* Top Bar Controls — Optimized for passthrough */}
+          <div className="absolute top-0 left-0 right-0 z-50 pointer-events-none">
+            <div className="flex items-center justify-between p-4 md:p-8">
+              <div className="flex items-center gap-4 pointer-events-auto">
+                <button 
+                  onClick={onClose} 
+                  className="text-white hover:bg-[#e50914] p-3 rounded-2xl transition-all bg-black/60 border border-white/10 backdrop-blur-md active:scale-95 shadow-2xl"
+                >
+                  <ArrowLeft className="w-6 h-6 md:w-8 md:h-8" />
+                </button>
+                <div className="hidden sm:block">
+                  <h2 className="text-xl md:text-2xl font-black text-white tracking-tight leading-none" style={{ fontFamily: 'var(--font-outfit)' }}>
+                    {movieTitle}
+                  </h2>
+                  {type === "tv" && (
+                    <p className="text-[#e50914] font-bold text-xs mt-1 uppercase tracking-widest">Season {season} • Episode {episode}</p>
+                  )}
                 </div>
-              )}
-              <button 
-                onClick={handleRefresh} 
-                className="w-10 h-10 flex items-center justify-center rounded-xl bg-black/60 hover:bg-white/10 transition-all border border-white/10 backdrop-blur-md text-white/40 hover:text-white active:scale-90"
-              >
-                <RefreshCw className="w-4 h-4 md:w-5 md:h-5" />
-              </button>
+              </div>
+              
+              <div className="flex items-center gap-3 pointer-events-auto">
+                {progress > 60 && (
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-black/60 backdrop-blur-md rounded-xl border border-white/10 text-[10px] text-gray-400 font-bold uppercase tracking-widest shadow-xl">
+                    <History className="w-3 h-3 text-[#e50914]" />
+                    <span>Resuming: {Math.floor(progress / 60)}m</span>
+                  </div>
+                )}
+                <button 
+                  onClick={handleRefresh} 
+                  className="w-12 h-12 flex items-center justify-center rounded-2xl bg-black/60 hover:bg-white/10 transition-all border border-white/10 backdrop-blur-md text-white/40 hover:text-white active:scale-95 shadow-xl"
+                  title="Refresh Stream"
+                >
+                  <RefreshCw className="w-5 h-5 md:w-6 md:h-6" />
+                </button>
+              </div>
             </div>
           </div>
 
@@ -310,7 +314,7 @@ export default function VideoPlayer({
               mozallowfullscreen="true"
               // @ts-ignore
               allowfullscreen="true"
-              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allow="autoplay; encrypted-media; gyroscope; accelerometer; picture-in-picture; fullscreen"
               onLoad={() => setIsLoading(false)}
               onError={() => setError(true)}
             />
