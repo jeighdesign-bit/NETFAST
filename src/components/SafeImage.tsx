@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import Image, { ImageProps } from "next/image";
+import Image, { ImageProps, StaticImport } from "next/image";
 import { Film } from "lucide-react";
 
-interface SafeImageProps extends Omit<ImageProps, "onError"> {
+interface SafeImageProps extends Omit<ImageProps, "src" | "onError"> {
+  src: string | StaticImport | null | undefined;
   fallbackSrc?: string;
   /** Shown in the placeholder when no image is available */
   alt: string;
@@ -22,10 +23,10 @@ export default function SafeImage({
   const CLAPPERBOARD =
     "https://images.unsplash.com/photo-1485846234645-a62644f84728";
   const hasRealSrc =
-    src &&
-    typeof src === "string" &&
-    src !== "" &&
-    !src.includes(CLAPPERBOARD);
+    !!src &&
+    (typeof src === "string" 
+      ? (src !== "" && !src.includes(CLAPPERBOARD)) 
+      : true);
 
   if (error || !hasRealSrc) {
     // Styled gradient placeholder — unique per title initial
@@ -49,7 +50,7 @@ export default function SafeImage({
   return (
     <Image
       {...props}
-      src={src}
+      src={src as string | StaticImport}
       alt={alt}
       onError={() => setError(true)}
     />
