@@ -33,7 +33,6 @@ export default function VideoPlayer({
   const [provider, setProvider] = useState<Provider>("codespecter");
   const [progress, setProgress] = useState(0);
   const [initialProgress, setInitialProgress] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const startTimeRef = useRef<number>(Date.now());
   const playerContainerRef = useRef<HTMLDivElement>(null);
 
@@ -144,74 +143,6 @@ export default function VideoPlayer({
     setError(false);
   };
 
-  // Fullscreen toggle — handles both browser fullscreen and orientation
-  const toggleFullscreen = useCallback(async () => {
-    if (!playerContainerRef.current) return;
-
-    try {
-      if (!document.fullscreenElement) {
-        if (playerContainerRef.current.requestFullscreen) {
-          await playerContainerRef.current.requestFullscreen();
-        } else if ((playerContainerRef.current as any).webkitRequestFullscreen) {
-          await (playerContainerRef.current as any).webkitRequestFullscreen();
-        } else if ((playerContainerRef.current as any).msRequestFullscreen) {
-          await (playerContainerRef.current as any).msRequestFullscreen();
-        }
-
-        // Try to lock orientation if supported
-        const screenOrientation = screen?.orientation as any;
-        if (screenOrientation?.lock) {
-          await screenOrientation.lock('landscape').catch(() => {});
-        }
-        setIsFullscreen(true);
-      } else {
-        if (document.exitFullscreen) {
-          await document.exitFullscreen();
-        } else if ((document as any).webkitExitFullscreen) {
-          await (document as any).webkitExitFullscreen();
-        } else if ((document as any).msExitFullscreen) {
-          await (document as any).msExitFullscreen();
-        }
-        
-        const screenOrientation = screen?.orientation as any;
-        if (screenOrientation?.unlock) {
-          screenOrientation.unlock();
-        }
-        setIsFullscreen(false);
-      }
-    } catch (err) {
-      console.error("Fullscreen error:", err);
-    }
-  }, []);
-
-  // Sync fullscreen state with browser events (e.g. ESC key)
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-    
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
-      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
-    };
-  }, []);
-
-  // Unlock orientation when player closes
-  useEffect(() => {
-    return () => {
-      try {
-        const screenOrientation = screen?.orientation as any;
-        screenOrientation?.unlock?.();
-      } catch {}
-    };
-  }, []);
-
   return (
     <AnimatePresence>
       <motion.div 
@@ -256,11 +187,7 @@ export default function VideoPlayer({
 
         <div 
           ref={playerContainerRef}
-          className={`relative w-full transition-all duration-500 bg-black shadow-[0_0_80px_rgba(0,0,0,1)] group ${
-            isFullscreen 
-              ? 'fixed inset-0 z-[200] h-screen w-screen overflow-hidden' 
-              : 'max-w-4xl aspect-video rounded-2xl md:rounded-3xl border border-white/10'
-          }`}
+          className="relative w-full transition-all duration-500 bg-black shadow-[0_0_80px_rgba(0,0,0,1)] group max-w-4xl aspect-video rounded-2xl md:rounded-3xl border border-white/10"
         >
           
           {/* Controls overlay — pointer-events-none so taps pass through to iframe video controls */}
@@ -306,14 +233,8 @@ export default function VideoPlayer({
             <iframe
               key={key}
               src={embedUrl}
-              className="w-full h-full border-0 relative z-0"
+              className="w-full h-full border-0 relative z-10"
               allowFullScreen
-              // @ts-ignore
-              webkitallowfullscreen="true"
-              // @ts-ignore
-              mozallowfullscreen="true"
-              // @ts-ignore
-              allowfullscreen="true"
               allow="autoplay; encrypted-media; gyroscope; accelerometer; picture-in-picture; fullscreen"
               onLoad={() => setIsLoading(false)}
               onError={() => setError(true)}
