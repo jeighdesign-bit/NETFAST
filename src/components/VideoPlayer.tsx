@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  ArrowLeft, RefreshCw, AlertCircle, History, Smartphone, Maximize, Minimize
+  ArrowLeft, RefreshCw, AlertCircle, History, Smartphone
 } from "lucide-react";
 
 interface VideoPlayerProps {
@@ -256,9 +256,9 @@ export default function VideoPlayer({
 
         <div 
           ref={playerContainerRef}
-          className={`relative w-full transition-all duration-500 bg-black overflow-hidden shadow-[0_0_80px_rgba(0,0,0,1)] group ${
+          className={`relative w-full transition-all duration-500 bg-black shadow-[0_0_80px_rgba(0,0,0,1)] group ${
             isFullscreen 
-              ? 'fixed inset-0 z-[200] h-screen w-screen' 
+              ? 'fixed inset-0 z-[200] h-screen w-screen overflow-hidden' 
               : 'max-w-4xl aspect-video rounded-2xl md:rounded-3xl border border-white/10'
           }`}
         >
@@ -283,26 +283,6 @@ export default function VideoPlayer({
             </div>
             
             <div className="flex items-center gap-2 pointer-events-auto">
-              {/* Reliable Custom Fullscreen Button */}
-              <button
-                onClick={toggleFullscreen}
-                className={`flex items-center justify-center px-4 py-2 h-10 rounded-xl transition-all border backdrop-blur-md active:scale-90 pointer-events-auto ${
-                  isFullscreen
-                    ? "bg-[#e50914] border-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.4)]"
-                    : "bg-black/80 border-white/20 text-white hover:bg-white/20"
-                }`}
-                title="Use this if the video's fullscreen button fails"
-              >
-                <span className="text-[10px] font-bold uppercase tracking-widest mr-2 hidden sm:inline">
-                  {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-                </span>
-                {isFullscreen ? (
-                  <Minimize className="w-4 h-4" />
-                ) : (
-                  <Maximize className="w-4 h-4" />
-                )}
-              </button>
-
               {progress > 60 && (
                 <div className="hidden md:flex items-center gap-2 px-4 py-2 bg-black/60 backdrop-blur-md rounded-xl border border-white/10 text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                   <History className="w-3 h-3 text-[#e50914]" />
@@ -322,12 +302,14 @@ export default function VideoPlayer({
             <iframe
               key={key}
               src={embedUrl}
-              className="w-full h-full border-0"
+              className="w-full h-full border-0 relative z-0"
               allowFullScreen
               // @ts-ignore
               webkitallowfullscreen="true"
               // @ts-ignore
               mozallowfullscreen="true"
+              // @ts-ignore
+              allowfullscreen="true"
               allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
               onLoad={() => setIsLoading(false)}
               onError={() => setError(true)}
