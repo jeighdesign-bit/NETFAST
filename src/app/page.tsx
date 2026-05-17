@@ -30,7 +30,7 @@ export default async function Home() {
       <div className="relative z-40 pb-20 -mt-6 md:-mt-12 space-y-14 md:space-y-32 pt-8 md:pt-6">
         
         {/* Quick Category Bar */}
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 mt-6 md:mt-8">
           <div className="flex overflow-x-auto hide-scrollbar scroll-smooth snap-x snap-mandatory gap-3 md:gap-4 pb-4 md:pb-0 md:flex-wrap md:justify-center">
             {[
               { name: "Action", id: "28" },
