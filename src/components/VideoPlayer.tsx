@@ -253,6 +253,36 @@ export default function VideoPlayer({
     return () => window.removeEventListener('message', handleMessage);
   }, [requestFullscreen, exitFullscreen]);
 
+  // Try to fix autoplay and audio by accessing the video element if possible
+  useEffect(() => {
+    const fixPlayback = () => {
+      try {
+        const iframe = document.querySelector('iframe');
+        if (iframe && iframe.contentWindow) {
+          const video = iframe.contentWindow.document.querySelector('video');
+          if (video) {
+            video.muted = false;
+            video.volume = 1;
+            video.play().catch(() => {
+              console.log("Autoplay blocked");
+            });
+          }
+        }
+      } catch (err) {
+        // May fail due to cross-origin policies
+      }
+    };
+
+    // Attempt to apply the fix periodically during initial load
+    const interval = setInterval(fixPlayback, 500);
+    const timeout = setTimeout(() => clearInterval(interval), 5000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, [key]);
+
   return (
     <AnimatePresence>
       <div 
