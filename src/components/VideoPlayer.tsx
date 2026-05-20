@@ -327,7 +327,7 @@ export default function VideoPlayer({
           className={`relative w-full transition-all duration-500 bg-black shadow-[0_0_80px_rgba(0,0,0,1)] group ${
             isFullscreen 
               ? 'w-full h-full' 
-              : 'max-w-4xl aspect-video rounded-2xl md:rounded-3xl border border-white/10'
+              : 'max-w-4xl aspect-video portrait:min-h-[380px] sm:portrait:min-h-[450px] md:min-h-0 rounded-2xl md:rounded-3xl border border-white/10'
           }`}
         >
           
