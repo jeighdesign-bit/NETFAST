@@ -13,6 +13,7 @@ export interface Movie {
   release_date: string;
   genre_ids: number[];
   name?: string; // For TV shows
+  original_language?: string;
 }
 
 export interface MovieDetail extends Movie {
@@ -86,7 +87,13 @@ const mockMovies: Movie[] = [
       { id: 6, season_number: 6, episode_count: 10, name: "Season 2" },
       { id: 7, season_number: 7, episode_count: 10, name: "Season 1" }
     ]
-  } as any
+  } as any,
+  { id: 1143183, title: "Rewind", poster_path: "https://images.unsplash.com/photo-1518173946687-a4c8a383392e?q=80&w=1000&auto=format&fit=crop", backdrop_path: null, overview: "A husband gets a second chance to save his wife's life after a tragic accident.", vote_average: 8.2, vote_count: 50, release_date: "2023-12-25", genre_ids: [18, 10749], original_language: "tl" },
+  { id: 614479, title: "Hello, Love, Goodbye", poster_path: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=1000&auto=format&fit=crop", backdrop_path: null, overview: "Two Filipino workers in Hong Kong fall in love but face life choices.", vote_average: 8.4, vote_count: 80, release_date: "2019-07-31", genre_ids: [18, 10749], original_language: "tl" },
+  { id: 138843, title: "The Conjuring", poster_path: "/wT1zg4L7S53sJkX1tqGfB3j1QJ9.jpg", backdrop_path: null, overview: "Paranormal investigators work to help a family terrorized by a dark presence.", vote_average: 7.5, vote_count: 1000, release_date: "2013-07-17", genre_ids: [27, 53] },
+  { id: 447332, title: "A Quiet Place", poster_path: "/nAU74GmpUk7t5iklEp3bufwDq4n.jpg", backdrop_path: null, overview: "A family must navigate their lives in silence to avoid mysterious creatures.", vote_average: 7.4, vote_count: 1000, release_date: "2018-04-03", genre_ids: [27, 878, 18] },
+  { id: 597, title: "Titanic", poster_path: "/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg", backdrop_path: null, overview: "A seventeen-year-old aristocrat falls in love with a kind but poor artist.", vote_average: 7.9, vote_count: 2000, release_date: "1997-11-18", genre_ids: [18, 10749, 53] },
+  { id: 8363, title: "Superbad", poster_path: "/xfWac8MTYDxujaxgPVcRD9yZaul.jpg", backdrop_path: null, overview: "Two high school seniors try to buy alcohol for a party.", vote_average: 7.6, vote_count: 1200, release_date: "2007-08-17", genre_ids: [35] }
 ];
 
 const mockMovieDetail: MovieDetail = {
@@ -106,7 +113,45 @@ export interface TMDBResponse {
 
 export async function fetchMovies(endpoint: string, params: Record<string, string> = {}): Promise<Movie[]> {
   const data = await fetchTMDB(endpoint, params);
-  return data.results || mockMovies;
+  
+  // If we have an API key and fetched actual results from the TMDB API, use them!
+  if (data && data.results && data.results.length > 0 && TMDB_API_KEY) {
+    return data.results;
+  }
+  
+  // Dynamic mock filtering system when API key is missing or API fails
+  let filtered = [...mockMovies];
+  
+  // 1. Filter by language (e.g. Pinoy "tl")
+  if (params.with_original_language) {
+    filtered = filtered.filter(m => m.original_language === params.with_original_language);
+  }
+  
+  // 2. Filter by genre
+  if (params.with_genres) {
+    const genreId = Number(params.with_genres);
+    filtered = filtered.filter(m => m.genre_ids.includes(genreId));
+  }
+  
+  // 3. Filter by search query (e.g. Marvel)
+  if (params.query) {
+    const queryTerm = params.query.toLowerCase();
+    filtered = filtered.filter(m => 
+      m.title.toLowerCase().includes(queryTerm) || 
+      (m.overview && m.overview.toLowerCase().includes(queryTerm))
+    );
+  }
+  
+  // 4. Special cases based on endpoint path
+  const path = endpoint.toLowerCase();
+  if (path.includes("/trending")) {
+    filtered = filtered.sort((a, b) => b.vote_average - a.vote_average);
+  } else if (path.includes("/top_rated")) {
+    filtered = filtered.sort((a, b) => b.vote_average - a.vote_average);
+  }
+  
+  // Return the filtered list, fallback to standard mock movies slice if empty
+  return filtered.length > 0 ? filtered : mockMovies.slice(0, 10);
 }
 
 export async function fetchTMDB(endpoint: string, params: Record<string, string> = {}): Promise<TMDBResponse> {
@@ -181,6 +226,7 @@ export async function getTrendingMovies(timeWindow: "day" | "week" = "day"): Pro
 
 export function getImageUrl(path: string | null, size: "w500" | "original" = "w500"): string | null {
   if (!path || path === "" || path === "null" || path === "undefined" || path === "false") return null;
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
   // Ensure the path starts with a slash
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
   return `https://image.tmdb.org/t/p/${size}${cleanPath}`;
