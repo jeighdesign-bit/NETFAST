@@ -21,7 +21,11 @@ export default async function Home() {
     fetchMovies("/discover/movie", { with_original_language: "tl", sort_by: "revenue.desc" }),
   ]);
 
-  const heroMovies = trending.slice(0, 5);
+  // Only show movies with real backdrop images in the hero banner
+  // to avoid displaying logo/placeholder backgrounds
+  const heroMovies = trending
+    .filter((m) => m.backdrop_path && m.backdrop_path !== "" && m.backdrop_path !== "null")
+    .slice(0, 5);
 
   return (
     <main className="relative min-h-screen">

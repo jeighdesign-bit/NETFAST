@@ -1,4 +1,4 @@
-const CACHE_NAME = 'netfast-pwa-v1';
+const CACHE_NAME = 'netfast-pwa-v2';
 const STATIC_ASSETS = [
   '/',
   '/favicon.ico',
@@ -66,20 +66,26 @@ self.addEventListener('fetch', (event) => {
   }
 
   // 3. Static assets caching (Cache-First strategy)
-  // Cache JS/CSS chunks, fonts, and local static public assets
-  if (
+  // Cache JS/CSS chunks, fonts, and LOCAL static public assets only.
+  // IMPORTANT: Do NOT intercept external image URLs (e.g. TMDB images) here —
+  // returning a local favicon fallback for failed external images causes the
+  // hero banner to display the Netfast logo instead of a proper backdrop.
+  const isLocalOrigin = url.origin === self.location.origin;
+  const isStaticAsset =
     url.pathname.includes('/_next/static/') ||
     url.pathname.includes('/fonts/') ||
     url.hostname.includes('fonts.gstatic.com') ||
     url.hostname.includes('fonts.googleapis.com') ||
-    STATIC_ASSETS.includes(url.pathname) ||
+    STATIC_ASSETS.includes(url.pathname);
+  const isLocalImage = isLocalOrigin && (
     url.pathname.endsWith('.png') ||
     url.pathname.endsWith('.svg') ||
     url.pathname.endsWith('.jpg') ||
     url.pathname.endsWith('.jpeg') ||
     url.pathname.endsWith('.webp')
-  ) {
-    // Only cache external images if they are NOT stream chunks/media
+  );
+
+  if (isStaticAsset || isLocalImage) {
     event.respondWith(
       caches.match(request).then((cachedResponse) => {
         if (cachedResponse) {
@@ -102,7 +108,8 @@ self.addEventListener('fetch', (event) => {
           });
           return networkResponse;
         }).catch(() => {
-          // Return cached fallback if available for images
+          // For local images only, return a minimal transparent 1x1 PNG
+          // instead of a branded logo to avoid showing wrong content
           if (request.destination === 'image') {
             return caches.match('/favicon-32x32.png');
           }
