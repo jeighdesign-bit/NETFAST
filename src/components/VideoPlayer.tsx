@@ -39,6 +39,11 @@ export default function VideoPlayer({
   const [pointerEventsEnabled, setPointerEventsEnabled] = useState(false);
   const startTimeRef = useRef<number>(Date.now());
   const playerContainerRef = useRef<HTMLDivElement>(null);
+  const playbackAttemptedRef = useRef(false);
+
+  useEffect(() => {
+    playbackAttemptedRef.current = false;
+  }, [key]);
 
   // Prevent mobile click-through/phantom click bugs by delaying pointer events on mount
   useEffect(() => {
@@ -265,41 +270,69 @@ export default function VideoPlayer({
 
   // Try to fix autoplay and audio by accessing the video element if possible
   useEffect(() => {
-    const fixPlayback = async () => {
+    let intervalId: ReturnType<typeof setInterval> | null = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let cancelled = false;
+
+    const startPlayback = async (video: HTMLVideoElement) => {
+      if (playbackAttemptedRef.current || cancelled) return;
+      playbackAttemptedRef.current = true;
+
+      // Clear polling — we have the video element now
+      if (intervalId) clearInterval(intervalId);
+
       try {
-        const iframe = document.querySelector('iframe');
-        if (iframe && iframe.contentWindow) {
-          const video = iframe.contentWindow.document.querySelector('video');
-          if (video) {
-            // Apply requested mobile inline playback configuration
-            video.playsInline = true;
-            
-            // Try playing unmuted first, then fallback to muted if blocked
-            try {
-              video.muted = false;
-              video.volume = 1;
-              await video.play();
-            } catch (playErr) {
-              console.warn("Autoplay unmuted blocked by mobile browser, trying muted...", playErr);
-              video.muted = true;
-              await video.play().catch((err) => {
-                console.error("Autoplay completely blocked on mobile:", err);
-              });
-            }
-          }
-        }
+        video.playsInline = true;
+        video.muted = false;
+        video.volume = 1;
+        await video.play();
+        // Playback started successfully with audio
       } catch (err) {
-        // May fail due to cross-origin policies
+        console.warn("Autoplay (unmuted) blocked — retrying muted:", err);
+        try {
+          video.muted = true;
+          await video.play();
+          // Muted autoplay succeeded; leave it muted so browser doesn't block again
+        } catch (mutedErr) {
+          console.error("Autoplay completely blocked:", mutedErr);
+        }
       }
     };
 
-    // Attempt to apply the fix periodically during initial load
-    const interval = setInterval(fixPlayback, 500);
-    const timeout = setTimeout(() => clearInterval(interval), 5000);
+    const pollForVideo = async () => {
+      if (playbackAttemptedRef.current || cancelled) return;
+      try {
+        const iframe = document.querySelector('iframe');
+        if (!iframe || !iframe.contentWindow) return;
+        const video = iframe.contentWindow.document.querySelector('video');
+        if (!video) return;
+
+        // Wait until the browser has enough data to play
+        if (video.readyState >= 2) {
+          await startPlayback(video);
+        } else {
+          // Attach a one-time canplay listener as a secondary trigger
+          const onCanPlay = async () => {
+            video.removeEventListener('canplay', onCanPlay);
+            await startPlayback(video);
+          };
+          video.addEventListener('canplay', onCanPlay);
+        }
+      } catch (_) {
+        // Cross-origin access denied — skip silently
+      }
+    };
+
+    // Poll every 400ms for up to 8 seconds to find the video element
+    intervalId = setInterval(pollForVideo, 400);
+    timeoutId = setTimeout(() => {
+      if (intervalId) clearInterval(intervalId);
+    }, 8000);
 
     return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
+      cancelled = true;
+      if (intervalId) clearInterval(intervalId);
+      if (timeoutId) clearTimeout(timeoutId);
     };
   }, [key]);
 
