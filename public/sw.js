@@ -1,4 +1,4 @@
-const CACHE_NAME = 'netfast-pwa-v4';
+const CACHE_NAME = 'netfast-pwa-v5';
 const STATIC_ASSETS = [
   '/',
   '/favicon.ico',
@@ -42,6 +42,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   const url = new URL(request.url);
+  const isLocalOrigin = url.origin === self.location.origin;
 
   // 1. Skip caching for non-GET requests (e.g. POST, PUT, DELETE)
   if (request.method !== 'GET') {
@@ -52,8 +53,7 @@ self.addEventListener('fetch', (event) => {
   if (
     url.pathname.startsWith('/api/') ||
     url.pathname.startsWith('/_next/image') || // Bypass Next.js optimized images
-    url.hostname.includes('tmdb.org') ||       // Bypass TMDB images
-    url.hostname.includes('unsplash.com') ||   // Bypass Unsplash images
+    (request.destination === 'image' && !isLocalOrigin) || // Bypass ALL external images (TMDB, Unsplash, Wikimedia SVGs)
     url.host.includes('api.codespecters.com') ||
     url.host.includes('vidsrc') ||
     url.host.includes('embed.su') ||
@@ -72,7 +72,7 @@ self.addEventListener('fetch', (event) => {
   // IMPORTANT: Do NOT intercept external image URLs (e.g. TMDB images) here —
   // returning a local favicon fallback for failed external images causes the
   // hero banner to display the Netfast logo instead of a proper backdrop.
-  const isLocalOrigin = url.origin === self.location.origin;
+
   const isStaticAsset =
     url.pathname.includes('/_next/static/') ||
     url.pathname.includes('/fonts/') ||
