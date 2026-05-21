@@ -13,7 +13,7 @@ const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata: Metadata = {
   title: {
-    default: "NETFAST | AI-Powered Cinematic Experience",
+    default: "NETFAST | Fast. Simple. Free Streaming.",
     template: "%s | NETFAST"
   },
   description: "NETFAST | Stream the latest movies, Pinoy blockbusters, TV shows, and trending anime for free. Experience the future of cinema with AI-powered discovery and ultra-fast streaming on netfast.stream.",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "NETFAST | AI-Powered Cinematic Experience",
+    title: "NETFAST | Fast. Simple. Free Streaming.",
     description: "The future of movie discovery is here. Stream movies and anime for free on netfast.stream.",
     images: ["https://netfast.stream/og-image.jpg"],
   },
@@ -72,7 +72,7 @@ export const metadata: Metadata = {
       { rel: "mask-icon", url: "/favicon.ico", color: "#e50914" },
     ],
   },
-  manifest: "/site.webmanifest",
+  manifest: "/manifest.json",
 };
 
 import { Analytics } from "@vercel/analytics/react";
@@ -86,6 +86,10 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${outfit.variable} dark antialiased`}>
       <head>
         <meta name="6a97888e-site-verification" content="471ece48be511e3bd2035444764b2aab" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="NETFAST" />
+        <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body className="bg-black text-white overflow-x-hidden min-h-screen flex flex-col">
         <BackgroundProvider>

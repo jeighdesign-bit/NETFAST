@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, User, Menu, X, ChevronDown, TrendingUp, Star, Globe, Calendar, Clock, Tag, Layers, Monitor, PlayCircle, Radio, ArrowLeft } from "lucide-react";
+import { Search, User, Menu, X, ChevronDown, TrendingUp, Star, Globe, Calendar, Clock, Tag, Layers, Monitor, PlayCircle, Radio, ArrowLeft, Download } from "lucide-react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -14,6 +14,41 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
   const mobileSearchRef = useRef<HTMLInputElement>(null);
+
+  const [isPWAInstallable, setIsPWAInstallable] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
+
+  useEffect(() => {
+    // Check if running in standalone display mode (installed)
+    const isApp = 
+      window.matchMedia("(display-mode: standalone)").matches || 
+      (window.navigator as any).standalone === true;
+    setIsStandalone(isApp);
+
+    if (isApp) return;
+
+    // Check if install prompt is already globally available
+    if (window.deferredInstallPrompt) {
+      setIsPWAInstallable(true);
+    }
+
+    const handleBeforeInstallPrompt = () => {
+      setIsPWAInstallable(true);
+    };
+
+    const handleAppInstalled = () => {
+      setIsPWAInstallable(false);
+      setIsStandalone(true);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener("appinstalled", handleAppInstalled);
+    };
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -281,6 +316,41 @@ export default function Navbar() {
                   <p className="text-gray-500 text-[10px] uppercase font-bold tracking-[0.2em]">Cinematic Explorer</p>
                 </div>
               </div>
+
+              {/* PWA Install Button in mobile menu */}
+              {isPWAInstallable && !isStandalone && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="mb-8 p-4 rounded-2xl border border-[#e50914]/30 bg-[#e50914]/5 relative overflow-hidden"
+                >
+                  {/* Subtle background glow */}
+                  <div className="absolute inset-0 bg-[#e50914]/5 blur-xl -z-10" />
+                  
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#e50914] flex items-center justify-center text-white shrink-0 shadow-[0_0_15px_rgba(229,9,20,0.4)]">
+                        <Download className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="text-white font-black text-xs uppercase tracking-wider">Netfast App</h4>
+                        <p className="text-gray-400 text-[9px] uppercase font-bold tracking-widest mt-0.5">Fast. Simple. Free.</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        if (window.triggerPWAInstall) {
+                          window.triggerPWAInstall();
+                        }
+                      }}
+                      className="px-4 py-2 rounded-xl bg-[#e50914] hover:bg-[#ff1e2a] text-white text-[10px] font-black uppercase tracking-wider transition-all active:scale-95 shadow-[0_4px_12px_rgba(229,9,20,0.3)]"
+                    >
+                      Install
+                    </button>
+                  </div>
+                </motion.div>
+              )}
 
               {/* Navigation Links */}
               <div className="space-y-2 mb-8">
