@@ -36,8 +36,18 @@ export default function VideoPlayer({
   const [progress, setProgress] = useState(0);
   const [initialProgress, setInitialProgress] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [pointerEventsEnabled, setPointerEventsEnabled] = useState(false);
   const startTimeRef = useRef<number>(Date.now());
   const playerContainerRef = useRef<HTMLDivElement>(null);
+
+  // Prevent mobile click-through/phantom click bugs by delaying pointer events on mount
+  useEffect(() => {
+    setPointerEventsEnabled(false);
+    const timer = setTimeout(() => {
+      setPointerEventsEnabled(true);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [key]);
 
   const tmdbId = videoId.replace('tmdb-', '');
   
@@ -255,17 +265,27 @@ export default function VideoPlayer({
 
   // Try to fix autoplay and audio by accessing the video element if possible
   useEffect(() => {
-    const fixPlayback = () => {
+    const fixPlayback = async () => {
       try {
         const iframe = document.querySelector('iframe');
         if (iframe && iframe.contentWindow) {
           const video = iframe.contentWindow.document.querySelector('video');
           if (video) {
-            video.muted = false;
-            video.volume = 1;
-            video.play().catch(() => {
-              console.log("Autoplay blocked");
-            });
+            // Apply requested mobile inline playback configuration
+            video.playsInline = true;
+            
+            // Try playing unmuted first, then fallback to muted if blocked
+            try {
+              video.muted = false;
+              video.volume = 1;
+              await video.play();
+            } catch (playErr) {
+              console.warn("Autoplay unmuted blocked by mobile browser, trying muted...", playErr);
+              video.muted = true;
+              await video.play().catch((err) => {
+                console.error("Autoplay completely blocked on mobile:", err);
+              });
+            }
           }
         }
       } catch (err) {
@@ -292,14 +312,14 @@ export default function VideoPlayer({
         <motion.div 
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="flex items-center gap-1.5 mb-3 p-1.5 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md w-full max-w-4xl overflow-x-auto hide-scrollbar"
+          className="flex items-center flex-nowrap gap-2 mb-3 p-2 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md w-full max-w-4xl overflow-x-auto hide-scrollbar scroll-smooth px-3"
         >
           <span className="hidden sm:inline text-[9px] uppercase tracking-widest text-gray-500 px-2 font-bold shrink-0">Server:</span>
           {(["codespecter", "vidsrc_xyz", "vidsrc_to", "embed_su", "smashystream", "vidlink", "vidsrc_me", "superflix"] as Provider[]).map((p) => (
             <button
               key={p}
               onClick={() => handleProviderChange(p)}
-              className={`shrink-0 px-3 py-2.5 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-tight transition-all min-h-[40px] ${
+              className={`shrink-0 px-4 py-2.5 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-tight transition-all min-h-[44px] touch-manipulation active:scale-95 ${
                 provider === p 
                   ? "bg-[#e50914] text-white shadow-[0_0_15px_rgba(229,9,20,0.4)]" 
                   : "text-gray-400 hover:text-white hover:bg-white/10 active:bg-white/20"
@@ -327,7 +347,9 @@ export default function VideoPlayer({
           className={`relative w-full transition-all duration-500 bg-black shadow-[0_0_80px_rgba(0,0,0,1)] group ${
             isFullscreen 
               ? 'w-full h-full' 
-              : 'max-w-4xl aspect-video portrait:min-h-[380px] sm:portrait:min-h-[450px] md:min-h-0 rounded-2xl md:rounded-3xl border border-white/10'
+              : 'max-w-4xl aspect-video rounded-2xl md:rounded-3xl border border-white/10'
+          } ${
+            pointerEventsEnabled ? '' : 'pointer-events-none'
           }`}
         >
           
@@ -385,10 +407,10 @@ export default function VideoPlayer({
               onError={() => setError(true)}
             />
             
-            {/* Transparent Overlay Hack for Fullscreen Button */}
+            {/* Transparent Overlay Hack for Fullscreen Button - Hidden on mobile to prevent touch interception */}
             <button
               onClick={toggleFullscreen}
-              className="absolute bottom-1 right-1 md:bottom-2 md:right-2 w-14 h-14 md:w-16 md:h-16 z-50 opacity-0 cursor-pointer"
+              className="hidden md:block absolute bottom-2 right-2 w-16 h-16 z-50 opacity-0 cursor-pointer"
               title="Force Fullscreen"
               aria-label="Force Fullscreen"
             />

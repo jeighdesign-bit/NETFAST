@@ -91,6 +91,11 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
 
   const episodeCount = filteredEpisodes.length;
 
+  const handlePlayClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsPlaying(true);
+  };
+
   const handleResetProgress = (e: React.MouseEvent) => {
     e.stopPropagation();
     localStorage.removeItem(`netfast_progress_${videoId}`);
@@ -141,8 +146,8 @@ export default function MovieInteractiveArea({ movie, isTV = false, tvData }: Mo
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
               <div className="flex flex-col sm:flex-row gap-3">
                 <button 
-                  onClick={() => setIsPlaying(true)}
-                  className="flex items-center justify-center gap-2 bg-white text-black hover:bg-[#e50914] hover:text-white px-8 py-4 md:py-3 rounded-xl md:rounded-md font-bold text-base md:text-lg transition-all shadow-xl"
+                  onClick={handlePlayClick}
+                  className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-white text-black hover:bg-[#e50914] hover:text-white px-8 py-4 md:py-3 rounded-xl md:rounded-md font-bold text-base md:text-lg transition-all shadow-xl"
                 >
                   <Play className="fill-current w-5 h-5" /> 
                   {isTV ? `Play S${selectedSeason}:E${selectedEpisode}` : (savedProgress && savedProgress > 60 ? 'Resume Movie' : 'Watch Now')}
