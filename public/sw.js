@@ -1,4 +1,4 @@
-const CACHE_NAME = 'netfast-pwa-v3';
+const CACHE_NAME = 'netfast-pwa-v4';
 const STATIC_ASSETS = [
   '/',
   '/favicon.ico',
