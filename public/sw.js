@@ -1,4 +1,4 @@
-const CACHE_NAME = 'netfast-pwa-v2';
+const CACHE_NAME = 'netfast-pwa-v3';
 const STATIC_ASSETS = [
   '/',
   '/favicon.ico',
@@ -48,9 +48,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2. Skip caching for video players, stream providers, range requests, API routes, Vercel analytics, etc.
+  // 2. Skip caching and bypass SW completely for video players, stream providers, API routes, external images, etc.
   if (
     url.pathname.startsWith('/api/') ||
+    url.pathname.startsWith('/_next/image') || // Bypass Next.js optimized images
+    url.hostname.includes('tmdb.org') ||       // Bypass TMDB images
+    url.hostname.includes('unsplash.com') ||   // Bypass Unsplash images
     url.host.includes('api.codespecters.com') ||
     url.host.includes('vidsrc') ||
     url.host.includes('embed.su') ||
@@ -61,8 +64,7 @@ self.addEventListener('fetch', (event) => {
     url.host.includes('vercel-analytics') ||
     request.headers.get('range') // Skip range requests to prevent video playback failure
   ) {
-    event.respondWith(fetch(request));
-    return;
+    return; // Let the browser handle it natively without SW interference
   }
 
   // 3. Static assets caching (Cache-First strategy)
