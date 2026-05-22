@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 interface AdBannerProps {
   format: '160x300' | '160x600' | '300x250' | '320x50' | '468x60' | '728x90' | 'native';
@@ -17,64 +18,132 @@ const adConfigs = {
 };
 
 export default function AdBanner({ format }: AdBannerProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
   const config = adConfigs[format];
+  const [nativeHeight, setNativeHeight] = useState<number>(250);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (format !== 'native' || !config) return;
 
-    // Clear previous content
-    containerRef.current.innerHTML = '';
-
-    if (format === 'native') {
-      const nativeContainer = document.createElement('div');
-      nativeContainer.id = `container-${config.key}`;
-      
-      const nativeScript = document.createElement('script');
-      nativeScript.src = `https://pl29435454.profitablecpmratenetwork.com/${config.key}/invoke.js`;
-      nativeScript.async = true;
-      nativeScript.setAttribute('data-cfasync', 'false');
-
-      containerRef.current.appendChild(nativeScript);
-      containerRef.current.appendChild(nativeContainer);
-    } else {
-      // Set atOptions on window object - many ad scripts expect this globally
-      (window as any).atOptions = {
-        key: config.key,
-        format: 'iframe',
-        height: config.height as number,
-        width: config.width as number,
-        params: {},
-      };
-      
-      const invokeScript = document.createElement('script');
-      invokeScript.src = `https://www.highperformanceformat.com/${config.key}/invoke.js`;
-      invokeScript.async = true;
-
-      containerRef.current.appendChild(invokeScript);
-    }
-
-    return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = '';
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'ad-height' && event.data.key === config.key) {
+        const height = Number(event.data.height);
+        if (!isNaN(height) && height > 0) {
+          setNativeHeight(height);
+        }
       }
-      // Clean up global options
-      delete (window as any).atOptions;
     };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, [format, config]);
 
+  if (!config) return null;
+
+  const isNative = format === 'native';
+  const width = isNative ? '100%' : `${config.width}px`;
+  const height = isNative ? `${nativeHeight}px` : `${config.height}px`;
+
+  // Construct iframe html
+  let srcDoc = '';
+  if (isNative) {
+    srcDoc = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <style>
+            body {
+              margin: 0;
+              padding: 0;
+              background: transparent;
+              overflow: hidden;
+            }
+          </style>
+        </head>
+        <body>
+          <div id="container-${config.key}"></div>
+          <script async="async" data-cfasync="false" src="https://pl29435454.profitablecpmratenetwork.com/${config.key}/invoke.js"></script>
+          <script>
+            function sendHeight() {
+              var height = document.documentElement.scrollHeight || document.body.scrollHeight;
+              window.parent.postMessage({ type: 'ad-height', key: '${config.key}', height: height }, '*');
+            }
+            window.addEventListener('load', function() {
+              sendHeight();
+              setTimeout(sendHeight, 1000);
+              setTimeout(sendHeight, 3000);
+              setTimeout(sendHeight, 5000);
+            });
+            if (window.ResizeObserver) {
+              var ro = new ResizeObserver(sendHeight);
+              ro.observe(document.body);
+            }
+          </script>
+        </body>
+      </html>
+    `;
+  } else {
+    srcDoc = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body {
+              margin: 0;
+              padding: 0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background: transparent;
+              overflow: hidden;
+              height: 100vh;
+            }
+          </style>
+        </head>
+        <body>
+          <script type="text/javascript">
+            atOptions = {
+              'key' : '${config.key}',
+              'format' : 'iframe',
+              'height' : ${config.height},
+              'width' : ${config.width},
+              'params' : {}
+            };
+          </script>
+          <script type="text/javascript" src="https://www.highperformanceformat.com/${config.key}/invoke.js"></script>
+        </body>
+      </html>
+    `;
+  }
+
+  // Generate a key based on route pathname and config key to force recreate iframe
+  const iframeKey = `${format}-${config.key}-${pathname}`;
+
   return (
-    <div className="flex justify-center my-8 overflow-hidden w-full">
+    <div className="flex justify-center my-4 overflow-hidden w-full mx-auto">
       <div 
-        ref={containerRef} 
         style={{ 
-          width: typeof config.width === 'number' ? `${config.width}px` : config.width, 
-          minHeight: format === 'native' ? '100px' : (typeof config.height === 'number' ? `${config.height}px` : 'auto') 
+          width: isNative ? '100%' : width, 
+          height: height,
+          maxWidth: '1200px'
         }}
-        className="bg-white/5 rounded-lg flex flex-col items-center justify-center text-[10px] text-white/20 uppercase tracking-widest border border-white/5 w-full max-w-[1200px]"
+        className="bg-white/5 rounded-lg flex flex-col items-center justify-center border border-white/5 w-full relative transition-all duration-300"
       >
-        {/* Placeholder text will disappear once the ad loads */}
-        <span className="py-4">Advertisement</span>
+        <iframe
+          key={iframeKey}
+          srcDoc={srcDoc}
+          title={`Adsterra ${format} Ad`}
+          style={{
+            border: 'none',
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
+          }}
+          scrolling="no"
+        />
       </div>
     </div>
   );

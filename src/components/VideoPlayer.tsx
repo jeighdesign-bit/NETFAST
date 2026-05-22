@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, RefreshCw, AlertCircle, History, Smartphone
 } from "lucide-react";
+import AdBanner from "./AdBanner";
 
 interface VideoPlayerProps {
   movieTitle: string;
@@ -483,6 +484,12 @@ export default function VideoPlayer({
             )}
           </div>
         </div>
+
+        {!isFullscreen && (
+          <div className="mt-4 z-50">
+            <AdBanner format="300x250" />
+          </div>
+        )}
 
         {/* Backdrop background */}
         <div className="absolute inset-0 -z-10" />

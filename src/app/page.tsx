@@ -7,6 +7,7 @@ import Link from "next/link";
 import ExperienceNotice from "@/components/ExperienceNotice";
 import NetworkRow from "@/components/NetworkRow";
 import ExoclickBanner from "@/components/ExoclickBanner";
+import AdBanner from "@/components/AdBanner";
 
 export default async function Home() {
   // Fetch all data in parallel — dramatically faster than sequential awaits
@@ -67,6 +68,8 @@ export default async function Home() {
         <MovieRow title="Pinoy Blockbusters" category="/movies?lang=tl" highlight={true} movies={pinoy} />
         
         <MovieRow title="Top Rated & AI Recommended" category="/movies" movies={topRated} />
+
+        <AdBanner format="native" />
 
         <MovieRow title="Marvel Cinematic Universe" category="/movies?search=Marvel" movies={action.slice(0, 10)} highlight={true} />
         

@@ -7,6 +7,7 @@ import { BackgroundProvider } from "@/context/BackgroundContext";
 import DynamicBackground from "@/components/DynamicBackground";
 import GlobalAds from "@/components/GlobalAds";
 import ClientSideComponents from "@/components/ClientSideComponents";
+import AdBanner from "@/components/AdBanner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -96,9 +97,15 @@ export default function RootLayout({
           <GlobalAds />
           <DynamicBackground />
           <Navbar />
-          <div className="flex-1">
+          <div className="flex-1 pb-16 md:pb-0">
             {children}
           </div>
+
+          {/* Sticky Mobile Banner */}
+          <div className="fixed bottom-0 left-0 right-0 z-[90] flex justify-center items-center bg-black/80 backdrop-blur-md md:hidden py-1 border-t border-white/5">
+            <AdBanner format="320x50" />
+          </div>
+
           <ClientSideComponents />
           <Analytics />
         </BackgroundProvider>

@@ -1,8 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function GlobalAds() {
+  const pathname = usePathname();
+
   useEffect(() => {
     // Popunder
     const popunderScript = document.createElement('script');
@@ -17,10 +20,14 @@ export default function GlobalAds() {
     document.body.appendChild(socialBarScript);
 
     return () => {
-      document.body.removeChild(popunderScript);
-      document.body.removeChild(socialBarScript);
+      if (document.body.contains(popunderScript)) {
+        document.body.removeChild(popunderScript);
+      }
+      if (document.body.contains(socialBarScript)) {
+        document.body.removeChild(socialBarScript);
+      }
     };
-  }, []);
+  }, [pathname]);
 
   return null;
 }
